@@ -1,8 +1,6 @@
+#include "pch.h"
+#include "main.h"
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <cstdlib>
-#include <crtdbg.h>
-
 
 int main()
 {
