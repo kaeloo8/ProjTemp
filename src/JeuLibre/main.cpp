@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "main.h"
 #include <SFML/Graphics.hpp>
+#include "assetmanager.h"
+#include "SceneManager.h"
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode({ 200, 200 }), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Custom Pointer");
 
-    while (window.isOpen())
-    {
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
+    window.setMouseCursorVisible(false);
+
+    SceneManager sceneManager;
+    sceneManager.ClearScene();
+    sceneManager.LoadSceneIsland();
+    sceneManager.UpdateScene();
+
+    return 0;
 }
