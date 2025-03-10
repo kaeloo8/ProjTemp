@@ -4,7 +4,6 @@
 
 SceneManager::SceneManager() 
 {
-	SceneIsland sceneIsland;
 }
 
 void SceneManager::ClearScene()
