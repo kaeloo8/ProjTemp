@@ -16,7 +16,6 @@ Controller::Controller() {
 }
 
 void Controller::handleEvent(const sf::Event& event) {
-    // Gestion des événements de type KeyPressed et KeyReleased
     if (event.type == sf::Event::KeyPressed) {
         auto it = keyBindings_.find(event.key.code);
         if (it != keyBindings_.end()) {
@@ -32,7 +31,6 @@ void Controller::handleEvent(const sf::Event& event) {
 }
 
 void Controller::update() {
-    // Mise à jour en temps réel : on vérifie l'état actuel de chaque touche liée à une action
     for (const auto& binding : keyBindings_) {
         Action action = binding.second;
         if (sf::Keyboard::isKeyPressed(binding.first)) {

@@ -2,6 +2,7 @@
 
 #include "SceneManager.h"
 #include "SceneIsland.h"
+#include "AssetManager.h"
 
 class SceneManager
 {
