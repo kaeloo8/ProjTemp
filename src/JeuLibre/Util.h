@@ -64,3 +64,27 @@ public :
 };
 
 ////////////////////////////////////////////////////////////////////////////
+
+struct ColiderABBA {
+	float Sx, Sy;
+	float x, y;
+public :
+	ColiderABBA();
+	ColiderABBA(float sx, float sy);
+	
+	void SetSize(float sx, float sy);
+	void SetPos(float x, float y);
+};
+
+////////////////////////////////////////////////////////////////////////////
+
+struct ColiderCircle {
+	float Rad;
+	float x, y;
+public :
+	ColiderCircle();
+	ColiderCircle(float rad);
+
+	void SetRad(float rad);
+	void SetPos(float x, float y);
+};

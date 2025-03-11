@@ -34,6 +34,13 @@ struct Speed {
 	float SpeedLevel;
 };
 
+struct BoxColider {
+	bool Solid;
+};
+
+struct CirColider {
+	bool Solid;
+};
 
 
 

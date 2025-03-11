@@ -75,3 +75,33 @@ void ItemInfo::MultiplyQuantity(int Value) {
 }
 
 ////////////////////////////////////////////////////////////////////////////
+
+ColiderABBA::ColiderABBA() {
+
+}
+ColiderABBA::ColiderABBA(float sx, float sy) {
+
+}
+
+void ColiderABBA::SetSize(float sx, float sy) {
+
+}
+void ColiderABBA::SetPos(float x, float y) {
+
+}
+
+////////////////////////////////////////////////////////////////////////////
+
+ColiderCircle::ColiderCircle() {
+
+}
+ColiderCircle::ColiderCircle(float rad) {
+
+}
+
+void ColiderCircle::SetRad(float rad) {
+
+}
+void ColiderCircle::SetPos(float x, float y) {
+
+}
