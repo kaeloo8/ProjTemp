@@ -1,6 +1,10 @@
 #pragma once
-class Entity
-{
-	
+#include <vector>
+
+class Entity {
+public:
+    int id;
+
+    Entity(int id) : id(id) {}
 };
 
