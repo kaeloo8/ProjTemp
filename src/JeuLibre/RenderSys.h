@@ -1,18 +1,5 @@
 #pragma once
 #include <vector>
+#include <SFML/Graphics.hpp>
 
-class Window;
-class Entity;
-
-class RenderSys
-{
-	Window* Windows;
-	std::vector<Entity*> EntityList;
-public :
-
-	RenderSys();
-
-	void CreateEntity();
-	void Update();
-};
 

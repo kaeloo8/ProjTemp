@@ -5,6 +5,7 @@
 #include "assetmanager.h"
 #include "SceneManager.h"
 #include "Ui.h"
+#include "RenderSys.h"
 
 class StartingGame
 {

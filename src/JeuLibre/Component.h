@@ -17,12 +17,12 @@ struct Defence {
 	float Protection;
 };
 
-struct Inventory {
-	std::vector<Item> ItemsList;
-};
-
 struct Item {
 	ItemInfo Items;
+};
+
+struct Inventory {
+	std::vector<ItemInfo> ItemsList;
 };
 
 struct AI {

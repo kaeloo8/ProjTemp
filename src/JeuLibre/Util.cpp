@@ -36,6 +36,7 @@ void Depth::SetDepth(int Value) {
 
 ////////////////////////////////////////////////////////////////////////////
 
+
 ItemInfo::ItemInfo(std::string name, int quantity, sf::Texture texture) : ImgItem(texture){
     Name = name;
     Quantity = quantity;

@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "StartingGame.h"
+#include "Window.h"
 
 namespace fs = std::filesystem;
 
 int StartingGame::LoadGame()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Jeu SFML - Chargement, Curseur & UI");
-    window.setFramerateLimit(60);
+    Window window("nom du jeu", 800, 600);
+    window.GetRenderWindow().setFramerateLimit(60);
 
     // --- Ecran de chargement ---
     sf::RectangleShape progressBarBg(sf::Vector2f(400.f, 30.f));
@@ -55,21 +56,21 @@ int StartingGame::LoadGame()
         float progress = static_cast<float>(loaded) / total;
         progressBar.setSize(sf::Vector2f(400.f * progress, 30.f));
 
-        window.clear();
-        window.draw(progressBarBg);
-        window.draw(progressBar);
-        window.display();
+        window.Clear();
+        window.GetRenderWindow().draw(progressBarBg);
+        window.GetRenderWindow().draw(progressBar);
+        window.Display();
 
         sf::sleep(sf::milliseconds(50)); // Pour visualiser la progression
     }
 
-    window.setTitle("Chargement terminé");
+    window.GetRenderWindow().setTitle("Chargement terminé");
 
     // --- Création du menu UI ---
-    Ui ui(window.getSize());
+    Ui ui(window.GetRenderWindow().getSize());
 
     // --- Curseur personnalisé ---
-    window.setMouseCursorVisible(false);
+    window.GetRenderWindow().setMouseCursorVisible(false);
     const sf::Texture* pointerTexture = assetManager.getTexture("Pointer.png");
     if (!pointerTexture) {
         std::cerr << "La texture 'Pointer.png' est introuvable dans les assets!\n";
@@ -79,19 +80,19 @@ int StartingGame::LoadGame()
     pointerSprite.setOrigin(pointerTexture->getSize().x / 2.f, pointerTexture->getSize().y / 2.f);
 
     sf::Clock clock;
-    while (window.isOpen()) {
+    while (window.GetRenderWindow().isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.GetRenderWindow().pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-                window.close();
+                window.GetRenderWindow().close();
 
             // Transmet les événements à l'UI
-            ui.handleEvent(event, window);
+            ui.handleEvent(event, window.GetRenderWindow());
 
             // Si redimensionnement, mettre à jour la vue et le layout
             if (event.type == sf::Event::Resized) {
                 sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-                window.setView(sf::View(visibleArea));
+                window.GetRenderWindow().setView(sf::View(visibleArea));
                 ui.updateLayout(sf::Vector2u(event.size.width, event.size.height));
             }
         }
@@ -99,13 +100,21 @@ int StartingGame::LoadGame()
         ui.update();
 
         // Met à jour la position du curseur personnalisé
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window.GetRenderWindow());
         pointerSprite.setPosition(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 
-        window.clear(sf::Color::Black);
+        window.GetRenderWindow().clear(sf::Color::Black);
         // Ici, vous pouvez dessiner d'autres éléments du jeu...
-        ui.render(window); // Dessine le menu si visible
-        window.draw(pointerSprite); // Dessine le curseur personnalisé
-        window.display();
+        ui.render(window.GetRenderWindow()); // Dessine le menu si visible
+        window.GetRenderWindow().draw(pointerSprite); // Dessine le curseur personnalisé
+        window.GetRenderWindow().display();
     }
 }
+
+/*std::vector<Entity*> tempoList;
+    for (auto Entity : EntityList) {
+        if (!Entity.delet) {
+            tempoList.push_back(Entity);
+        }
+    }
+    EntityList = tempoList;*/

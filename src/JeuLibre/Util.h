@@ -27,20 +27,6 @@ public :
 
 ////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-struct Table
-{
-	std::vector<std::vector<T>> Tables;
-public :
-
-	Table(size_t rows, size_t cols, const T& defaultValue = T()): table(rows, std::vector<T>(cols, defaultValue)) {}
-
-	std::vector<T>& operator[](size_t index) { return table[index]; }
-	const std::vector<T>& operator[](size_t index) const { return table[index]; }
-};
-
-////////////////////////////////////////////////////////////////////////////
-
 struct ItemInfo {
 	std::string Name;
 	int Quantity;
