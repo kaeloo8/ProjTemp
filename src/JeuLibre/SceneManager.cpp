@@ -2,36 +2,18 @@
 #include "SceneManager.h"
 #include <iostream>
 
-SceneManager::SceneManager() : activeScene(nullptr) {
-    // Par défaut, on peut charger une scène de démarrage (ex: menu principal)
-    LoadSceneMainMenu();
+void SceneManager::setScene(std::unique_ptr<Scene> newScene) {
+    currentScene = std::move(newScene);
 }
 
-void SceneManager::ClearScene() {
-    if (activeScene) {
-        activeScene->OnExit();
-        activeScene = nullptr;
-    }
+void SceneManager::handleEvent(sf::Event& event) {
+    if (currentScene) currentScene->handleEvent(event);
 }
 
-void SceneManager::UpdateScene(sf::Time deltaTime) {
-    if (activeScene) {
-        activeScene->Update(deltaTime);
-    }
+void SceneManager::update(float dt) {
+    if (currentScene) currentScene->update(dt);
 }
 
-void SceneManager::LoadSceneIsland() {
-    // Efface la scène active
-    ClearScene();
-    // Active la scène d'île
-    activeScene = &sceneIsland;
-    activeScene->OnEnter();
-    std::cout << "SceneIsland chargée et active\n";
-}
-
-void SceneManager::LoadSceneMainMenu() {
-    ClearScene();
-    activeScene = &sceneMainMenu;
-    activeScene->OnEnter();
-    std::cout << "SceneMainMenu chargée et active\n";
+void SceneManager::render(sf::RenderWindow& window) {
+    if (currentScene) currentScene->render(window);
 }
