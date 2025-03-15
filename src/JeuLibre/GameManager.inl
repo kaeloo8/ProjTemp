@@ -6,6 +6,7 @@
 template<typename T>
 void GameManager::LaunchScene()
 {
+	VerifWin();
 	static_assert(std::is_base_of<Scene, T>::value, "T must be derived from Scene");
 	_ASSERT(mpScene == nullptr);
 

@@ -20,12 +20,9 @@ class GameManager
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
 
-	sf::RenderWindow* Window;
 	sf::Font mFont;
 
 	Scene* mpScene;
-
-	AssetManager AssetMana;
 
 	float DeltaTime;
 
@@ -37,6 +34,7 @@ class GameManager
 private:
 	GameManager();
 
+	void VerifWin();
 	void Run();
 
 	void HandleInput();
@@ -48,6 +46,10 @@ private:
 	sf::RenderWindow* GetWindow() const { return Window; }
 
 public:
+
+	sf::RenderWindow* Window;
+	AssetManager AssetMana;
+
 	~GameManager();
 	static GameManager* Get();
 
@@ -60,7 +62,7 @@ public:
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };
 
-	sf::Texture GetTexture(const std::string _name);
+	sf::Texture& GetTexture(const std::string _name);
 
 	friend Scene;
 

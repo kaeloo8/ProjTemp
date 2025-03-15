@@ -30,15 +30,6 @@ GameManager::~GameManager() {
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::Run() {
-	if (Window == nullptr)
-	{
-		std::cerr << "Window not created, creating default window" << std::endl;
-		CreateWindow(800, 600, "Default window");
-	}
-
-	AssetMana = *(new AssetManager(Window));
-	AssetMana.loadTexturesFromFolder("../../../img");
-
 
 	bool fontLoaded = mFont.loadFromFile("../../../res/DePixelHalbfett.ttf");
 	if (!fontLoaded) { return; }
@@ -100,6 +91,7 @@ void GameManager::Update() {
 	// supretion d'Entity
 	for (auto it = mEntitiesToDestroy.begin(); it != mEntitiesToDestroy.end(); ++it)
 	{
+		std::cout << "entity destroy" << std::endl;
 		delete* it;
 	}
 
@@ -186,6 +178,19 @@ void GameManager::CreateWindow(unsigned int width, unsigned int height, const ch
 								//	GetTexture	//
 ///////////////////////////////////////////////////////////////////////////////////
 
-sf::Texture GameManager::GetTexture(std::string _name) {
-	return *(AssetMana.getTexture(_name));
+sf::Texture& GameManager::GetTexture(std::string _name) {
+	return AssetMana.GetTexture(_name);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+								//	VerifWin	//
+///////////////////////////////////////////////////////////////////////////////////
+
+void GameManager::VerifWin() {
+	if (Window == nullptr)
+	{
+		std::cerr << "Window not created, creating default window" << std::endl;
+		CreateWindow(800, 600, "Default window");
+	}
+	AssetMana = *(new AssetManager(Window));
 }

@@ -43,7 +43,7 @@ public:
     float mDefaultHeight;
     float timer;
     float timerAnnim;
-    bool mToDestroy;
+    bool mToDestroy ;
     int mTag;
     int Layout;
 

@@ -1,8 +1,16 @@
 #pragma once
 #include "Scene.h"
+#include "Player.h"
 
 class S0Menu : public Scene
 {
+	std::vector<Entity*> entitylist;
+
+	sf::RenderWindow* Win;
+
+
+	Player* lPlayer;
+
 public:
 
 	void OnInitialize() override;

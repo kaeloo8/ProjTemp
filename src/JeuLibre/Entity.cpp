@@ -28,7 +28,22 @@ void Entity::Initialize(float radius, const sf::Color& color)
 
 void Entity::Initialize(const char* path)
 {
-	
+	mDirection = sf::Vector2f(0.0f, 0.0f);
+	mSpeed = 0.0f;
+	mToDestroy = false;
+	mTag = -1;
+	mSprite.setTexture(GameManager::Get()->GetTexture(path));
+
+	mDefaultWidth = mSprite.getGlobalBounds().width;
+	mDefaultHeight = mSprite.getGlobalBounds().height;
+	mWidth = mDefaultWidth;
+	mHeight = mDefaultHeight;
+	mHitboxWidth = mDefaultWidth;
+	mHitboxHeight = mDefaultHeight;
+
+	mSprite.setOrigin(0.5f * mWidth, 0.5f * mHeight);
+
+	mTarget.isSet = false;
 }
 
 bool Entity::IsColliding(Entity* other) const {
