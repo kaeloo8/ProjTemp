@@ -1,11 +1,15 @@
 #include "pch.h"
 #include <SFML/Graphics.hpp>
-#include "StartingGame.h"
+#include "GameManager.h"
+#include "S0Menu.h"
 
 
 int main() {
-    StartingGame Game;
-    Game.LoadGame();
+	GameManager* pInstance = GameManager::Get();
 
-    return 0;
+	pInstance->CreateWindow(1280, 720, "GameScene");
+
+	pInstance->LaunchScene<S0Menu>();
+
+	return 0;
 }

@@ -1,12 +1,38 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/Color.hpp>
 
-class Scene {
+class GameManager;
+
+class Scene
+{
+private:
+	GameManager* mpGameManager;
+
+private:
+	void SetGameManager(GameManager* pGameManager) { mpGameManager = pGameManager; }
+
+protected:
+	Scene() = default;
+
+	virtual void OnInitialize() = 0;
+	virtual void OnEvent(const sf::Event& event) = 0;
+	virtual void OnUpdate() = 0;
+
 public:
-    virtual ~Scene() = default;
+	template<typename T>
+	T* CreateEntity(float radius, const sf::Color& color);
 
-    virtual void handleEvent(sf::Event& event) = 0;
-    virtual void update(float dt) = 0;
-    virtual void render(sf::RenderWindow& window) = 0;
+	template<typename T>
+	T* CreateEntity(const char* path);
+
+	float GetDeltaTime() const;
+
+	int GetWindowWidth() const;
+	int GetWindowHeight() const;
+
+	friend GameManager;
 };
+
+#include "Scene.inl"
 
