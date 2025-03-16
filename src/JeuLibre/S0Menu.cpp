@@ -24,7 +24,6 @@ void S0Menu::OnUpdate() {
 
 	float velocityX = 0.f;
 	float velocityY = 0.f;
-	std::cout << "ok" << std::endl;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 			velocityY -= 5.f;
 	}
