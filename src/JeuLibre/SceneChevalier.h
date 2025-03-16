@@ -3,18 +3,16 @@
 #include "Player.h"
 #include "Pointer.h"
 
-class S0Menu : public Scene
+class SceneChevalier : public Scene
 {
 	std::vector<Entity*> entitylist;
 
 	sf::RenderWindow* Win;
 	Pointer* lPointer;
-	
-	Entity* ButtonLeo;
-	Entity* ButtonCheval;
-	Entity* ButtonElo;
 
-	Entity* Fond;
+	Player* lPlayer;
+
+
 public:
 
 	void OnInitialize() override;
@@ -22,4 +20,3 @@ public:
 	void OnUpdate() override;
 	void SetName() override;
 };
-
