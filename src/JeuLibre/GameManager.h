@@ -59,6 +59,7 @@ public:
 	void LaunchScene();
 
 	float GetDeltaTime() const { return DeltaTime; }
+	AssetManager* GetAssetManager() { return &AssetMana; }
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };
 

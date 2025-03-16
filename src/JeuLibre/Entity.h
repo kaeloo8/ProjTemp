@@ -57,7 +57,6 @@ public:
     void SetSpeed(float speed) { mSpeed = speed; }
     float GetSpeed();
     void SetTag(int tag) { mTag = tag; }
-    void SetImage(const char* path);
     void PlayAnimation(const char* path, float vitesseAnim);
     void SetScale(float sizeX, float sizeY);
     void SetSize(float width, float height);
@@ -105,6 +104,7 @@ protected:
     virtual void OnUpdate() {};
     virtual void OnCollision(Entity* collidedWith) {};
     virtual void OnInitialize() {};
+    virtual void SetImage(const char* path);
 
 private:
     void Update();
