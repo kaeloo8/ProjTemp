@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneEloulou.h"
 #include "S1Ville.h"
+#include "S0Menu.h"
 #include <iostream>
 
 void SceneEloulou::OnInitialize() {
@@ -22,14 +23,14 @@ void SceneEloulou::OnInitialize() {
 }
 void SceneEloulou::OnEvent(const sf::Event& event) {
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-        if (!KeyHPressed) {
-            std::cout << "H press" << std::endl;
-            GameManager::Get()->LaunchScene<S1Ville>();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        if (!KeyEscPressed) {
+            std::cout << "Retour Menu" << std::endl;
+            GameManager::Get()->LaunchScene<S0Menu>();
         }
     }
     else {
-        KeyHPressed = false;
+        KeyEscPressed = false;
     }
 }
 
