@@ -17,6 +17,7 @@ void S0Menu::OnInitialize() {
 	lPlayer->AddAABBHitbox();
 	lPlayer->SetHitboxSize(25, 20);
 	lPlayer->Layout = 1;
+    lPlayer->mSpeed = 1;
 }
 void S0Menu::OnEvent(const sf::Event& event) {
 
@@ -66,7 +67,7 @@ void S0Menu::OnUpdate() {
     };
 
     
-	std::cout << lPlayer->mSpeed << std::endl;
+	//std::cout << lPlayer->mSpeed << std::endl;
 
     float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
     if (magnitude > 10.f) {
