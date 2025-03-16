@@ -18,8 +18,12 @@ protected:
 	virtual void OnInitialize() = 0;
 	virtual void OnEvent(const sf::Event& event) = 0;
 	virtual void OnUpdate() = 0;
+	virtual void SetName() = 0;
 
 public:
+	bool KeyHPressed;
+	std::string SceneName;
+
 	template<typename T>
 	T* CreateEntity(float radius, const sf::Color& color);
 

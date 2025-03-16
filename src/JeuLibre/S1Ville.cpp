@@ -1,31 +1,38 @@
 #include "pch.h"
-#include "S0Menu.h"
 #include "S1Ville.h"
+#include "S0Menu.h"
 #include <iostream>
 
-void S0Menu::OnInitialize() {
-	Win = GameManager::Get()->Window;
+void S1Ville::OnInitialize() {
+    Win = GameManager::Get()->Window;
     Win->setMouseCursorVisible(false);
-	lPointer = CreateEntity<Pointer>("Pointer");
-	lPointer->SetScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100);
-	lPointer->SetOrigin(0, 0);
-	lPointer->Layout = 10;
+    lPointer = CreateEntity<Pointer>("croix");
+    lPointer->SetScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100);
+    lPointer->SetOrigin(0, 0);
+    lPointer->Layout = 10;
 
-	lPlayer = CreateEntity<Player>("base_idle_strip9");
-    lPlayer->SetScale(3,3);
+    lPlayer = CreateEntity<Player>("base_idle_strip9");
+    lPlayer->SetScale(3, 3);
     lPlayer->SetOrigin(0.5f, 0.5f);
-	lPlayer->SetPosition((GetWindowWidth() / 2)-lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
-	lPlayer->AddAABBHitbox();
-	lPlayer->SetHitboxSize(25, 20);
-	lPlayer->Layout = 1;
+    lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
+    lPlayer->AddAABBHitbox();
+    lPlayer->SetHitboxSize(25, 20);
+    lPlayer->Layout = 1;
     lPlayer->mSpeed = 1;
-}
-void S0Menu::OnEvent(const sf::Event& event) {
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+    KeyHPressed = false;
+}
+
+void S1Ville::SetName() {
+    SceneName = "S1Ville";
+}
+
+void S1Ville::OnEvent(const sf::Event& event) {
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
         if (!KeyHPressed) {
             std::cout << "H press" << std::endl;
-            GameManager::Get()->LaunchScene<S1Ville>();
+            GameManager::Get()->LaunchScene<S0Menu>();
         }
     }
     else {
@@ -33,11 +40,7 @@ void S0Menu::OnEvent(const sf::Event& event) {
     }
 }
 
-void S0Menu::SetName() {
-    SceneName = "S0Menu";
-}
-
-void S0Menu::OnUpdate() {
+void S1Ville::OnUpdate() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
     lPointer->SetPosition(mousePos.x, mousePos.y);
 
@@ -73,12 +76,12 @@ void S0Menu::OnUpdate() {
         }
 
     }
-    else { 
+    else {
         lPlayer->isMoving = false;
     };
 
-    
-	//std::cout << lPlayer->mSpeed << std::endl;
+
+    //std::cout << lPlayer->mSpeed << std::endl;
 
     float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
     if (magnitude > 10.f) {
@@ -89,3 +92,4 @@ void S0Menu::OnUpdate() {
     // On déplace le joueur
     lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX, lPlayer->GetPosition().y + velocityY, lPlayer->mSpeed);
 }
+

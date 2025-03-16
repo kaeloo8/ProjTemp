@@ -24,6 +24,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mHitboxHeight = mDefaultHeight;
 
 	mTarget.isSet = false;
+	SceneName = GetScene()->SceneName;
 }
 
 void Entity::Initialize(const char* path)
@@ -44,6 +45,7 @@ void Entity::Initialize(const char* path)
 	mSprite.setOrigin(0.5f, 0.5f);
 
 	mTarget.isSet = false;
+	SceneName = GetScene()->SceneName;
 }
 
 bool Entity::IsColliding(Entity* other) const {

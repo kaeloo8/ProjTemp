@@ -16,9 +16,13 @@ namespace sf
 
 class GameManager
 {
+	bool Loaded = false;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
+
+	int NumberScene;
+	std::vector<Scene*> SceneLoaded;
 
 	sf::Font mFont;
 

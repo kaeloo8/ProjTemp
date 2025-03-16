@@ -13,6 +13,8 @@ GameManager::GameManager() {
 	mpScene = nullptr;
 	 widthWin = -1;
 	 heightWin = -1;
+	 SceneLoaded.clear();
+	 NumberScene = 0;
 }
 
 GameManager::~GameManager() {
@@ -30,9 +32,6 @@ GameManager::~GameManager() {
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::Run() {
-
-	bool fontLoaded = mFont.loadFromFile("../../../res/DePixelHalbfett.ttf");
-	if (!fontLoaded) { return; }
 
 	sf::Clock clock;
 	while (Window->isOpen())
@@ -132,7 +131,7 @@ void GameManager::Draw() {
 	TrieEntity.clear();
 
 	for (Entity* entity : mEntities) {
-		if (entity && entity->Layout >= 0) {
+		if (entity && entity->Layout >= 0 && entity->SceneName == mpScene->SceneName) {
 			if (entity->Layout >= TrieEntity.size()) {
 				TrieEntity.resize(entity->Layout + 1);
 			}
@@ -192,5 +191,9 @@ void GameManager::VerifWin() {
 		std::cerr << "Window not created, creating default window" << std::endl;
 		CreateWindow(800, 600, "Default window");
 	}
-	AssetMana = *(new AssetManager(Window));
+	if (!Loaded) {
+		AssetMana = *(new AssetManager(Window));
+		bool fontLoaded = mFont.loadFromFile("../../../res/DePixelHalbfett.ttf");
+		Loaded = true;
+	}
 }

@@ -30,6 +30,7 @@ protected:
     int mHitboxHeight;
 
 public:
+    std::string SceneName;
     sf::Sprite mSprite;
     Collider* mHitbox;
     float mX;

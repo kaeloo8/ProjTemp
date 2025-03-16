@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Pointer.h"
 
-class S0Menu : public Scene
+class S1Ville : public Scene
 {
 	std::vector<Entity*> entitylist;
 
@@ -11,7 +11,7 @@ class S0Menu : public Scene
 	Pointer* lPointer;
 
 	Player* lPlayer;
-	
+
 
 public:
 
@@ -21,4 +21,3 @@ public:
 	void SetName() override;
 	void Load();
 };
-
