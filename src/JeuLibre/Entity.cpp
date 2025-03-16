@@ -41,7 +41,7 @@ void Entity::Initialize(const char* path)
 	mHitboxWidth = mDefaultWidth;
 	mHitboxHeight = mDefaultHeight;
 
-	mSprite.setOrigin(0.5f * mWidth, 0.5f * mHeight);
+	mSprite.setOrigin(0.5f, 0.5f);
 
 	mTarget.isSet = false;
 }
@@ -261,6 +261,14 @@ void Entity::DrawHitbox() {
 		aabbCollider->ySize = aabbCollider->yMax - aabbCollider->yMin;
 
 	}
+}
+
+void Entity::SetOrigin(float x, float y)
+{
+	float originX = x * mDefaultWidth;
+
+	float originY = y * mDefaultHeight;
+	mSprite.setOrigin(originX, originY);
 }
 
 void Entity::SetHitboxSize(float width, float height)

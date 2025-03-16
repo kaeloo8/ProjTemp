@@ -5,15 +5,15 @@
 void S0Menu::OnInitialize() {
 	Win = GameManager::Get()->Window;
 	lPointer = CreateEntity<Pointer>("Pointer");
-	lPointer->SetScale(1, 1);
+	lPointer->SetScale((Win->getSize().x * 0.1) / 100, (Win->getSize().x * 0.1) / 100);
+	lPointer->SetOrigin(1.f, 1.f);
 	lPointer->Layout = 1;
-	lPlayer = CreateEntity<Player>("Pointer");
-	lPlayer->SetScale(1, 1);
+
+	lPlayer = CreateEntity<Player>("croix");
 	lPlayer->SetPosition((GetWindowWidth() / 2)-lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
 	lPlayer->AddAABBHitbox();
 	lPlayer->SetHitboxSize(25, 20);
 	lPlayer->Layout = 1;
-	lPlayer->SetScale((Win->getSize().x * 0.1)/100, (Win->getSize().x * 0.1) / 100);
 }
 void S0Menu::OnEvent(const sf::Event& event) {
 

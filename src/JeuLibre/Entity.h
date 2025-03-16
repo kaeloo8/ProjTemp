@@ -70,6 +70,7 @@ public:
     void SetHitboxSize(float _radius);
     void UpdateCollider();
     void DrawHitbox();
+    void SetOrigin(float x, float y);
     float GetRadius() const { return mShape.getRadius(); }
 
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
