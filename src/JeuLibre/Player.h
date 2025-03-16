@@ -3,10 +3,14 @@
 #include "Entity.h"
 #include "Animator.h"
 
+enum class PlayerState { Idle, Walking };
+
 class Player : public Entity
 {
 private:
-    Animator* mAnimator; // Pointeur vers l'Animator (null si aucune anim active)
+    Animator* mWalkAnimator; 
+    Animator* mIdleAnimator; 
+    PlayerState mState;
 
 public:
     Player(); 
@@ -14,6 +18,7 @@ public:
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
+    void SetState(PlayerState state);
 
     void SetImage(const char* path) override;
 };

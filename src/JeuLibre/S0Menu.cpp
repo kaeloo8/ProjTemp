@@ -10,7 +10,7 @@ void S0Menu::OnInitialize() {
 	lPointer->SetOrigin(0, 0);
 	lPointer->Layout = 10;
 
-	lPlayer = CreateEntity<Player>("base_walk_strip8");
+	lPlayer = CreateEntity<Player>("base_idle_strip9");
     lPlayer->SetScale(3,3);
     lPlayer->SetOrigin(0.5f, 0.5f);
 	lPlayer->SetPosition((GetWindowWidth() / 2)-lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
