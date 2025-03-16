@@ -31,31 +31,42 @@ void S0Menu::OnUpdate() {
 
     float velocityX = 0.f;
     float velocityY = 0.f;
-    bool moving = false;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         velocityY -= 5.f;
-        moving = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         velocityY += 5.f;
-        moving = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         velocityX -= 5.f;
         lPlayer->GetSprite()->setScale(-std::abs(lPlayer->GetSprite()->getScale().x), lPlayer->GetSprite()->getScale().y);
-        moving = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         velocityX += 5.f;
         lPlayer->GetSprite()->setScale(std::abs(lPlayer->GetSprite()->getScale().x), lPlayer->GetSprite()->getScale().y);
-        moving = true;
     }
+    if (velocityX != 0 || velocityY != 0)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        {
+            lPlayer->mSpeed = 300;
+            lPlayer->isSprinting = true;
+        }
+        else
+        {
+            lPlayer->isMoving = true;
+            lPlayer->isSprinting = false;
+            lPlayer->mSpeed = 150;
+        }
 
-    if (!moving) {
-        // Si le joueur n'est pas en mouvement, on peut réinitialiser son animation
-        lPlayer->SetRotation(0);
     }
+    else { 
+        lPlayer->isMoving = false;
+    };
+
+    
+	std::cout << lPlayer->mSpeed << std::endl;
 
     float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
     if (magnitude > 10.f) {
@@ -64,5 +75,5 @@ void S0Menu::OnUpdate() {
     }
 
     // On déplace le joueur
-    lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX, lPlayer->GetPosition().y + velocityY, 200);
+    lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX, lPlayer->GetPosition().y + velocityY, lPlayer->mSpeed);
 }

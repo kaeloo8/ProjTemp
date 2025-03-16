@@ -36,7 +36,7 @@ public:
     float mY;
     float dirX;
     float dirY;
-
+	float mSpeed;
     float mWidth;
     float mHeight;
     float mDefaultWidth;
@@ -111,7 +111,6 @@ private:
     void Initialize(float radius, const sf::Color& color);
     void Initialize(const char* path);
 
-    float mSpeed;
     friend class GameManager;
     friend Scene;
 };

@@ -3,16 +3,19 @@
 #include "Entity.h"
 #include "Animator.h"
 
-enum class PlayerState { Idle, Walking };
+enum class PlayerState { Idle, Walking, Sprinting };
 
 class Player : public Entity
 {
 private:
     Animator* mWalkAnimator; 
     Animator* mIdleAnimator; 
+    Animator* mSprintAnimator;
     PlayerState mState;
 
 public:
+    bool isMoving;
+    bool isSprinting;
     Player(); 
     ~Player(); 
 

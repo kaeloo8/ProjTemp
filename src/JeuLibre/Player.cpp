@@ -3,7 +3,7 @@
 #include "GameManager.h"
 
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mState(PlayerState::Idle)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(PlayerState::Idle)
 {
     // Création de l'animation de marche
     mWalkAnimator = new Animator(
@@ -22,18 +22,22 @@ Player::Player()
         9,    // nombre de frames idle
         0.2f  // durée par frame idle
     );
+
+    // Création de l'animation sprint
+    mSprintAnimator = new Animator(
+        &mSprite,
+        *GameManager::Get()->GetAssetManager(),
+        std::string("base_run_strip8"), // nom de la spritesheet sprint
+        8,    // nombre de frames sprint
+        0.08f // durée par frame sprint
+    );
 }
 
 Player::~Player()
 {
-    if (mWalkAnimator) {
-        delete mWalkAnimator;
-        mWalkAnimator = nullptr;
-    }
-    if (mIdleAnimator) {
-        delete mIdleAnimator;
-        mIdleAnimator = nullptr;
-    }
+    delete mWalkAnimator;
+    delete mIdleAnimator;
+    delete mSprintAnimator;
 }
 
 void Player::SetState(PlayerState state)
@@ -50,28 +54,41 @@ void Player::SetState(PlayerState state)
             SetImage("base_walk_strip8");
             if (mWalkAnimator) mWalkAnimator->Reset();
         }
+        else if (mState == PlayerState::Sprinting) {
+            SetImage("base_run_strip8");
+            if (mSprintAnimator) mSprintAnimator->Reset();
+        }
     }
 }
 
-
 void Player::SetImage(const char* path)
 {
-	mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
+    mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }
 
 void Player::OnUpdate()
 {
     float dt = GetDeltaTime();
-
-    if (mDirection.x != 0.f || mDirection.y != 0.f)
-        SetState(PlayerState::Walking);
-    else
+    
+    if (isMoving) {
+        if (isSprinting)
+        {
+            SetState(PlayerState::Sprinting);
+        }
+        else {
+			SetState(PlayerState::Walking);
+        }
+    }
+    else {
         SetState(PlayerState::Idle);
+    }
 
     if (mState == PlayerState::Walking && mWalkAnimator)
         mWalkAnimator->Update(dt);
     else if (mState == PlayerState::Idle && mIdleAnimator)
         mIdleAnimator->Update(dt);
+    else if (mState == PlayerState::Sprinting && mSprintAnimator)
+        mSprintAnimator->Update(dt);
 }
 
 void Player::OnCollision(Entity* pCollidedWith)
