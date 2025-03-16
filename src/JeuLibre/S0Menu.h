@@ -1,15 +1,17 @@
 #pragma once
 #include "Scene.h"
 #include "Player.h"
+#include "Pointer.h"
 
 class S0Menu : public Scene
 {
 	std::vector<Entity*> entitylist;
 
 	sf::RenderWindow* Win;
-
+	Pointer* lPointer;
 
 	Player* lPlayer;
+	
 
 public:
 

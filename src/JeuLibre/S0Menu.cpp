@@ -4,6 +4,9 @@
 
 void S0Menu::OnInitialize() {
 	Win = GameManager::Get()->Window;
+	lPointer = CreateEntity<Pointer>("Pointer");
+	lPointer->SetScale(1, 1);
+	lPointer->Layout = 1;
 	lPlayer = CreateEntity<Player>("Pointer");
 	lPlayer->SetScale(1, 1);
 	lPlayer->SetPosition((GetWindowWidth() / 2)-lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
@@ -14,13 +17,14 @@ void S0Menu::OnInitialize() {
 }
 void S0Menu::OnEvent(const sf::Event& event) {
 
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
 		
 	}
-
 }
+
 void S0Menu::OnUpdate() {
+	sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
+	lPointer->SetPosition(mousePos.x, mousePos.y);
 
 	float velocityX = 0.f;
 	float velocityY = 0.f;
