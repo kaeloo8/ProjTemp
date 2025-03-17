@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Animator.h"
+#include "Hair.h"
 
 enum class PlayerState {
     Idle,
@@ -14,6 +15,7 @@ enum class PlayerState {
 class Player : public Entity
 {
 private:
+	Hair* PlayerHair;
     Animator* mWalkAnimator; 
     Animator* mIdleAnimator; 
     Animator* mSprintAnimator;
@@ -25,6 +27,8 @@ public:
     bool isSprinting;
 	bool isDashing;
 
+	const char* PlayerHaircut = "shorthair_idle_strip9";
+
     Player(); 
     ~Player(); 
 
@@ -34,9 +38,10 @@ public:
     float dashCooldown = 0.f;  
     const float maxDashCooldown = 0.5f;  
 
+    void FaceRight();
+	void FaceLeft();
 
     void OnUpdate() override;
-    void HandleInput(float dt);
     void OnCollision(Entity* pCollidedWith) override;
     void SetState(PlayerState state);
 

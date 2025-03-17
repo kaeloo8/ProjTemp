@@ -73,6 +73,7 @@ public:
     void SetOrigin(float x, float y);
     float GetRadius() const { return mShape.getRadius(); }
 
+    sf::Vector2f GetScale();
     sf::Vector2f GetPosition(float ratioX = 0.5f, float ratioY = 0.5f) const;
     sf::Shape* GetShape() { return &mShape; }
     sf::Sprite* GetSprite() { return &mSprite; }

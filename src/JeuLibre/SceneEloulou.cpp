@@ -71,11 +71,11 @@ void SceneEloulou::OnUpdate() {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         velocityX -= 5.f;
-        lPlayer->GetSprite()->setScale(-std::abs(lPlayer->GetSprite()->getScale().x), lPlayer->GetSprite()->getScale().y);
+        lPlayer->FaceLeft();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         velocityX += 5.f;
-        lPlayer->GetSprite()->setScale(std::abs(lPlayer->GetSprite()->getScale().x), lPlayer->GetSprite()->getScale().y);
+		lPlayer->FaceRight();
     }
 
     // Normalisation du mouvement pour éviter des valeurs trop grandes

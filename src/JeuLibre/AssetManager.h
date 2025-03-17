@@ -9,6 +9,7 @@ namespace fs = std::filesystem;
 
 class AssetManager {
 public:
+	std::vector< std::string> DosierListe ;
     std::vector<std::pair<std::string, sf::Texture>> images;
     sf::RenderWindow* Win;
 

@@ -3,8 +3,12 @@
 #include "GameManager.h"
 
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(PlayerState::Idle)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle)
 {
+    PlayerHair = CreateEntity<Hair>(PlayerHaircut);
+    PlayerHair->SetScale(3, 3);
+    PlayerHair->SetOrigin(0.5, 0.5);
+    PlayerHair->Layout = 10;
     // Création de l'animation de marche
     mWalkAnimator = new Animator(
         &mSprite,
@@ -73,23 +77,40 @@ void Player::SetState(PlayerState state)
     }
 }
 
+void Player::FaceLeft()
+{
+    GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
+    PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
+}
+
+void Player::FaceRight()
+{
+    GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
+    PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
+}
+
 void Player::OnUpdate()
 {
     float dt = GetDeltaTime();
+	PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
 
     // Gérer les états en fonction de l'action du joueur
     if (isDashing) {
+        PlayerHair->SetState(HairState::Dashing);
         SetState(PlayerState::Dashing);  // Si on est en train de dasher, passer à l'état Dashing
     }
     else if (isMoving) {
         if (isSprinting) {
+            PlayerHair->SetState(HairState::Sprinting);
             SetState(PlayerState::Sprinting);  // Si on court, passer à l'état Sprinting
         }
         else {
+			PlayerHair->SetState(HairState::Walking);
             SetState(PlayerState::Walking);  // Si on marche, passer à l'état Walking
         }
     }
     else {
+        PlayerHair->SetState(HairState::Idle);
         SetState(PlayerState::Idle);  // Si on ne bouge pas, passer à l'état Idle
     }
 
