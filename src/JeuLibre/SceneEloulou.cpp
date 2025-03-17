@@ -45,6 +45,24 @@ void SceneEloulou::OnUpdate() {
     float velocityX = 0.f;
     float velocityY = 0.f;
 
+    // Si on est en train de dasher, on bloque tout mouvement supplémentaire
+    if (lPlayer->isDashing) {
+        velocityX = lPlayer->dashVelocityX;
+        velocityY = lPlayer->dashVelocityY;
+        lPlayer->dashTimer -= 1.f / 60.f;
+
+        // Arrêter le dash lorsque le timer est expiré
+        if (lPlayer->dashTimer <= 0) {
+            lPlayer->isDashing = false;
+        }
+        // Si le dash est en cours, on ne fait pas d'autres mouvements
+        lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX * lPlayer->mSpeed,
+            lPlayer->GetPosition().y + velocityY * lPlayer->mSpeed,
+            500);
+        return; // Retourner ici empêche le mouvement normal en dehors du dash
+    }
+
+    // Sinon, on continue avec le mouvement normal
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         velocityY -= 5.f;
     }
@@ -59,34 +77,52 @@ void SceneEloulou::OnUpdate() {
         velocityX += 5.f;
         lPlayer->GetSprite()->setScale(std::abs(lPlayer->GetSprite()->getScale().x), lPlayer->GetSprite()->getScale().y);
     }
-    if (velocityX != 0 || velocityY != 0)
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        {
+
+    // Normalisation du mouvement pour éviter des valeurs trop grandes
+    float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
+    if (magnitude > 0) {
+        velocityX /= magnitude;
+        velocityY /= magnitude;
+    }
+
+    // Stocke la dernière direction uniquement si on bouge
+    if (velocityX != 0 || velocityY != 0) {
+        lPlayer->lastVelocityX = velocityX;
+        lPlayer->lastVelocityY = velocityY;
+
+        // Gestion du sprint
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
             lPlayer->mSpeed = 300;
             lPlayer->isSprinting = true;
         }
-        else
-        {
-            lPlayer->isMoving = true;
-            lPlayer->isSprinting = false;
+        else {
             lPlayer->mSpeed = 150;
+            lPlayer->isSprinting = false;
         }
-
+        lPlayer->isMoving = true;
     }
     else {
         lPlayer->isMoving = false;
-    };
-
-
-    //std::cout << lPlayer->mSpeed << std::endl;
-
-    float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
-    if (magnitude > 10.f) {
-        velocityX = (velocityX / magnitude) * 10.f;
-        velocityY = (velocityY / magnitude) * 10.f;
     }
 
-    // On déplace le joueur
-    lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX, lPlayer->GetPosition().y + velocityY, lPlayer->mSpeed);
+    // Réduction du cooldown au fil du temps
+    if (lPlayer->dashCooldown > 0) {
+        lPlayer->dashCooldown -= 1.f / 60.f; // Supposons 60 FPS
+    }
+
+    // DASH LOGIC avec cooldown
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !lPlayer->isDashing && lPlayer->dashCooldown <= 0) {
+        lPlayer->isDashing = true;
+        lPlayer->dashTimer = 0.5f;  // Durée du dash
+        lPlayer->dashVelocityX = lPlayer->lastVelocityX * 30;  // Boost du dash
+        lPlayer->dashVelocityY = lPlayer->lastVelocityY * 30;
+        lPlayer->dashCooldown = lPlayer->maxDashCooldown; // Active le cooldown
+    }
+
+    // Déplacement normal si pas de dash
+    if (!lPlayer->isDashing) {
+        lPlayer->GoToPosition(lPlayer->GetPosition().x + velocityX * lPlayer->mSpeed,
+            lPlayer->GetPosition().y + velocityY * lPlayer->mSpeed,
+            lPlayer->mSpeed);
+    }
 }
