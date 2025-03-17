@@ -10,7 +10,7 @@ void SceneEloulou::OnInitialize() {
     lPointer = CreateEntity<Pointer>("Pointer");
     lPointer->SetScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100);
     lPointer->SetOrigin(0, 0);
-    lPointer->Layout = 10;
+    lPointer->Layout = 200;
 
     lPlayer = CreateEntity<Player>("base_idle_strip9");
     lPlayer->SetScale(3, 3);
