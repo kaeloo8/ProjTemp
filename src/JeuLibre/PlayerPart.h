@@ -3,21 +3,21 @@
 #include "Entity.h"
 #include "Animator.h"
 
-enum class HairState {
+enum class PlayerPartState {
     Idle,
     Walking,
     Sprinting,
     Dashing
 };
 
-class Hair : public Entity
+class PlayerPart : public Entity
 {
 private:
     Animator* mWalkAnimator;
     Animator* mIdleAnimator;
     Animator* mSprintAnimator;
     Animator* mDashAnimator;
-    HairState mState;
+    PlayerPartState mState;
 
     std::string HairWalk;
     std::string HairRun;
@@ -31,8 +31,8 @@ public:
     bool isSprinting;
     bool isDashing;
 
-    Hair();
-    ~Hair();
+    PlayerPart();
+    ~PlayerPart();
 
     float lastVelocityX, lastVelocityY;
     float dashVelocityX, dashVelocityY;
@@ -42,7 +42,7 @@ public:
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
-    void SetState(HairState state);
+    void SetState(PlayerPartState state);
 
     void SetImage(const char* path) override;
     void SetImage(std::string path);

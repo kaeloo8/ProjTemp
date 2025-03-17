@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Hair.h"
+#include "PlayerPart.h"
 #include "GameManager.h"
 
-Hair::Hair()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(HairState::Idle)
+PlayerPart::PlayerPart()
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(PlayerPartState::Idle)
 {
 	Haircut = "bowlhair";
     HairWalk = std::string(Haircut) + "_walk_strip8";
@@ -48,69 +48,69 @@ Hair::Hair()
 
 }
 
-Hair::~Hair()
+PlayerPart::~PlayerPart()
 {
     delete mWalkAnimator;
     delete mIdleAnimator;
     delete mSprintAnimator;
 	delete mDashAnimator;
 }
-void Hair::SetState(HairState state)
+void PlayerPart::SetState(PlayerPartState state)
 {
     if (mState != state)
     {
         mState = state;
 
-        if (mState == HairState::Idle) {
+        if (mState == PlayerPartState::Idle) {
             SetImage(HairIdle);
             if (mIdleAnimator) mIdleAnimator->Reset();
         }
-        else if (mState == HairState::Walking) {
+        else if (mState == PlayerPartState::Walking) {
             SetImage(HairWalk);
             if (mWalkAnimator) mWalkAnimator->Reset();
         }
-        else if (mState == HairState::Sprinting) {
+        else if (mState == PlayerPartState::Sprinting) {
             SetImage(HairRun);
             if (mSprintAnimator) mSprintAnimator->Reset();
         }
-        else if (mState == HairState::Dashing) {
+        else if (mState == PlayerPartState::Dashing) {
             SetImage(HairDash);
             if (mDashAnimator) mDashAnimator->Reset();
         }
     }
 }
 
-void Hair::OnUpdate()
+void PlayerPart::OnUpdate()
 {
     float dt = GetDeltaTime();
 
     // Mise à jour de l'animation en fonction de l'état actuel
-    if (mState == HairState::Walking && mWalkAnimator) {
+    if (mState == PlayerPartState::Walking && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
-    else if (mState == HairState::Idle && mIdleAnimator) {
+    else if (mState == PlayerPartState::Idle && mIdleAnimator) {
         mIdleAnimator->Update(dt);
     }
-    else if (mState == HairState::Sprinting && mSprintAnimator) {
+    else if (mState == PlayerPartState::Sprinting && mSprintAnimator) {
         mSprintAnimator->Update(dt);
     }
-    else if (mState == HairState::Dashing && mDashAnimator) {
+    else if (mState == PlayerPartState::Dashing && mDashAnimator) {
         mDashAnimator->Update(dt);  // Mise à jour de l'animation de dash
     }
 }
 
 
-void Hair::SetImage(const char* path)
+void PlayerPart::SetImage(const char* path)
 {
     mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }
 
-void Hair::SetImage(std::string path)
+void PlayerPart::SetImage(std::string path)
 {
     mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }
 
-void Hair::OnCollision(Entity* pCollidedWith)
+void PlayerPart::OnCollision(Entity* pCollidedWith)
 {
     // Gestion des collisions...
 }

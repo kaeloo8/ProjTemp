@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 #include "Animator.h"
-#include "Hair.h"
+#include "PlayerPart.h"
 
 enum class PlayerState {
     Idle,
@@ -15,14 +15,15 @@ enum class PlayerState {
 class Player : public Entity
 {
 private:
-	Hair* PlayerHair;
+    PlayerPart* PlayerHair;
+    PlayerPart* Hand;
+
     Animator* mWalkAnimator; 
     Animator* mIdleAnimator; 
     Animator* mSprintAnimator;
     Animator* mDashAnimator;
     PlayerState mState;
 
-    std::atomic<bool> isAnimationThreadRunning;  // Variable atomique pour gérer le thread d'animation
     void OnAnimationUpdate();
 
 public:

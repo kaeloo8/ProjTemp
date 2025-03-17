@@ -2,15 +2,11 @@
 #include "Player.h"
 #include "GameManager.h"
 
-void Player::OnAnimationUpdate()
-{
-}
-
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle), isAnimationThreadRunning(false)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle)
 {
     // Création de l'entité PlayerHair (cheveux du joueur)
-    PlayerHair = CreateEntity<Hair>(PlayerHaircut);
+    PlayerHair = CreateEntity<PlayerPart>(PlayerHaircut);
     PlayerHair->SetScale(3, 3);
     PlayerHair->SetOrigin(0.5, 0.5);
     PlayerHair->Layout = 10;
@@ -47,11 +43,6 @@ Player::Player()
         10,    // nombre de frames roll
         0.1f  // durée par frame roll
     );
-
-    // Démarrer le thread d'animation
-    isAnimationThreadRunning = true;
-    std::thread animationThread(&Player::OnAnimationUpdate, this);
-    animationThread.detach();  // Détacher le thread pour qu'il s'exécute indépendamment
 }
 
 Player::~Player()
@@ -103,12 +94,12 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
-    float dt = GetDeltaTime();
     PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
 
     float velocityX = 0.f;
     float velocityY = 0.f;
 
+	OnAnimationUpdate();
     // Gestion du dash
     if (isDashing) {
         velocityX = dashVelocityX;
@@ -186,23 +177,28 @@ void Player::OnUpdate()
                       mSpeed);
     }
 
+}
+
+void Player::OnAnimationUpdate()
+{
+    float dt = GetDeltaTime();
     // Gestion des états (Idle, Walking, Sprinting, Dashing)
     if (isDashing) {
-        PlayerHair->SetState(HairState::Dashing);
+        PlayerHair->SetState(PlayerPartState::Dashing);
         SetState(PlayerState::Dashing);
     }
     else if (isMoving) {
         if (isSprinting) {
-            PlayerHair->SetState(HairState::Sprinting);
+            PlayerHair->SetState(PlayerPartState::Sprinting);
             SetState(PlayerState::Sprinting);
         }
         else {
-            PlayerHair->SetState(HairState::Walking);
+            PlayerHair->SetState(PlayerPartState::Walking);
             SetState(PlayerState::Walking);
         }
     }
     else {
-        PlayerHair->SetState(HairState::Idle);
+        PlayerHair->SetState(PlayerPartState::Idle);
         SetState(PlayerState::Idle);
     }
 

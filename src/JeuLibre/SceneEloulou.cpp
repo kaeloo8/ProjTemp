@@ -26,6 +26,7 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
 }
+
 void SceneEloulou::OnEvent(const sf::Event& event) {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
