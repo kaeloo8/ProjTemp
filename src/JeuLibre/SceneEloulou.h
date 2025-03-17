@@ -11,7 +11,7 @@ class SceneEloulou : public Scene
 	Pointer* lPointer;
 
 	Player* lPlayer;
-
+	Entity* Fond;
 
 public:
 

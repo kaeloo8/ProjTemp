@@ -22,10 +22,15 @@ private:
     Animator* mDashAnimator;
     PlayerState mState;
 
+    std::atomic<bool> isAnimationThreadRunning;  // Variable atomique pour gérer le thread d'animation
+    void OnAnimationUpdate();
+
 public:
     bool isMoving;
     bool isSprinting;
 	bool isDashing;
+
+
 
 	const char* PlayerHaircut = "shorthair_idle_strip9";
 

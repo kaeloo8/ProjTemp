@@ -2,14 +2,20 @@
 #include "Player.h"
 #include "GameManager.h"
 
-Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle)
+void Player::OnAnimationUpdate()
 {
+}
+
+Player::Player()
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle), isAnimationThreadRunning(false)
+{
+    // Création de l'entité PlayerHair (cheveux du joueur)
     PlayerHair = CreateEntity<Hair>(PlayerHaircut);
     PlayerHair->SetScale(3, 3);
     PlayerHair->SetOrigin(0.5, 0.5);
     PlayerHair->Layout = 10;
-    // Création de l'animation de marche
+
+    // Création des animations de base
     mWalkAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
@@ -18,32 +24,34 @@ Player::Player()
         0.1f  // durée par frame walk
     );
 
-    // Création de l'animation idle
     mIdleAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
-        std::string("base_idle_strip9"),  // nom de la spritesheet idle
+        std::string("base_idle_strip9"),
         9,    // nombre de frames idle
         0.2f  // durée par frame idle
     );
 
-    // Création de l'animation sprint
     mSprintAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
-        std::string("base_run_strip8"), // nom de la spritesheet sprint
+        std::string("base_run_strip8"),
         8,    // nombre de frames sprint
         0.08f // durée par frame sprint
     );
-    // Création de l'animation de dash
+
     mDashAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
-        std::string("base_roll_strip10"),  // nom de la spritesheet de roll/dash
+        std::string("base_roll_strip10"),
         10,    // nombre de frames roll
         0.1f  // durée par frame roll
     );
 
+    // Démarrer le thread d'animation
+    isAnimationThreadRunning = true;
+    std::thread animationThread(&Player::OnAnimationUpdate, this);
+    animationThread.detach();  // Détacher le thread pour qu'il s'exécute indépendamment
 }
 
 Player::~Player()
@@ -52,12 +60,14 @@ Player::~Player()
     delete mIdleAnimator;
     delete mSprintAnimator;
 }
+
 void Player::SetState(PlayerState state)
 {
     if (mState != state)
     {
         mState = state;
 
+        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
         if (mState == PlayerState::Idle) {
             SetImage("base_idle_strip9");
             if (mIdleAnimator) mIdleAnimator->Reset();
@@ -70,7 +80,7 @@ void Player::SetState(PlayerState state)
             SetImage("base_run_strip8");
             if (mSprintAnimator) mSprintAnimator->Reset();
         }
-        else if (mState == PlayerState::Dashing) {  
+        else if (mState == PlayerState::Dashing) {
             SetImage("base_roll_strip10");
             if (mDashAnimator) mDashAnimator->Reset();
         }
@@ -79,12 +89,14 @@ void Player::SetState(PlayerState state)
 
 void Player::FaceLeft()
 {
+    // Inverser l'orientation du sprite du joueur (gauche)
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
 }
 
 void Player::FaceRight()
 {
+    // Inverser l'orientation du sprite du joueur (droite)
     GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
 }
@@ -92,29 +104,109 @@ void Player::FaceRight()
 void Player::OnUpdate()
 {
     float dt = GetDeltaTime();
-	PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
+    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
 
-    // Gérer les états en fonction de l'action du joueur
+    float velocityX = 0.f;
+    float velocityY = 0.f;
+
+    // Gestion du dash
+    if (isDashing) {
+        velocityX = dashVelocityX;
+        velocityY = dashVelocityY;
+        dashTimer -= 1.f / 60.f;
+
+        if (dashTimer <= 0) {
+            isDashing = false;
+        }
+
+        GoToPosition(GetPosition().x + velocityX * mSpeed,
+                      GetPosition().y + velocityY * mSpeed,
+                      500);
+        return;
+    }
+
+    // Gestion des déplacements classiques
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        velocityY -= 5.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        velocityY += 5.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        velocityX -= 5.f;
+        FaceLeft();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        velocityX += 5.f;
+        FaceRight();
+    }
+
+    // Normalisation du mouvement
+    float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
+    if (magnitude > 0) {
+        velocityX /= magnitude;
+        velocityY /= magnitude;
+    }
+
+    if (velocityX != 0 || velocityY != 0) {
+        lastVelocityX = velocityX;
+        lastVelocityY = velocityY;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+            mSpeed = 300;
+            isSprinting = true;
+        }
+        else {
+            mSpeed = 150;
+            isSprinting = false;
+        }
+        isMoving = true;
+    }
+    else {
+        isMoving = false;
+    }
+
+    // Cooldown du dash
+    if (dashCooldown > 0) {
+        dashCooldown -= 1.f / 60.f; // 60 FPS supposés
+    }
+
+    // Logique du dash
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isDashing && dashCooldown <= 0) {
+        isDashing = true;
+        dashTimer = 0.5f;  // Durée du dash
+        dashVelocityX = lastVelocityX * 30;
+        dashVelocityY = lastVelocityY * 30;
+        dashCooldown = maxDashCooldown;
+    }
+
+    if (!isDashing) {
+        GoToPosition(GetPosition().x + velocityX * mSpeed,
+                      GetPosition().y + velocityY * mSpeed,
+                      mSpeed);
+    }
+
+    // Gestion des états (Idle, Walking, Sprinting, Dashing)
     if (isDashing) {
         PlayerHair->SetState(HairState::Dashing);
-        SetState(PlayerState::Dashing);  // Si on est en train de dasher, passer à l'état Dashing
+        SetState(PlayerState::Dashing);
     }
     else if (isMoving) {
         if (isSprinting) {
             PlayerHair->SetState(HairState::Sprinting);
-            SetState(PlayerState::Sprinting);  // Si on court, passer à l'état Sprinting
+            SetState(PlayerState::Sprinting);
         }
         else {
-			PlayerHair->SetState(HairState::Walking);
-            SetState(PlayerState::Walking);  // Si on marche, passer à l'état Walking
+            PlayerHair->SetState(HairState::Walking);
+            SetState(PlayerState::Walking);
         }
     }
     else {
         PlayerHair->SetState(HairState::Idle);
-        SetState(PlayerState::Idle);  // Si on ne bouge pas, passer à l'état Idle
+        SetState(PlayerState::Idle);
     }
 
-    // Mise à jour de l'animation en fonction de l'état actuel
+    // Mise à jour des animations selon l'état
     if (mState == PlayerState::Walking && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
@@ -125,10 +217,9 @@ void Player::OnUpdate()
         mSprintAnimator->Update(dt);
     }
     else if (mState == PlayerState::Dashing && mDashAnimator) {
-        mDashAnimator->Update(dt);  // Mise à jour de l'animation de dash
+        mDashAnimator->Update(dt);
     }
 }
-
 
 void Player::SetImage(const char* path)
 {

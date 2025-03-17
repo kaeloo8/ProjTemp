@@ -5,7 +5,7 @@
 Hair::Hair()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(HairState::Idle)
 {
-	Haircut = "shorthair";
+	Haircut = "bowlhair";
     HairWalk = std::string(Haircut) + "_walk_strip8";
     HairRun = std::string(Haircut) + "_run_strip8";
     HairDash = std::string(Haircut) + "_roll_strip10";

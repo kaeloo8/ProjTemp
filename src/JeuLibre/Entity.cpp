@@ -177,6 +177,8 @@ void Entity::SetScale(float scaleX, float scaleY)
 
 sf::Vector2f Entity::GetScale()
 {
+	float x = mWidth;
+	float y = mHeight;
 	sf::Vector2f scale = mSprite.getScale();
 	return scale;
 }
