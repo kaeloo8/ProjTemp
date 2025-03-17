@@ -47,6 +47,8 @@ public:
     void FaceRight();
 	void FaceLeft();
 
+    void ChangeHaircut(const char* haircut);
+
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
     void SetState(PlayerState state);

@@ -238,6 +238,11 @@ void Player::SetImage(const char* path)
     mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }
 
+void Player::ChangeHaircut(const char* haircut)
+{
+	PlayerHair->InitBodyPart(haircut);
+}
+
 void Player::OnCollision(Entity* pCollidedWith)
 {
     // Gestion des collisions...

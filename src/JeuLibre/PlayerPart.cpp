@@ -80,6 +80,8 @@ void PlayerPart::SetState(PlayerPartState state)
     }
 }
 
+
+
 void PlayerPart::InitBodyPart(const char* partName)
 {
     BodyPartName = partName;
