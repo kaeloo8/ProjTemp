@@ -25,7 +25,7 @@ private:
     std::string HairIdle;
 
 public:
-    const char* Haircut;
+    const char* BodyPartName;
 
     bool isMoving;
     bool isSprinting;
@@ -39,6 +39,8 @@ public:
     float dashTimer;
     float dashCooldown = 0.f;
     const float maxDashCooldown = 0.5f;
+
+    void InitBodyPart(const char* partName);
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

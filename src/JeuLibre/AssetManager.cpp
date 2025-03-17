@@ -17,6 +17,7 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
     DosierListe.push_back("../../../img/");
     DosierListe.push_back("../../../img/Player/");
 	DosierListe.push_back("../../../img/Hair/");
+    DosierListe.push_back("../../../img/Hand/");
     int sizedir = 0;
 
     progressBarBg.setSize(sf::Vector2f(Win->getSize().x / 2, Win->getSize().y / 15));

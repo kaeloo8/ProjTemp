@@ -5,11 +5,20 @@
 Player::Player()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle)
 {
-    // Création de l'entité PlayerHair (cheveux du joueur)
-    PlayerHair = CreateEntity<PlayerPart>(PlayerHaircut);
+    // INITIALISATION CHEVEUX 
+    PlayerHair = CreateEntity<PlayerPart>("croix");
+    PlayerHair->InitBodyPart("bowlhair");
     PlayerHair->SetScale(3, 3);
     PlayerHair->SetOrigin(0.5, 0.5);
     PlayerHair->Layout = 10;
+
+    // INITIALISATION MAIN
+    PlayerHand = CreateEntity<PlayerPart>("croix");
+    PlayerHand->InitBodyPart("tools");
+    PlayerHand->SetScale(3, 3);
+    PlayerHand->SetOrigin(0.5, 0.5);
+    PlayerHand->Layout = 11;
+
 
     // Création des animations de base
     mWalkAnimator = new Animator(
@@ -83,6 +92,7 @@ void Player::FaceLeft()
     // Inverser l'orientation du sprite du joueur (gauche)
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
+    PlayerHand->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
 }
 
 void Player::FaceRight()
@@ -90,11 +100,13 @@ void Player::FaceRight()
     // Inverser l'orientation du sprite du joueur (droite)
     GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
+    PlayerHand->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
 }
 
 void Player::OnUpdate()
 {
     PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
+    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
 
     float velocityX = 0.f;
     float velocityY = 0.f;
@@ -185,20 +197,24 @@ void Player::OnAnimationUpdate()
     // Gestion des états (Idle, Walking, Sprinting, Dashing)
     if (isDashing) {
         PlayerHair->SetState(PlayerPartState::Dashing);
+        PlayerHand->SetState(PlayerPartState::Dashing);
         SetState(PlayerState::Dashing);
     }
     else if (isMoving) {
         if (isSprinting) {
             PlayerHair->SetState(PlayerPartState::Sprinting);
+            PlayerHand->SetState(PlayerPartState::Sprinting);
             SetState(PlayerState::Sprinting);
         }
         else {
             PlayerHair->SetState(PlayerPartState::Walking);
+            PlayerHand->SetState(PlayerPartState::Walking);
             SetState(PlayerState::Walking);
         }
     }
     else {
         PlayerHair->SetState(PlayerPartState::Idle);
+        PlayerHand->SetState(PlayerPartState::Idle);
         SetState(PlayerState::Idle);
     }
 

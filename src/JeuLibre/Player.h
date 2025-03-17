@@ -16,7 +16,7 @@ class Player : public Entity
 {
 private:
     PlayerPart* PlayerHair;
-    PlayerPart* Hand;
+    PlayerPart* PlayerHand;
 
     Animator* mWalkAnimator; 
     Animator* mIdleAnimator; 
