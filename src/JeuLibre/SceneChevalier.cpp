@@ -6,7 +6,6 @@
 
 void SceneChevalier::OnInitialize()
 {
-
     cam = CreateEntity<CameraSys>("0");
     cam->Layout = -1;
 
@@ -24,15 +23,13 @@ void SceneChevalier::OnInitialize()
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 2;
 
+    // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
+    cam->SetTarget(lPlayer);
+
     map = CreateEntity<TileMap>("0");
     map->Layout = -1;
     map->create("mapVille");
 }
-
-
-
-
-
 
 void SceneChevalier::OnEvent(const sf::Event& event)
 {
