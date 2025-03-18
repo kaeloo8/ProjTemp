@@ -45,6 +45,7 @@ public:
     const float maxDashCooldown = 0.5f;
 
     void InitBodyPart(const char* partName);
+    void Clearanimation();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

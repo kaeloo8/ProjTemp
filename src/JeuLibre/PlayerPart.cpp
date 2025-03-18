@@ -2,72 +2,16 @@
 #include "PlayerPart.h"
 #include "GameManager.h"
 
-void CreateAllAnimation() 
-{
-
-}
-
 PlayerPart::PlayerPart()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mState(PlayerPartState::Idle)
 {
 	BodyPartName = "bowlhair";
-    HairWalk = std::string(BodyPartName) + "_walk_strip8";
-    HairRun = std::string(BodyPartName) + "_run_strip8";
-    HairDash = std::string(BodyPartName) + "_roll_strip10";
-    HairIdle = std::string(BodyPartName) + "_idle_strip9";
-    PartAttack = std::string(BodyPartName) + "_attack_strip10";
-
-    // Création de l'animation de marche
-    mWalkAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string(HairWalk),
-        8,    // nombre de frames walk
-        0.1f  // durée par frame walk
-    );
-
-    // Création de l'animation idle
-    mIdleAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string(HairIdle),  // nom de la spritesheet idle
-        9,    // nombre de frames idle
-        0.2f  // durée par frame idle
-    );
-
-    // Création de l'animation sprint
-    mSprintAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string(HairRun), // nom de la spritesheet sprint
-        8,    // nombre de frames sprint
-        0.08f // durée par frame sprint
-    );
-    // Création de l'animation de dash
-    mDashAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string(HairDash),  // nom de la spritesheet de roll/dash
-        10,    // nombre de frames roll
-        0.1f  // durée par frame roll
-    );
-
-    mAttackAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string(PartAttack),  // nom de la spritesheet de roll/dash
-        10,    // nombre de frames roll
-        0.07f  // durée par frame roll
-    );
+    InitBodyPart(BodyPartName);
 }
 
 PlayerPart::~PlayerPart()
 {
-    delete mWalkAnimator;
-    delete mIdleAnimator;
-    delete mSprintAnimator;
-	delete mDashAnimator;
-    delete mAttackAnimator;
+    Clearanimation();
 }
 void PlayerPart::SetState(PlayerPartState state)
 {
@@ -104,19 +48,16 @@ void PlayerPart::InitBodyPart(const char* partName)
 {
     BodyPartName = partName;
 
+    if (mIdleAnimator != nullptr)
+    {
+        Clearanimation();
+    }
     // Met à jour les chemins des spritesheets
     HairWalk = std::string(BodyPartName) + "_walk_strip8";
     HairRun = std::string(BodyPartName) + "_run_strip8";
     HairDash = std::string(BodyPartName) + "_roll_strip10";
     HairIdle = std::string(BodyPartName) + "_idle_strip9";
     PartAttack = std::string(BodyPartName) + "_attack_strip10";
-
-    // Supprime les anciens animateurs
-    delete mWalkAnimator;
-    delete mIdleAnimator;
-    delete mSprintAnimator;
-    delete mDashAnimator;
-    delete mAttackAnimator;
 
     // Création des nouveaux animateurs avec les chemins mis à jour
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), HairWalk, 8, 0.1f);
@@ -127,6 +68,16 @@ void PlayerPart::InitBodyPart(const char* partName)
 
     // Charge la texture par défaut (idle)
     SetImage(HairIdle);
+}
+
+void PlayerPart::Clearanimation()
+{
+    // Supprime les anciens animateurs
+    delete mWalkAnimator;
+    delete mIdleAnimator;
+    delete mSprintAnimator;
+    delete mDashAnimator;
+    delete mAttackAnimator;
 }
 
 
@@ -145,10 +96,10 @@ void PlayerPart::OnUpdate()
         mSprintAnimator->Update(dt);
     }
     else if (mState == PlayerPartState::Dashing && mDashAnimator) {
-        mDashAnimator->Update(dt);  // Mise à jour de l'animation de dash
+        mDashAnimator->Update(dt);  
     }
     else if (mState == PlayerPartState::Attacking && mAttackAnimator) {
-        mAttackAnimator->Update(dt);  // Mise à jour de l'animation de dash
+        mAttackAnimator->Update(dt);
     }
 }
 
