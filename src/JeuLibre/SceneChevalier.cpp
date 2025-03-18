@@ -27,7 +27,6 @@ void SceneChevalier::OnInitialize()
     cam->SetTarget(lPlayer);
 
     map = CreateEntity<TileMap>("0");
-    map->Layout = -1;
     map->create("mapVille");
 }
 
@@ -42,6 +41,23 @@ void SceneChevalier::OnEvent(const sf::Event& event)
     else {
         KeyEscPressed = false;
     }
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+    {
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(*Win); // Récupérer position pixel
+        sf::Vector2f worldPos = Win->mapPixelToCoords(pixelPos); // Convertir en coordonnées monde
+
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        if (!KeyEscPressed) {
+            std::cout << "Retour Menu" << std::endl;
+            GameManager::Get()->LaunchScene<S0Menu>();
+        }
+    }
+    else {
+        KeyEscPressed = false;
+    }
+
 }
 
 void SceneChevalier::OnUpdate()

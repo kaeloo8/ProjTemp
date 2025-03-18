@@ -114,14 +114,6 @@ void GameManager::Draw() {
 
 	TrieEntity.clear();
 
-	if (tileMap) {
-		for (auto& ligne : tileMap->lSprite) {
-			for (auto& sprite : ligne) {
-				Window->draw(sprite);
-			}
-		}
-	}
-
 	for (Entity* entity : mEntities) {
 		if (entity && entity->Layout >= 0 && entity->SceneName == mpScene->SceneName) {
 			if (entity->Layout >= TrieEntity.size()) {

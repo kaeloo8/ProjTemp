@@ -1,15 +1,13 @@
 #include "pch.h"
 #include "TileMap.h"
+#include "GameManager.h"
 #include <fstream>
+#include <vector>
+#include <iostream>
 
-
-void TileMap::OnUpdate() {
-}
-
-
-void TileMap::create(std::string path) {
-
-    float size = GameManager::Get()->Window->getSize().x / 28;
+void TileMap::create(const std::string& path)
+{
+    float tileSize = GameManager::Get()->Window->getSize().x / 15.0f;
     float posX = 0;
     float posY = 0;
 
@@ -19,34 +17,29 @@ void TileMap::create(std::string path) {
     std::cout << "Lecture de : " << fileName << std::endl;
 
     if (!file.is_open()) {
-        std::cout << "Erreur : Impossible d'ouvrir le fichier :" << fileName << std::endl;
+        std::cout << "Erreur : Impossible d'ouvrir le fichier : " << fileName << std::endl;
+        return;
     }
 
-    else {
+    std::string line;
+    while (std::getline(file, line)) {
+        std::vector<Tile> lineTiles;
+        for (char c : line) {
+            std::string textureId(1, c);
 
-        std::string line;
-        while (std::getline(file, line)) {
-            std::vector<sf::Sprite> fileContent;
+            const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture(textureId);
 
-            for (char c : line) {
-                char* transform = new char[2];
-                transform[0] = c;
-                transform[1] = '\0';
+            // Affichage de debug pour vérifier les valeurs
+            std::cout << "Tile '" << c << "' à la position (" << posX << ", " << posY << ") avec tileSize " << tileSize
+                << " et texture size (" << texture.getSize().x << ", " << texture.getSize().y << ")" << std::endl;
 
-                sf::Sprite tSprite;
-                tSprite.setTexture(GameManager::Get()->AssetMana.GetTexture(transform));
-                tSprite.setScale(size, size);
-                tSprite.setPosition(posX, posY);
-
-                fileContent.push_back(tSprite);
-                posX += size;
-            }
-            lSprite.push_back(fileContent);
-            posY += size;
-            posX = 0;
+            Tile tile(c, texture, posX, posY, tileSize);
+            lineTiles.push_back(tile);
+            posX += tileSize;
         }
-        file.close();
+        tiles.push_back(lineTiles);
+        posY += tileSize;
+        posX = 0;
     }
-    GameManager::Get()->tileMap = this;
-
+    file.close();
 }
