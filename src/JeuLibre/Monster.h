@@ -2,7 +2,6 @@
 #include "Entity.h"
 #include "Animator.h"
 
-
 enum class MonsterState {
     Idle,
     Walking,
@@ -17,12 +16,14 @@ private:
     Animator* mWalkAnimator;
     Animator* mAttackAnimator;
 
-    MonsterState mState;
+    MonsterState mState = MonsterState::Idle;
 
     void OnAnimationUpdate();
 
 public:
 
+    int Speed;
+    
     bool isMoving;
     bool isAttacking;
 
