@@ -2,15 +2,19 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Pointer.h"
+#include "TileMap.h"
 
 class SceneChevalier : public Scene
 {
-	std::vector<Entity*> entitylist;
 
 	sf::RenderWindow* Win;
-	Pointer* lPointer;
+
+	Entity* map;
 
 	Player* lPlayer;
+
+	Pointer* lPointer;
+
 
 
 public:

@@ -23,6 +23,7 @@ void S0Menu::OnInitialize() {
 
     float sizeX = 5;
     float sizeY = 5;
+
     // Boutons
     ButtonCheval = CreateEntity<Entity>("bouttonBleu");
     ButtonCheval->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2 - 200);

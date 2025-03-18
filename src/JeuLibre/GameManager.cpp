@@ -129,6 +129,15 @@ void GameManager::HandleInput() {
 void GameManager::Draw() {
 	Window->clear();
 	TrieEntity.clear();
+	/*
+	for (auto line : TileMap->GetMap()) {
+		for (auto sprite : line) {
+			if (sprite.getTexture() == nullptr) {
+				std::cout << "Sprite sans texture détecté!" << std::endl;
+			}
+			Window->draw(sprite);
+		}
+	}*/
 
 	for (Entity* entity : mEntities) {
 		if (entity && entity->Layout >= 0 && entity->SceneName == mpScene->SceneName) {
@@ -196,4 +205,12 @@ void GameManager::VerifWin() {
 		bool fontLoaded = mFont.loadFromFile("../../../res/DePixelHalbfett.ttf");
 		Loaded = true;
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+								//	SetTileMap	//
+///////////////////////////////////////////////////////////////////////////////////
+
+void GameManager::SetTileMap(Entity* map) {
+	TileMap = map;
 }

@@ -14,12 +14,14 @@ namespace sf
 	class Event;
 }
 
-class GameManager
+class GameManager 
 {
 	bool Loaded = false;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
+
+	Entity* TileMap;
 
 	int NumberScene;
 	std::vector<Scene*> SceneLoaded;
@@ -68,6 +70,8 @@ public:
 	sf::Font& GetFont() { return mFont; };
 
 	sf::Texture& GetTexture(const std::string _name);
+
+	void SetTileMap(Entity*);
 
 	friend Scene;
 

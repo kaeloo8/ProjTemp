@@ -20,6 +20,8 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
 	DosierListe.push_back("../../../img/Hair/");
     DosierListe.push_back("../../../img/Hand/");
     DosierListe.push_back("../../../img/Monster/");
+    DosierListe.push_back("../../../img/MapTile/");
+
     int sizedir = 0;
 
     // Charger l’image de fond
