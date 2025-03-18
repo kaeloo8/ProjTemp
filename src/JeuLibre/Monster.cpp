@@ -1,7 +1,13 @@
 #include "pch.h"
+#include "Condition.h"
 #include "Monster.h"
+#include "MonsterAction.h"
+#include "MonsterCondition.h"
+#include <string>
+#include "SceneEloulou.h"
+#include <iostream>
 
-Monster::Monster() : mState(MonsterState::Idle), isAttacking(false), isMoving(false)
+Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
     mIdleAnimator = new Animator(
         &mSprite,
@@ -24,6 +30,80 @@ Monster::Monster() : mState(MonsterState::Idle), isAttacking(false), isMoving(fa
         7,    // nombre de frames roll
         0.07f  // durée par frame roll
     );
+
+	// IDLE
+	{
+		Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
+		bMonsterIdle->AddAction(new sIdle_Action());
+
+		//-> Advance
+		{
+		}
+
+		//-> StepBack
+		{
+		}
+
+		//-> Run
+		{
+		}
+	}
+
+	// ADVANCE
+	{
+		Behaviour<Monster>* pAdvance = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
+		pAdvance->AddAction(new sAdvance_Action());
+
+		//-> Idle
+		{
+		}
+
+		//-> StepBack
+		{
+		}
+
+		//-> Run
+		{
+		}
+	}
+
+	// STEPBACK
+	{
+		Behaviour<Monster>* pStepBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
+		pStepBack->AddAction(new sStepBack_Action());
+
+		//-> Idle
+		{
+		}
+
+		//-> Advance
+		{
+		}
+
+		//-> Run
+		{
+		}
+	}
+
+	// RUN
+	{
+		Behaviour<Monster>* pRun = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
+		pRun->AddAction(new sRun_Action());
+
+		//-> Idle
+		{
+		}
+
+		//-> StepBack
+		{
+		}
+
+		//-> Advance 
+		{
+		}
+	}
+
+	DeffensiveMonsterState.SetState(State::sIdle);
 }
 
 Monster::~Monster()
@@ -38,13 +118,13 @@ void Monster::OnAnimationUpdate()
     float dt = GetDeltaTime();
 
     // Mise à jour des animations selon l'état
-    if (mState == MonsterState::Walking && mWalkAnimator) {
+    if (mState == sWalk && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
-    else if (mState == MonsterState::Idle && mIdleAnimator) {
+    else if (mState == sIdle && mIdleAnimator) {
         mIdleAnimator->Update(dt);
     }
-    else if (mState == MonsterState::Attacking && mAttackAnimator) {
+    else if (mState == sAttack && mAttackAnimator) {
         mAttackAnimator->Update(dt);
     }
 }
@@ -62,45 +142,10 @@ void Monster::FaceLeft()
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
-
-    if (isAttacking)
-    {
-        SetState(MonsterState::Attacking);
-        return;
-    }
-    else if (isMoving) {
-        SetState(MonsterState::Walking);
-    }
-    else {
-        SetState(MonsterState::Idle);
-    }
 }
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
-}
-
-void Monster::SetState(MonsterState state)
-{
-    if (mState != state)
-    {
-        mState = state;
-
-        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
-        if (mState == MonsterState::Idle) {
-            SetImage("skeleton_idle_strip6");
-            if (mIdleAnimator) mIdleAnimator->Reset();
-        }
-        else if (mState == MonsterState::Walking) {
-            SetImage("skeleton_walk_strip8");
-            if (mWalkAnimator) mWalkAnimator->Reset();
-        }
-        else if (mState == MonsterState::Attacking) {
-            SetImage("skeleton_attack_strip7");
-            if (mAttackAnimator) mAttackAnimator->Reset();
-        }
-
-    }
 }
 
 void Monster::SetImage(const char* path)

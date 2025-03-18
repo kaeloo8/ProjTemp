@@ -1,12 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Animator.h"
-
-enum class MonsterState {
-    Idle,
-    Walking,
-    Attacking
-};
+#include "StateMachine.h"
 
 
 class Monster : public Entity
@@ -16,14 +11,39 @@ private:
     Animator* mWalkAnimator;
     Animator* mAttackAnimator;
 
-    MonsterState mState = MonsterState::Idle;
-
     void OnAnimationUpdate();
 
 public:
 
+    StateMachine<Monster> DeffensiveMonsterState;
+
+    enum State
+    {
+        sIdle,
+        sWalk,
+        sAttack,
+        sGoBack,
+
+        sCount
+    };
+    static const int DeffensiveMonsterState_count = (int)State::sCount;
+
+private:
+
+    State mState = State::sIdle;
+
+    int mTransitions[DeffensiveMonsterState_count][DeffensiveMonsterState_count] = {
+        {0,1,1,1},
+        {1,0,1,1},
+        {1,1,0,1},
+        {1,1,1,0}
+    };
+
+public:
+
     int Speed;
-    
+    int Life;
+
     bool isMoving;
     bool isAttacking;
 
@@ -48,8 +68,12 @@ public:
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
-    void SetState(MonsterState state);
 
     void SetImage(const char* path) override;
+
+    friend class sIdle_Action;
+    friend class sCharge_Action;
+    friend class sAttack_Action;
+    friend class sGoBack_Action;
 };
 
