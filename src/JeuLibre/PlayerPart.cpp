@@ -96,10 +96,10 @@ void PlayerPart::OnUpdate()
         mSprintAnimator->Update(dt);
     }
     else if (mState == PlayerPartState::Dashing && mDashAnimator) {
-        mDashAnimator->Update(dt);  // Mise à jour de l'animation de dash
+        mDashAnimator->Update(dt);  
     }
     else if (mState == PlayerPartState::Attacking && mAttackAnimator) {
-        mAttackAnimator->Update(dt);  // Mise à jour de l'animation de dash
+        mAttackAnimator->Update(dt);
     }
 }
 
