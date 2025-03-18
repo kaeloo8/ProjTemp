@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "Entity.h"
+#include "TileMap.h"
+#include "CameraSys.h"
 #include "AssetManager.h"
 
 
@@ -51,57 +53,34 @@ void GameManager::Run() {
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::Update() {
-	mpScene->OnUpdate();
+	if (mpScene) {
+		mpScene->OnUpdate();
+	}
+	if (camera) {
+		camera->OnUpdate();
+	}
 
-	//gestion Entity
-	for (auto it = mEntities.begin(); it != mEntities.end(); )
-	{
+	for (auto it = mEntities.begin(); it != mEntities.end();) {
 		Entity* entity = *it;
-
 		entity->Update();
 
-		if (entity->ToDestroy() == false)
-		{
+		if (!entity->ToDestroy()) {
 			++it;
 			continue;
 		}
-
 		mEntitiesToDestroy.push_back(entity);
 		it = mEntities.erase(it);
 	}
-	//colision
-	for (auto it1 = mEntities.begin(); it1 != mEntities.end(); ++it1)
-	{
-		auto it2 = it1;
-		++it2;
-		for (; it2 != mEntities.end(); ++it2)
-		{
-			Entity* entity = *it1;
-			Entity* otherEntity = *it2;
-			/*
-			if (entity->IsColliding(otherEntity))
-			{
-				entity->OnCollision(otherEntity);
-				otherEntity->OnCollision(entity);
-			}*/
-		}
-	}
 
-	// supretion d'Entity
-	for (auto it = mEntitiesToDestroy.begin(); it != mEntitiesToDestroy.end(); ++it)
-	{
-		std::cout << "entity destroy" << std::endl;
-		delete* it;
+	for (Entity* entity : mEntitiesToDestroy) {
+		std::cout << "Entity destroyed" << std::endl;
+		delete entity;
 	}
-
 	mEntitiesToDestroy.clear();
 
-	//ajout d'Entity
-	for (auto it = mEntitiesToAdd.begin(); it != mEntitiesToAdd.end(); ++it)
-	{
-		mEntities.push_back(*it);
+	for (Entity* entity : mEntitiesToAdd) {
+		mEntities.push_back(entity);
 	}
-
 	mEntitiesToAdd.clear();
 }
 
@@ -128,16 +107,20 @@ void GameManager::HandleInput() {
 
 void GameManager::Draw() {
 	Window->clear();
+
+	if (camera) {
+		Window->setView(camera->getView());
+	}
+
 	TrieEntity.clear();
-	/*
-	for (auto line : TileMap->GetMap()) {
-		for (auto sprite : line) {
-			if (sprite.getTexture() == nullptr) {
-				std::cout << "Sprite sans texture détecté!" << std::endl;
+
+	if (tileMap) {
+		for (auto& ligne : tileMap->lSprite) {
+			for (auto& sprite : ligne) {
+				Window->draw(sprite);
 			}
-			Window->draw(sprite);
 		}
-	}*/
+	}
 
 	for (Entity* entity : mEntities) {
 		if (entity && entity->Layout >= 0 && entity->SceneName == mpScene->SceneName) {
@@ -148,14 +131,15 @@ void GameManager::Draw() {
 		}
 	}
 
-	for (int i = 0; i < TrieEntity.size(); i++) {
-		for (Entity* entity : TrieEntity[i]) {
+	for (auto& layer : TrieEntity) {
+		for (Entity* entity : layer) {
 			if (entity) {
 				Window->draw(*entity->GetShape());
 				Window->draw(*entity->GetSprite());
 			}
 		}
 	}
+
 	Window->display();
 }
 
@@ -180,6 +164,7 @@ void GameManager::CreateWindow(unsigned int width, unsigned int height, const ch
 
 	widthWin = width;
 	heightWin = height;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +196,14 @@ void GameManager::VerifWin() {
 								//	SetTileMap	//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void GameManager::SetTileMap(Entity* map) {
-	TileMap = map;
+void GameManager::SetTileMap(TileMap* map) {
+	tileMap = map;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+								//	SetCamera	//
+///////////////////////////////////////////////////////////////////////////////////
+
+void GameManager::SetCamera(CameraSys* cam) {
+	camera = cam;
 }

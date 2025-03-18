@@ -3,18 +3,20 @@
 #include "Player.h"
 #include "Pointer.h"
 #include "TileMap.h"
+#include "CameraSys.h"
 
 class SceneChevalier : public Scene
 {
 
 	sf::RenderWindow* Win;
 
-	Entity* map;
+	TileMap* map;
 
 	Player* lPlayer;
 
 	Pointer* lPointer;
 
+	CameraSys* cam;
 
 
 public:

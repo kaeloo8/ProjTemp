@@ -7,6 +7,8 @@
 
 class Entity;
 class Scene;
+class TileMap;
+class CameraSys;
 
 namespace sf
 {
@@ -21,7 +23,6 @@ class GameManager
 	std::list<Entity*> mEntitiesToDestroy;
 	std::list<Entity*> mEntitiesToAdd;
 
-	Entity* TileMap;
 
 	int NumberScene;
 	std::vector<Scene*> SceneLoaded;
@@ -29,6 +30,8 @@ class GameManager
 	sf::Font mFont;
 
 	Scene* mpScene;
+
+	CameraSys* camera;
 
 	float DeltaTime;
 
@@ -52,7 +55,8 @@ private:
 	sf::RenderWindow* GetWindow() const { return Window; }
 
 public:
-
+	
+	TileMap* tileMap;
 	sf::RenderWindow* Window;
 	AssetManager AssetMana;
 
@@ -71,7 +75,8 @@ public:
 
 	sf::Texture& GetTexture(const std::string _name);
 
-	void SetTileMap(Entity*);
+	void SetTileMap(TileMap*);
+	void SetCamera(CameraSys* cam);
 
 	friend Scene;
 
