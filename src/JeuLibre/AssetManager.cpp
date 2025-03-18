@@ -15,18 +15,31 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
     Win = W;
 
     DosierListe.push_back("../../../img/");
+    DosierListe.push_back("../../../img/Ui/");
     DosierListe.push_back("../../../img/Player/");
 	DosierListe.push_back("../../../img/Hair/");
     DosierListe.push_back("../../../img/Hand/");
+    DosierListe.push_back("../../../img/Monster/");
     int sizedir = 0;
 
+    // Charger l’image de fond
+    if (!backgroundTexture.loadFromFile("../../../img/LoadingScreen.png")) {
+        std::cerr << "Erreur : Impossible de charger l'image de fond\n";
+    }
+    backgroundSprite.setTexture(backgroundTexture);
+    backgroundSprite.setScale(
+        static_cast<float>(Win->getSize().x) / backgroundTexture.getSize().x,
+        static_cast<float>(Win->getSize().y) / backgroundTexture.getSize().y
+    );
+
+
     progressBarBg.setSize(sf::Vector2f(Win->getSize().x / 2, Win->getSize().y / 15));
-    progressBarBg.setFillColor(sf::Color(100, 100, 100));
+    progressBarBg.setFillColor(sf::Color(30,30,30));
     progressBarBg.setPosition((Win->getSize().x / 2) - (progressBarBg.getSize().x / 2),
-        (Win->getSize().y / 2) - (progressBarBg.getSize().y / 2));
+        (Win->getSize().y/6 *5 ) - (progressBarBg.getSize().y / 2));
 
     progressBar.setSize(sf::Vector2f(0.f, progressBarBg.getSize().y));
-    progressBar.setFillColor(sf::Color(0, 255, 0));
+    progressBar.setFillColor(sf::Color(0, 0, 255));
     progressBar.setPosition(progressBarBg.getPosition());
 
     for (auto nDosier : DosierListe){
@@ -55,6 +68,7 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
             progressBar.setSize(sf::Vector2f((Win->getSize().x / 2) * progress, progressBarBg.getSize().y));
 
             Win->clear();
+            Win->draw(backgroundSprite);
             Win->draw(progressBarBg);
             Win->draw(progressBar);
             Win->display();

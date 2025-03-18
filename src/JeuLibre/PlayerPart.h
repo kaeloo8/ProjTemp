@@ -7,7 +7,8 @@ enum class PlayerPartState {
     Idle,
     Walking,
     Sprinting,
-    Dashing
+    Dashing,
+    Attacking
 };
 
 class PlayerPart : public Entity
@@ -17,12 +18,15 @@ private:
     Animator* mIdleAnimator;
     Animator* mSprintAnimator;
     Animator* mDashAnimator;
+    Animator* mAttackAnimator;
+
     PlayerPartState mState;
 
     std::string HairWalk;
     std::string HairRun;
     std::string HairDash;
     std::string HairIdle;
+    std::string PartAttack;
 
 public:
     const char* BodyPartName;

@@ -3,7 +3,7 @@
 #include "GameManager.h"
 
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mState(PlayerState::Idle)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::Idle)
 {
     // INITIALISATION CHEVEUX 
     PlayerHair = CreateEntity<PlayerPart>("croix");
@@ -52,6 +52,14 @@ Player::Player()
         10,    // nombre de frames roll
         0.1f  // durée par frame roll
     );
+
+    mAttackAnimator = new Animator(
+        &mSprite,
+        *GameManager::Get()->GetAssetManager(),
+        std::string("base_attack_strip10"),
+        10,    // nombre de frames roll
+        0.07f  // durée par frame roll
+    );
 }
 
 Player::~Player()
@@ -59,7 +67,10 @@ Player::~Player()
     delete mWalkAnimator;
     delete mIdleAnimator;
     delete mSprintAnimator;
+    delete mDashAnimator;
+    delete mAttackAnimator;
 }
+
 
 void Player::SetState(PlayerState state)
 {
@@ -84,6 +95,11 @@ void Player::SetState(PlayerState state)
             SetImage("base_roll_strip10");
             if (mDashAnimator) mDashAnimator->Reset();
         }
+        else if (mState == PlayerState::Attacking) {
+            SetImage("base_attack_strip10"); 
+            if (mAttackAnimator) mAttackAnimator->Reset();
+        }
+
     }
 }
 
@@ -128,6 +144,21 @@ void Player::OnUpdate()
         return;
     }
 
+    // Si le clic gauche est pressé et que le joueur n'est pas déjà en train d'attaquer
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
+        isAttacking = true;
+        attackTimer = attackDuration; // Durée de l'attaque
+        SetState(PlayerState::Attacking); // Changer l'état du joueur
+    }
+
+    // Mettre à jour le timer de l'attaque
+    if (isAttacking) {
+        attackTimer -= GetDeltaTime(); 
+        if (attackTimer <= 0) {
+            isAttacking = false; 
+        }
+    }
+
     // Gestion des déplacements classiques
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         velocityY -= 5.f;
@@ -154,8 +185,11 @@ void Player::OnUpdate()
     if (velocityX != 0 || velocityY != 0) {
         lastVelocityX = velocityX;
         lastVelocityY = velocityY;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+        if (isAttacking)
+        {
+            mSpeed = 15;
+        } 
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
             mSpeed = 300;
             isSprinting = true;
         }
@@ -163,6 +197,7 @@ void Player::OnUpdate()
             mSpeed = 150;
             isSprinting = false;
         }
+        
         isMoving = true;
     }
     else {
@@ -175,7 +210,7 @@ void Player::OnUpdate()
     }
 
     // Logique du dash
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isDashing && dashCooldown <= 0) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isDashing && dashCooldown <= 0 && !isAttacking) {
         isDashing = true;
         dashTimer = 0.5f;  // Durée du dash
         dashVelocityX = lastVelocityX * 30;
@@ -189,12 +224,14 @@ void Player::OnUpdate()
                       mSpeed);
     }
 
-}
-
-void Player::OnAnimationUpdate()
-{
-    float dt = GetDeltaTime();
     // Gestion des états (Idle, Walking, Sprinting, Dashing)
+    if (isAttacking)
+    {
+        PlayerHair->SetState(PlayerPartState::Attacking);
+        PlayerHand->SetState(PlayerPartState::Attacking);
+        SetState(PlayerState::Attacking);
+        return;
+    }
     if (isDashing) {
         PlayerHair->SetState(PlayerPartState::Dashing);
         PlayerHand->SetState(PlayerPartState::Dashing);
@@ -217,6 +254,11 @@ void Player::OnAnimationUpdate()
         PlayerHand->SetState(PlayerPartState::Idle);
         SetState(PlayerState::Idle);
     }
+}
+
+void Player::OnAnimationUpdate()
+{
+    float dt = GetDeltaTime();
 
     // Mise à jour des animations selon l'état
     if (mState == PlayerState::Walking && mWalkAnimator) {
@@ -231,6 +273,11 @@ void Player::OnAnimationUpdate()
     else if (mState == PlayerState::Dashing && mDashAnimator) {
         mDashAnimator->Update(dt);
     }
+    else if (mState == PlayerState::Attacking && mAttackAnimator) {
+        mAttackAnimator->Update(dt);
+    }
+
+
 }
 
 void Player::SetImage(const char* path)
@@ -245,5 +292,6 @@ void Player::ChangeHaircut(const char* haircut)
 
 void Player::OnCollision(Entity* pCollidedWith)
 {
+    std::cout << pCollidedWith << std::endl;
     // Gestion des collisions...
 }

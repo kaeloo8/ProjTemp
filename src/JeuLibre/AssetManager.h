@@ -8,6 +8,11 @@
 namespace fs = std::filesystem;
 
 class AssetManager {
+
+private:
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
+
 public:
 	std::vector< std::string> DosierListe ;
     std::vector<std::pair<std::string, sf::Texture>> images;
@@ -22,7 +27,5 @@ public:
     AssetManager(sf::RenderWindow* W);
     
     sf::Texture& GetTexture(const std::string& path);
-
-    
 };
 
