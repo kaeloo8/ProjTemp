@@ -7,6 +7,10 @@
 #include "SceneEloulou.h"
 #include <iostream>
 
+#include "Transition.h" // Ajout de l'inclusion du fichier d'en-tête Transition
+
+// ... le reste du code reste inchangé ...
+
 Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
     mIdleAnimator = new Animator(
@@ -30,80 +34,83 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         7,    // nombre de frames roll
         0.07f  // durée par frame roll
     );
+    // --- ÉTAT IDLE ---
+    {
+        Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
+        bMonsterIdle->AddAction(new sIdle_Action());
 
-	// IDLE
-	{
-		Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
-		bMonsterIdle->AddAction(new sIdle_Action());
+        //-> Walk (se déplacer)
+        {
+            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
+        }
 
-		//-> Advance
-		{
-		}
+        //-> Attack (attaquer)
+        {
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> GoBack (revenir à la position d'origine)
+        {
+        }
+    }
 
-		//-> Run
-		{
-		}
-	}
+    // --- ÉTAT WALK ---
+    {
+        Behaviour<Monster>* bWalk = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
+        bWalk->AddAction(new sFollowPlayer_Action());
 
-	// ADVANCE
-	{
-		Behaviour<Monster>* pAdvance = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
-		pAdvance->AddAction(new sAdvance_Action());
+        //-> Idle (rester inactif)
+        {
+        }
 
-		//-> Idle
-		{
-		}
+        //-> Attack (attaquer)
+        {
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> GoBack (revenir à la position d'origine)
+        {
+        }
+    }
 
-		//-> Run
-		{
-		}
-	}
+    // --- ÉTAT ATTACK ---
+    {
+        Behaviour<Monster>* bAttack = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
+        bAttack->AddAction(new sAttack_Action());
 
-	// STEPBACK
-	{
-		Behaviour<Monster>* pStepBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
-		pStepBack->AddAction(new sStepBack_Action());
+        //-> Idle (rester inactif)
+        {
+        }
 
-		//-> Idle
-		{
-		}
+        //-> Walk (se déplacer)
+        {
+        }
 
-		//-> Advance
-		{
-		}
+        //-> GoBack (revenir à la position d'origine)
+        {
+        }
+    }
 
-		//-> Run
-		{
-		}
-	}
+    // --- ÉTAT GO BACK ---
+    {
+        Behaviour<Monster>* bGoBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
+        bGoBack->AddAction(new sReturnToPosition_Action());
 
-	// RUN
-	{
-		Behaviour<Monster>* pRun = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
-		pRun->AddAction(new sRun_Action());
+        //-> Idle (rester inactif)
+        {
+        }
 
-		//-> Idle
-		{
-		}
+        //-> Walk (se déplacer)
+        {
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> Attack (attaquer)
+        {
+        }
+    }
 
-		//-> Advance 
-		{
-		}
-	}
 
-	DeffensiveMonsterState.SetState(State::sIdle);
+    DeffensiveMonsterState.SetState(State::sIdle);
 }
 
 Monster::~Monster()
@@ -142,6 +149,7 @@ void Monster::FaceLeft()
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
+    DeffensiveMonsterState.Update();
 }
 
 void Monster::OnCollision(Entity* pCollidedWith)
