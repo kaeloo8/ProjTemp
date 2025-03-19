@@ -26,14 +26,15 @@ void SceneGorille::OnInitialize()
     Button->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
     Button->AddAABBHitbox();
     Button->Layout = 1;
-    Button->SetPointer(lPointer);
 
-    Button2 = CreateEntity<UI>("confirm");
+    Button2 = CreateEntity<UI>("greenbar_06");
     Button2->SetScale(3, 3);
     Button2->SetOrigin(0.5f, 0.5f);
     Button2->SetPosition((GetWindowWidth() / 4), (GetWindowHeight() / 4));
     Button2->AddAABBHitbox();
     Button2->Layout = 1;
+    Button2->HangToEntity(lPlayer);
+    Button2->SetGap(0, GameManager::Get()->Window->getSize().y / 20);
 
 }
 

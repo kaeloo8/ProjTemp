@@ -31,8 +31,33 @@ void UI::SetPointer(Pointer* _pointer)
 	 mPointer = _pointer;
 }
 
+void UI::HangToEntity(Entity* _parent)
+{
+	mParent = _parent;
+}
+
+void UI::GapX(float X)
+{
+	mGapX = X;
+}
+
+void UI::GapY(float Y)
+{
+	mGapY = Y;
+}
+
+void UI::SetGap(float X, float Y)
+{
+	mGapX = X;
+	mGapY = Y;
+}
+
 void UI::OnUpdate()
 {
+	if (mParent != nullptr)
+	{
+		SetPosition(mParent->GetPosition().x + mGapX, mParent->GetPosition().y + mGapY);
+	}
 }
 
 void UI::OnCollision(Entity* pCollidedWith)
