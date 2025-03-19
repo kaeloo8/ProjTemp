@@ -28,6 +28,7 @@ protected:
     Target mTarget;
     int mHitboxWidth;
     int mHitboxHeight;
+    bool haveHitbox;
 
 public:
     std::string SceneName;

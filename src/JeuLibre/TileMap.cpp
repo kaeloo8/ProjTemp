@@ -7,7 +7,7 @@
 
 void TileMap::create(const std::string& path)
 {
-    float tileSize = GameManager::Get()->Window->getSize().x / 15.0f;
+    float tileSize = 30.0f; // Taille fixe des tiles
     float posX = 0;
     float posY = 0;
 
@@ -24,22 +24,28 @@ void TileMap::create(const std::string& path)
     std::string line;
     while (std::getline(file, line)) {
         std::vector<Tile> lineTiles;
+        posX = 0; // Réinitialisation de X pour chaque ligne
+
         for (char c : line) {
             std::string textureId(1, c);
-
             const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture(textureId);
 
-            // Affichage de debug pour vérifier les valeurs
-            std::cout << "Tile '" << c << "' à la position (" << posX << ", " << posY << ") avec tileSize " << tileSize
-                << " et texture size (" << texture.getSize().x << ", " << texture.getSize().y << ")" << std::endl;
+            // Vérification que la texture est valide
+            if (texture.getSize().x == 0 || texture.getSize().y == 0) {
+                std::cout << "?? Erreur : Texture non chargée pour l'ID '" << textureId << "'" << std::endl;
+                continue;
+            }
 
-            Tile tile(c, texture, posX, posY, tileSize);
-            lineTiles.push_back(tile);
+            // Debug : Afficher les infos de la tile
+            std::cout << "Tile '" << c << "' ? Pos (" << posX << ", " << posY
+                << "), Texture (" << texture.getSize().x << "x" << texture.getSize().y << ")" << std::endl;
+
+            lineTiles.emplace_back(c, texture, posX, posY);
             posX += tileSize;
         }
+
         tiles.push_back(lineTiles);
         posY += tileSize;
-        posX = 0;
     }
     file.close();
 }

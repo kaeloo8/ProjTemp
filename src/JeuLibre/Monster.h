@@ -52,16 +52,9 @@ public:
     Monster();
     ~Monster();
 
-    float lastVelocityX, lastVelocityY;
-    float dashVelocityX, dashVelocityY;
-
     float attackTimer;
     float attackCooldown = 0.f;
     const float attackDuration = 0.7f;
-
-    float dashTimer;
-    float dashCooldown = 0.f;
-    const float maxDashCooldown = 0.5f;
 
     void FaceRight();
     void FaceLeft();

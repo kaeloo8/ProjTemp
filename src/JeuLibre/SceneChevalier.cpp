@@ -3,6 +3,7 @@
 #include "SceneChevalier.h"
 #include "TileMap.h"
 #include "CameraSys.h"
+#include <random>
 
 void SceneChevalier::OnInitialize()
 {
@@ -20,14 +21,26 @@ void SceneChevalier::OnInitialize()
     lPlayer->SetOrigin(0.5f, 0.5f);
     lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
     lPlayer->AddAABBHitbox();
-    lPlayer->SetHitboxSize(25, 20);
+    lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
+
+    for (int i = 0;i < 10; i++) {
+        Monster* M;
+        M = CreateEntity<Monster>("skeleton_idle_strip6");
+        M->SetScale(3, 3);
+        M->SetOrigin(0.5f, 0.5f);
+        M->SetPosition((std::rand() % 600) + 100, (std::rand() % 400) + 100);
+        M->AddAABBHitbox();
+        M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
+        M->Layout = 2;
+    }
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
     cam->SetTarget(lPlayer);
 
-    map = CreateEntity<TileMap>("0");
-    map->create("mapVille");
+    TileMap* map = new TileMap();
+    map->create("mapVille"); // Charge la map
+    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)
@@ -62,6 +75,8 @@ void SceneChevalier::OnEvent(const sf::Event& event)
 
 void SceneChevalier::OnUpdate()
 {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
+    lPointer->SetPosition(mousePos.x, mousePos.y);
 }
 
 void SceneChevalier::SetName()

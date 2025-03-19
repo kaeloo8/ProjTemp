@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "GameManager.h"
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -7,6 +7,7 @@
 #include "TileMap.h"
 #include "CameraSys.h"
 #include "AssetManager.h"
+#include "Debug.h"
 
 
 GameManager::GameManager() {
@@ -17,6 +18,7 @@ GameManager::GameManager() {
 	 heightWin = -1;
 	 SceneLoaded.clear();
 	 NumberScene = 0;
+	 DrawHitBox = true;
 }
 
 GameManager::~GameManager() {
@@ -72,8 +74,25 @@ void GameManager::Update() {
 		it = mEntities.erase(it);
 	}
 
+	// colide 
+	for (auto it1 = mEntities.begin(); it1 != mEntities.end(); ++it1)
+	{
+		auto it2 = it1;
+		++it2;
+		for (; it2 != mEntities.end(); ++it2)
+		{
+			Entity* entity = *it1;
+			Entity* otherEntity = *it2;
+
+			if (entity->IsColliding(otherEntity))
+			{
+				entity->OnCollision(otherEntity);
+				otherEntity->OnCollision(entity);
+			}
+		}
+	}
+
 	for (Entity* entity : mEntitiesToDestroy) {
-		std::cout << "Entity destroyed" << std::endl;
 		delete entity;
 	}
 	mEntitiesToDestroy.clear();
@@ -82,6 +101,17 @@ void GameManager::Update() {
 		mEntities.push_back(entity);
 	}
 	mEntitiesToAdd.clear();
+
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+		if (!KeyPressed) {
+			DrawHitBox = !DrawHitBox;
+			std::cout << "hitbox draw : " << DrawHitBox << std::endl;
+		}
+	}
+	else {
+		KeyPressed = false;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +142,17 @@ void GameManager::Draw() {
 		Window->setView(camera->getView());
 	}
 
+	if (tileMap) {
+		for (const auto& line : tileMap->tiles) {
+			for (const auto& tile : line) {
+				Window->draw(tile.sprite);
+			}
+		}
+	}
+	else {
+		std::cerr << "Warning : tileMap est NULL dans Draw() !" << std::endl;
+	}
+
 	TrieEntity.clear();
 
 	for (Entity* entity : mEntities) {
@@ -131,7 +172,9 @@ void GameManager::Draw() {
 			}
 		}
 	}
-
+	if (DrawHitBox) {
+		Debug::Get()->Draw(Window);
+	}
 	Window->display();
 }
 
