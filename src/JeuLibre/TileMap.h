@@ -5,14 +5,13 @@
 
 struct Tile {
     sf::Sprite sprite;
-    char id; 
+    char id;
 
-    Tile(char tileId, const sf::Texture& texture, float x, float y, float tileSize)
+    Tile(char tileId, const sf::Texture& texture, float x, float y)
         : id(tileId)
     {
         sprite.setTexture(texture);
-        sprite.setScale(tileSize / texture.getSize().x, tileSize / texture.getSize().y);
-
+        sprite.setScale(30.0f / texture.getSize().x, 30.0f / texture.getSize().y);
         sprite.setPosition(x, y);
     }
 };
