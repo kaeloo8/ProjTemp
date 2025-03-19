@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Pointer.h"
+#include "UI.h"
 
 class SceneGorille : public Scene
 {
@@ -11,6 +12,8 @@ class SceneGorille : public Scene
 	Pointer* lPointer;
 
 	Player* lPlayer;
+	UI* Button;
+	UI* Button2;
 
 
 public:
