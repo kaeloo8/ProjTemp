@@ -62,6 +62,9 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
 
         //-> Idle (rester inactif)
         {
+            auto transition = bWalk->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
         }
 
         //-> Attack (attaquer)
@@ -154,6 +157,29 @@ void Monster::OnUpdate()
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
+}
+
+void Monster::SetState(State state)
+{
+    if (mState != state)
+    {
+        mState = state;
+
+        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
+        if (mState == State::sIdle) {
+            SetImage("skeleton_idle_strip6");
+            if (mIdleAnimator) mIdleAnimator->Reset();
+        }
+        else if (mState == State::sWalk || mState == State::sGoBack) {
+            SetImage("skeleton_walk_strip8");
+            if (mWalkAnimator) mWalkAnimator->Reset();
+        }
+        else if (mState == State::sAttack) {
+            SetImage("skeleton_attack_strip7");
+            if (mAttackAnimator) mAttackAnimator->Reset();
+        }
+
+    }
 }
 
 void Monster::SetImage(const char* path)

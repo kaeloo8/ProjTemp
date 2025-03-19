@@ -4,6 +4,11 @@
 #include "StateMachine.h"
 #include "Player.h"
 
+enum class MonsterState {
+    Idle,
+    Walking,
+    Attacking
+};
 
 class Monster : public Entity
 {
@@ -48,7 +53,7 @@ public:
     bool isMoving;
     bool isAttacking;
 
-    float SeeDistance = 500;
+    float SeeDistance = 100;
     float AttackDistance;
 
     Monster();
@@ -63,6 +68,7 @@ public:
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
+    void SetState(State state);
 
     void SetImage(const char* path) override;
 

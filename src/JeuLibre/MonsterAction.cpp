@@ -7,13 +7,15 @@
 
 void sIdle_Action::Start(Monster* pMonster)
 {
-    pMonster->isMoving = true;
+    pMonster->isMoving = false;
+    pMonster->SetState(Monster::State::sIdle);
 }
 
 void sIdle_Action::Update(Monster* pMonster) 
 {
     if (pMonster->mTarget != nullptr)
     {
+
     }
 }
 
@@ -25,15 +27,13 @@ void sIdle_Action::End(Monster* pMonster)
 void sFollowPlayer_Action::Start(Monster* pMonster) 
 {
     pMonster->isMoving = true;
+    pMonster->SetState(Monster::State::sWalk);
 }
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
 {
     if (pMonster->mTarget != nullptr)
     {
-        // Déplacer le monstre vers le joueur
-        float dt = GameManager::Get()->GetDeltaTime();
-
         pMonster->GoToDirection(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed );
     }
 }
