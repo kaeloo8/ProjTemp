@@ -76,7 +76,7 @@ void SceneChevalier::OnEvent(const sf::Event& event)
 void SceneChevalier::OnUpdate()
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
-    lPointer->SetPosition(mousePos.x, mousePos.y);
+    lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x/2, mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
 }
 
 void SceneChevalier::SetName()
