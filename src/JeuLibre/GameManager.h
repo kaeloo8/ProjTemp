@@ -55,6 +55,9 @@ private:
 	sf::RenderWindow* GetWindow() const { return Window; }
 
 public:
+
+	bool DrawHitBox;
+	bool KeyPressed;
 	
 	TileMap* tileMap;
 	sf::RenderWindow* Window;

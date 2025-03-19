@@ -4,6 +4,7 @@
 #include "Pointer.h"
 #include "TileMap.h"
 #include "CameraSys.h"
+#include "Monster.h"
 
 class SceneChevalier : public Scene
 {
@@ -17,6 +18,8 @@ class SceneChevalier : public Scene
 	Pointer* lPointer;
 
 	CameraSys* cam;
+
+	std::vector<Monster*> lEnnemie;
 
 
 public:

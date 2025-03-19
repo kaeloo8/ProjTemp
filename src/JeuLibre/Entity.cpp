@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include "Debug.h"
 
 void Entity::Initialize(float radius, const sf::Color& color)
 {
@@ -13,6 +14,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mSpeed = 0.0f;
 	mToDestroy = false;
 	mTag = -1;
+	mHitbox = nullptr;
 
 	mShape.setRadius(radius);
 	mShape.setFillColor(color);
@@ -25,6 +27,7 @@ void Entity::Initialize(float radius, const sf::Color& color)
 
 	mTarget.isSet = false;
 	SceneName = GetScene()->SceneName;
+	haveHitbox = false;
 }
 
 void Entity::Initialize(const char* path)
@@ -34,6 +37,7 @@ void Entity::Initialize(const char* path)
 	mToDestroy = false;
 	mTag = -1;
 	mSprite.setTexture(GameManager::Get()->GetTexture(path));
+	mHitbox = nullptr;
 
 	mDefaultWidth = mSprite.getGlobalBounds().width;
 	mDefaultHeight = mSprite.getGlobalBounds().height;
@@ -46,6 +50,7 @@ void Entity::Initialize(const char* path)
 
 	mTarget.isSet = false;
 	SceneName = GetScene()->SceneName;
+	haveHitbox = false;
 }
 
 bool Entity::IsColliding(Entity* other) const {
@@ -226,6 +231,7 @@ void Entity::AddCircleHitbox()
 			circleCollider->radius = mWidth / 2;
 		}
 	}
+	haveHitbox = true;
 }
 
 void Entity::AddAABBHitbox()
@@ -245,6 +251,7 @@ void Entity::AddAABBHitbox()
 			aabbCollider->yMax = position.y + halfOffsetHeight;
 		}
 	}
+	haveHitbox = true;
 }
 
 void Entity::DrawHitbox() {
@@ -269,6 +276,8 @@ void Entity::DrawHitbox() {
 
 		aabbCollider->xSize = aabbCollider->xMax - aabbCollider->xMin;
 		aabbCollider->ySize = aabbCollider->yMax - aabbCollider->yMin;
+
+		Debug::DrawRectangle(aabbCollider->xMin, aabbCollider->yMin, aabbCollider->xSize, aabbCollider->ySize, sf::Color::Red);
 
 	}
 }
@@ -304,6 +313,8 @@ void Entity::SetHitboxSize(float _radius)
 {
 	if (auto* circleCollider = dynamic_cast<CircleCollider*>(mHitbox)) {
 		circleCollider->radius = _radius;
+
+		sf::Vector2f position = GetPosition();
 	}
 }
 
@@ -336,7 +347,15 @@ void Entity::Update()
 	{
 		timerAnnim -= GetDeltaTime();
 	}
+
+
+	if (haveHitbox) {
+		DrawHitbox();
+	}
+
+
 	OnUpdate();
+
 }
 
 Scene* Entity::GetScene() const
