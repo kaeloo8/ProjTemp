@@ -150,7 +150,7 @@ void GameManager::Draw() {
 		}
 	}
 	else {
-		std::cerr << "Warning : tileMap est NULL dans Draw() !" << std::endl;
+		//std::cerr << "Warning : tileMap est NULL dans Draw() !" << std::endl;
 	}
 
 	TrieEntity.clear();
