@@ -142,6 +142,17 @@ void GameManager::Draw() {
 		Window->setView(camera->getView());
 	}
 
+	if (tileMap) {
+		for (const auto& line : tileMap->tiles) {
+			for (const auto& tile : line) {
+				Window->draw(tile.sprite);
+			}
+		}
+	}
+	else {
+		std::cerr << "Warning : tileMap est NULL dans Draw() !" << std::endl;
+	}
+
 	TrieEntity.clear();
 
 	for (Entity* entity : mEntities) {

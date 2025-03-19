@@ -38,8 +38,9 @@ void SceneChevalier::OnInitialize()
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
     cam->SetTarget(lPlayer);
 
-    map = CreateEntity<TileMap>("0");
-    map->create("mapVille");
+    TileMap* map = new TileMap();
+    map->create("mapVille"); // Charge la map
+    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)
@@ -74,6 +75,8 @@ void SceneChevalier::OnEvent(const sf::Event& event)
 
 void SceneChevalier::OnUpdate()
 {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
+    lPointer->SetPosition(mousePos.x, mousePos.y);
 }
 
 void SceneChevalier::SetName()
