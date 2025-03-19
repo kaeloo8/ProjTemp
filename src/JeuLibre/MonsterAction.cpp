@@ -9,13 +9,13 @@ void sIdle_Action::Start(Monster* pMonster)
 {
     pMonster->isMoving = false;
     pMonster->SetState(Monster::State::sIdle);
+    std::cout << "IDle" << std::endl;
 }
 
 void sIdle_Action::Update(Monster* pMonster) 
 {
     if (pMonster->mTarget != nullptr)
     {
-
     }
 }
 
@@ -28,6 +28,7 @@ void sFollowPlayer_Action::Start(Monster* pMonster)
 {
     pMonster->isMoving = true;
     pMonster->SetState(Monster::State::sWalk);
+    std::cout << "Follow" << std::endl;
 }
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
@@ -47,6 +48,8 @@ void sFollowPlayer_Action::End(Monster* pMonster)
 void sAttack_Action::Start(Monster* pMonster) 
 {
     pMonster->isAttacking = true;
+    pMonster->SetState(Monster::State::sAttack);
+    std::cout << "Attack" << std::endl;
 }
 
 void sAttack_Action::Update(Monster* pMonster) 
@@ -62,13 +65,15 @@ void sAttack_Action::End(Monster* pMonster)
 void sReturnToPosition_Action::Start(Monster* pMonster) 
 {
     pMonster->isMoving = true;
+    pMonster->SetState(Monster::State::sGoBack);
+    std::cout << "goBack" << std::endl;
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 
 {
     // Déplacer le monstre vers sa position initiale
     float dt = GameManager::Get()->GetDeltaTime();
-    pMonster->GoToPosition(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed * dt);
+    pMonster->GoToDirection(pMonster->InitialPosition.x, pMonster->InitialPosition.y, pMonster->mSpeed);
 }
 
 void sReturnToPosition_Action::End(Monster* pMonster) 

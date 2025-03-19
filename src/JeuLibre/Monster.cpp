@@ -13,6 +13,8 @@
 
 Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
+    InitialPosition = { GetPosition().x, GetPosition().y };
+
     mIdleAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
@@ -34,6 +36,7 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         7,    // nombre de frames roll
         0.07f  // durée par frame roll
     );
+
     // --- ÉTAT IDLE ---
     {
         Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
@@ -52,6 +55,9 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
 
         //-> GoBack (revenir à la position d'origine)
         {
+            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
         }
     }
 
@@ -105,6 +111,9 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
 
         //-> Walk (se déplacer)
         {
+            auto transition = bGoBack->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
         }
 
         //-> Attack (attaquer)
@@ -128,7 +137,7 @@ void Monster::OnAnimationUpdate()
     float dt = GetDeltaTime();
 
     // Mise à jour des animations selon l'état
-    if (mState == sWalk && mWalkAnimator) {
+    if (mState == sWalk && mWalkAnimator || mState == State::sGoBack && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
     else if (mState == sIdle && mIdleAnimator) {

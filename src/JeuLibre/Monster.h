@@ -4,12 +4,6 @@
 #include "StateMachine.h"
 #include "Player.h"
 
-enum class MonsterState {
-    Idle,
-    Walking,
-    Attacking
-};
-
 class Monster : public Entity
 {
 private:
@@ -19,6 +13,8 @@ private:
 
 
     void OnAnimationUpdate();
+
+    sf::Vector2f InitialPosition;
 
 public:
 
@@ -53,7 +49,7 @@ public:
     bool isMoving;
     bool isAttacking;
 
-    float SeeDistance = 100;
+    float SeeDistance = 500;
     float AttackDistance;
 
     Monster();
@@ -66,10 +62,10 @@ public:
     void FaceRight();
     void FaceLeft();
 
-    void OnUpdate() override;
-    void OnCollision(Entity* pCollidedWith) override;
     void SetState(State state);
 
+    void OnUpdate() override;
+    void OnCollision(Entity* pCollidedWith) override;
     void SetImage(const char* path) override;
 
     friend class sIdle_Action;
