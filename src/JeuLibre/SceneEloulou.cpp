@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SceneEloulou.h"
+#include "TileMap.h"
 #include "S1Ville.h"
 #include "S0Menu.h"
 #include <iostream>
@@ -11,12 +12,6 @@ void SceneEloulou::OnInitialize() {
     lPointer->SetScale((Win->getSize().x * 0.13) / 100, (Win->getSize().x * 0.13) / 100);
     lPointer->SetOrigin(0, 0);
     lPointer->Layout = 200;
-
-    Fond = CreateEntity<Entity>("FondEcran");
-    Fond->SetOrigin(0, 0);
-    Fond->SetPosition(0, 0);
-    Fond->SetSize(GetWindowWidth(), GetWindowHeight());
-    Fond->Layout = 0;
 
     lPlayer = CreateEntity<Player>("base_idle_strip9");
     lPlayer->SetScale(3, 3);
@@ -38,7 +33,7 @@ void SceneEloulou::OnInitialize() {
     Button1->SetPosition(GetWindowWidth()/2 - 300, GetWindowHeight() / 7);
     Button1->SetOrigin(0.5, 0.5);
     Button1->AddCircleHitbox();
-    Button1->SetHitboxSize(30);
+    Button1->SetHitboxSize(80);
     Button1->SetScale(sizeX, sizeY);
     Button1->Layout = 2;
 
@@ -82,6 +77,9 @@ void SceneEloulou::OnInitialize() {
     Button6->SetScale(sizeX, sizeY);
     Button6->Layout = 2;
 
+    TileMap* map = new TileMap();
+    map->create("mapVille"); // Charge la map
+    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneEloulou::OnEvent(const sf::Event& event) {
