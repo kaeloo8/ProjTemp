@@ -25,7 +25,11 @@ void SceneEloulou::OnInitialize() {
     Skeleton->SetScale(3, 3);
     Skeleton->SetOrigin(0.5f, 0.5f);
     Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
+    Skeleton->SetSpeed(100);
     Skeleton->Layout = 2;
+    Skeleton->mTarget = lPlayer;
+
+
     float sizeX = 5;
     float sizeY = 5;
 

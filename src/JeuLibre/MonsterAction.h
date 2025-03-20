@@ -6,34 +6,33 @@
 class sIdle_Action : public Action<Monster>
 {
 public:
-	void Start(Monster* pPlant) override;
-	void Update(Monster* pPlant) override;
-	void End(Monster* pPlant) override;
+	void Start(Monster* pMonster) override;
+	void Update(Monster* pMonster) override;
+	void End(Monster* pMonster) override;
+};
+
+class sFollowPlayer_Action : public Action<Monster>
+{
+public:
+	void Start(Monster* pMonster) override;
+	void Update(Monster* pMonster) override;
+	void End(Monster* pMonster) override;
 };
 
 
-class sStepBack_Action : public Action<Monster>
+class sAttack_Action : public Action<Monster>
 {
 public:
-	void Start(Monster* pPlant) override;
-	void Update(Monster* pPlant) override;
-	void End(Monster* pPlant) override;
+	void Start(Monster* pMonster) override;
+	void Update(Monster* pMonster) override;
+	void End(Monster* pMonster) override;
 };
 
 
-class sAdvance_Action : public Action<Monster>
+class sReturnToPosition_Action : public Action<Monster>
 {
 public:
-	void Start(Monster* pPlant) override;
-	void Update(Monster* pPlant) override;
-	void End(Monster* pPlant) override;
-};
-
-
-class sRun_Action : public Action<Monster>
-{
-public:
-	void Start(Monster* pPlant) override;
-	void Update(Monster* pPlant) override;
-	void End(Monster* pPlant) override;
+	void Start(Monster* pMonster) override;
+	void Update(Monster* pMonster) override;
+	void End(Monster* pMonster) override;
 };

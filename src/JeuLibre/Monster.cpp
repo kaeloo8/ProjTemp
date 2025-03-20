@@ -7,8 +7,14 @@
 #include "SceneEloulou.h"
 #include <iostream>
 
+#include "Transition.h" // Ajout de l'inclusion du fichier d'en-tête Transition
+
+// ... le reste du code reste inchangé ...
+
 Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
+    InitialPosition = { GetPosition().x, GetPosition().y };
+
     mIdleAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
@@ -31,79 +37,92 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         0.07f  // durée par frame roll
     );
 
-	// IDLE
-	{
-		Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
-		bMonsterIdle->AddAction(new sIdle_Action());
+    // --- ÉTAT IDLE ---
+    {
+        Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
+        bMonsterIdle->AddAction(new sIdle_Action());
 
-		//-> Advance
-		{
-		}
+        //-> Walk (se déplacer)
+        {
+            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> Attack (attaquer)
+        {
+        }
 
-		//-> Run
-		{
-		}
-	}
+        //-> GoBack (revenir à la position d'origine)
+        {
+            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
+        }
+    }
 
-	// ADVANCE
-	{
-		Behaviour<Monster>* pAdvance = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
-		pAdvance->AddAction(new sAdvance_Action());
+    // --- ÉTAT WALK ---
+    {
+        Behaviour<Monster>* bWalk = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
+        bWalk->AddAction(new sFollowPlayer_Action());
 
-		//-> Idle
-		{
-		}
+        //-> Idle (rester inactif)
+        {
+            auto transition = bWalk->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> Attack (attaquer)
+        {
+        }
 
-		//-> Run
-		{
-		}
-	}
+        //-> GoBack (revenir à la position d'origine)
+        {
+        }
+    }
 
-	// STEPBACK
-	{
-		Behaviour<Monster>* pStepBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
-		pStepBack->AddAction(new sStepBack_Action());
+    // --- ÉTAT ATTACK ---
+    {
+        Behaviour<Monster>* bAttack = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
+        bAttack->AddAction(new sAttack_Action());
 
-		//-> Idle
-		{
-		}
+        //-> Idle (rester inactif)
+        {
+        }
 
-		//-> Advance
-		{
-		}
+        //-> Walk (se déplacer)
+        {
+        }
 
-		//-> Run
-		{
-		}
-	}
+        //-> GoBack (revenir à la position d'origine)
+        {
+        }
+    }
 
-	// RUN
-	{
-		Behaviour<Monster>* pRun = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
-		pRun->AddAction(new sRun_Action());
+    // --- ÉTAT GO BACK ---
+    {
+        Behaviour<Monster>* bGoBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
+        bGoBack->AddAction(new sReturnToPosition_Action());
 
-		//-> Idle
-		{
-		}
+        //-> Idle (rester inactif)
+        {
+        }
 
-		//-> StepBack
-		{
-		}
+        //-> Walk (se déplacer)
+        {
+            auto transition = bGoBack->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
+            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
+        }
 
-		//-> Advance 
-		{
-		}
-	}
+        //-> Attack (attaquer)
+        {
+        }
+    }
 
-	DeffensiveMonsterState.SetState(State::sIdle);
+
+    DeffensiveMonsterState.SetState(State::sIdle);
 }
 
 Monster::~Monster()
@@ -118,7 +137,7 @@ void Monster::OnAnimationUpdate()
     float dt = GetDeltaTime();
 
     // Mise à jour des animations selon l'état
-    if (mState == sWalk && mWalkAnimator) {
+    if (mState == sWalk && mWalkAnimator || mState == State::sGoBack && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
     else if (mState == sIdle && mIdleAnimator) {
@@ -142,10 +161,34 @@ void Monster::FaceLeft()
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
+    DeffensiveMonsterState.Update();
 }
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
+}
+
+void Monster::SetState(State state)
+{
+    if (mState != state)
+    {
+        mState = state;
+
+        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
+        if (mState == State::sIdle) {
+            SetImage("skeleton_idle_strip6");
+            if (mIdleAnimator) mIdleAnimator->Reset();
+        }
+        else if (mState == State::sWalk || mState == State::sGoBack) {
+            SetImage("skeleton_walk_strip8");
+            if (mWalkAnimator) mWalkAnimator->Reset();
+        }
+        else if (mState == State::sAttack) {
+            SetImage("skeleton_attack_strip7");
+            if (mAttackAnimator) mAttackAnimator->Reset();
+        }
+
+    }
 }
 
 void Monster::SetImage(const char* path)
