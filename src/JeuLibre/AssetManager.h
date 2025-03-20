@@ -1,31 +1,34 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <filesystem>
 
-namespace fs = std::filesystem;
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
+#include <filesystem>
+#include <iostream>
 
 class AssetManager {
+public:
+    AssetManager();
+    explicit AssetManager(sf::RenderWindow* W);
+    struct ImageData {
+        std::string name;
+        sf::Texture texture;
+    };
 
-private:
+    sf::RenderWindow* Win;
+    std::vector<ImageData> images;
+
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
 
-public:
-	std::vector< std::string> DosierListe ;
-    std::vector<std::pair<std::string, sf::Texture>> images;
-    sf::RenderWindow* Win;
-
-    float progress = 0.f;
-    size_t loaded = 0;
     sf::RectangleShape progressBarBg;
     sf::RectangleShape progressBar;
 
-    AssetManager();
-    AssetManager(sf::RenderWindow* W);
-    
-    sf::Texture& GetTexture(const std::string& path);
-};
+    int sizedir = 0;
+    int loaded = 0;
+    float progress = 0.0f;
 
+    sf::Texture& GetTexture(const std::string& path);
+    void updateProgressBar();
+    void parseTileMap(const std::string& chemin, const std::string& filename);
+};
