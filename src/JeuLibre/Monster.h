@@ -15,10 +15,11 @@ private:
     void OnAnimationUpdate();
 
     sf::Vector2f InitialPosition;
+    sf::Color LineColor;
 
 public:
 
-    Player* mTarget;
+    Entity* mTarget;
     StateMachine<Monster> DeffensiveMonsterState;
 
     enum State
@@ -50,7 +51,7 @@ public:
     bool isAttacking;
 
     float SeeDistance = 500;
-    float AttackDistance;
+    float AttackDistance = 100;
 
     Monster();
     ~Monster();
@@ -62,7 +63,7 @@ public:
     void FaceRight();
     void FaceLeft();
 
-    void SetState(State state);
+    void SetTarget(Entity* _Target);
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

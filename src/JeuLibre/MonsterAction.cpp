@@ -8,8 +8,10 @@
 void sIdle_Action::Start(Monster* pMonster)
 {
     pMonster->isMoving = false;
-    pMonster->SetState(Monster::State::sIdle);
     std::cout << "IDle" << std::endl;
+    pMonster->SetImage("skeleton_idle_strip6");
+    if (pMonster->mIdleAnimator) pMonster->mIdleAnimator->Reset();
+    pMonster->LineColor = sf::Color::Blue;
 }
 
 void sIdle_Action::Update(Monster* pMonster) 
@@ -21,35 +23,39 @@ void sIdle_Action::Update(Monster* pMonster)
 
 void sIdle_Action::End(Monster* pMonster)
 {
-    pMonster->isMoving = false;
 }
 
 void sFollowPlayer_Action::Start(Monster* pMonster) 
 {
     pMonster->isMoving = true;
-    pMonster->SetState(Monster::State::sWalk);
     std::cout << "Follow" << std::endl;
+    pMonster->SetImage("skeleton_walk_strip8");
+    if (pMonster->mWalkAnimator) pMonster->mWalkAnimator->Reset();
+    pMonster->LineColor = sf::Color::Green;
 }
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
 {
     if (pMonster->mTarget != nullptr)
     {
-        pMonster->GoToDirection(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed );
+        pMonster->GoToPosition(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed );
     }
 }
 
 void sFollowPlayer_Action::End(Monster* pMonster) 
 {
     pMonster->isMoving = false;
+    //pMonster->SetVelocity(0, 0); // Ajoute cette ligne pour stopper le mouvement
 }
 
 
 void sAttack_Action::Start(Monster* pMonster) 
 {
     pMonster->isAttacking = true;
-    pMonster->SetState(Monster::State::sAttack);
     std::cout << "Attack" << std::endl;
+    pMonster->SetImage("skeleton_attack_strip7");
+    if (pMonster->mAttackAnimator) pMonster->mAttackAnimator->Reset();
+    pMonster->LineColor = sf::Color::Magenta;
 }
 
 void sAttack_Action::Update(Monster* pMonster) 
@@ -65,15 +71,13 @@ void sAttack_Action::End(Monster* pMonster)
 void sReturnToPosition_Action::Start(Monster* pMonster) 
 {
     pMonster->isMoving = true;
-    pMonster->SetState(Monster::State::sGoBack);
     std::cout << "goBack" << std::endl;
+    pMonster->LineColor = sf::Color::Red;
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 
 {
-    // Déplacer le monstre vers sa position initiale
-    float dt = GameManager::Get()->GetDeltaTime();
-    pMonster->GoToDirection(pMonster->InitialPosition.x, pMonster->InitialPosition.y, pMonster->mSpeed);
+    pMonster->GoToPosition(pMonster->InitialPosition.x, pMonster->InitialPosition.y, pMonster->mSpeed);
 }
 
 void sReturnToPosition_Action::End(Monster* pMonster) 

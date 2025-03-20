@@ -3,6 +3,12 @@
 #include "Condition.h"
 #include "Monster.h"
 
+class AttackThePlayerCondition : public Condition<Monster>
+{
+public:
+	bool OnTest(Monster* owner) override;
+};
+
 class DistanceToPlayerCondition : public Condition<Monster>
 {
 public:
