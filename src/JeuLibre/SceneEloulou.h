@@ -3,10 +3,14 @@
 #include "Player.h"
 #include "Monster.h"
 #include "Pointer.h"
+#include "CameraSys.h"
 
 class SceneEloulou : public Scene
 {
+
 	std::vector<Entity*> entitylist;
+
+	CameraSys* Cam;
 
 	sf::RenderWindow* Win;
 	Pointer* lPointer;
