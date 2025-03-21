@@ -20,22 +20,25 @@ void SceneGorille::OnInitialize()
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
 
-    Button = CreateEntity<UI>("cancel");
-    Button->SetScale(3,3);
-    Button->SetOrigin(0.5f, 0.5f);
-    Button->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
-    Button->AddAABBHitbox();
-    Button->Layout = 1;
+    ButtonCancel = CreateEntity<UI>("cancel");
+    ButtonCancel->SetScale(3,3);
+    ButtonCancel->SetOrigin(0.5f, 0.5f);
+    ButtonCancel->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
+    ButtonCancel->AddAABBHitbox();
+    ButtonCancel->Layout = 1;
 
-    Button2 = CreateEntity<UI>("greenbar_06");
-    Button2->SetScale(3, 3);
-    Button2->SetOrigin(0.5f, 0.5f);
-    Button2->SetPosition((GetWindowWidth() / 4), (GetWindowHeight() / 4));
-    Button2->AddAABBHitbox();
-    Button2->Layout = 1;
-    Button2->HangToEntity(lPlayer);
-    Button2->SetGap(0, GameManager::Get()->Window->getSize().y / 20);
-
+    LifeBar = CreateEntity<UI>("greenbar_06");
+    LifeBar->SetScale(3, 3);
+    LifeBar->SetOrigin(0.5f, 0.5f);
+    LifeBar->SetPosition((GetWindowWidth() / 4), (GetWindowHeight() / 4));
+    LifeBar->Layout = 1;
+    LifeBar->HangToEntity(lPlayer);
+    LifeBar->SetGap(0, GameManager::Get()->Window->getSize().y / 20);
+    
+   Options = CreateEntity<OptionMenu>("croix");
+   Options->SetOrigin(0.5f, 0.5f);
+   Options->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
+   Options->SetScale(100, 100);
 }
 
 void SceneGorille::OnEvent(const sf::Event& event)
@@ -45,14 +48,27 @@ void SceneGorille::OnEvent(const sf::Event& event)
             std::cout << "Retour Menu" << std::endl;
             GameManager::Get()->LaunchScene<S0Menu>();
         }
+        Options->OpenOptionMenu();
     }
     else {
         KeyEscPressed = false;
     }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+        if (!KeyMPressed) {
+            std::cout << "Options Ouvert" << std::endl;
+            KeyMPressed = true;
+        }
+        ;
+    }
+    else
+    {
+        KeyMPressed = false;
+    }
+
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2f mousePos = Win->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-        Button->HandleClick(mousePos.x, mousePos.y);
-        Button2->HandleClick(mousePos.x, mousePos.y);
+        ButtonCancel->HandleClick(mousePos.x, mousePos.y);
     }
 }
 
