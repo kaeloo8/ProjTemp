@@ -34,7 +34,7 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
         *GameManager::Get()->GetAssetManager(),
         std::string("skeleton_attack_strip7"),
         7,    // nombre de frames roll
-        0.04f  // durée par frame roll
+        AttackSpeed  // durée par frame roll
     );
 
     // --- ÉTAT IDLE ---
@@ -156,6 +156,20 @@ void Monster::SetTarget(Entity* _Target)
     mTarget = _Target;
 }
 
+void Monster::OrientToTarget()
+{
+    if (!mTarget) return;
+
+    if (mTarget->GetPosition().x < GetPosition().x)
+    {
+        FaceLeft();
+    }
+    else
+    {
+        FaceRight();
+    }
+}
+
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
@@ -163,7 +177,7 @@ void Monster::OnUpdate()
 
     if (true)
     {
-        if (mTarget == nullptr) {return;}
+        if (!mTarget) return;
         Debug::DrawLine(mTarget->GetPosition().x, mTarget->GetPosition().y, GetPosition().x, GetPosition().y, LineColor);
     }
 }

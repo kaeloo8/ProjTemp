@@ -18,7 +18,7 @@ private:
 
 public:
 
-    Entity* mTarget;
+    Entity* mTarget = nullptr;
     StateMachine<Monster> DeffensiveMonsterState;
     sf::Vector2f InitialPosition;
 
@@ -28,6 +28,8 @@ public:
         sWalk,
         sAttack,
         sGoBack,
+        sStunt,
+        sDied,
 
         sCount
     };
@@ -50,6 +52,7 @@ public:
 
     float SeeDistance = 500;
     float AttackDistance = 50;
+    float AttackSpeed = 0.08f;
 
     Monster();
     ~Monster();
@@ -59,6 +62,7 @@ public:
 
     void SetInitialPosition();
     void SetTarget(Entity* _Target);
+    void OrientToTarget();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
