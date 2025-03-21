@@ -28,10 +28,13 @@ private:
     void OnAnimationUpdate();
 
 public:
+    bool BuildingMode;
+
     bool isMoving;
     bool isSprinting;
 	bool isDashing;
 	bool isAttacking;
+    bool isStunt;
 
 	const char* PlayerHaircut = "shorthair_idle_strip9";
 
@@ -53,6 +56,8 @@ public:
 	void FaceLeft();
 
     void ChangeHaircut(const char* haircut);
+
+    void ToogleMode();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

@@ -4,20 +4,22 @@
 #include <SFML/Graphics.hpp>
 
 struct Tile {
+    float tileSize = 50;
     sf::Sprite sprite;
-    char id;
+    std::string id; // Passage en string pour supporter les identifiants à plusieurs caractères
 
-    Tile(char tileId, const sf::Texture& texture, float x, float y)
+    Tile(const std::string& tileId, const sf::Texture& texture, float x, float y)
         : id(tileId)
     {
         sprite.setTexture(texture);
-        sprite.setScale(30.0f / texture.getSize().x, 30.0f / texture.getSize().y);
+        sprite.setScale(tileSize / texture.getSize().x, tileSize / texture.getSize().y);
         sprite.setPosition(x, y);
     }
 };
 
 class TileMap : public Entity {
 public:
+    float tileSize = 50;
     std::vector<std::vector<Tile>> tiles;
 
     void create(const std::string& path);
