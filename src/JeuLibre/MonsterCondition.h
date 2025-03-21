@@ -20,3 +20,9 @@ class FarFromPlayerCondition : public Condition<Monster>
 public:
 	bool OnTest(Monster* owner) override;
 };
+
+class IsAtHome : public Condition<Monster>
+{
+public:
+	bool OnTest(Monster* owner) override;
+};

@@ -14,13 +14,13 @@ private:
 
     void OnAnimationUpdate();
 
-    sf::Vector2f InitialPosition;
     sf::Color LineColor;
 
 public:
 
     Entity* mTarget;
     StateMachine<Monster> DeffensiveMonsterState;
+    sf::Vector2f InitialPosition;
 
     enum State
     {
@@ -49,7 +49,7 @@ public:
     bool isAttacking;
 
     float SeeDistance = 500;
-    float AttackDistance = 30;
+    float AttackDistance = 50;
 
     Monster();
     ~Monster();
