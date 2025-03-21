@@ -44,6 +44,7 @@ private:
         {1,1,1,1}
     };
 
+
 public:
     int Life;
 
@@ -53,6 +54,7 @@ public:
     float SeeDistance = 500;
     float AttackDistance = 50;
     float AttackSpeed = 0.08f;
+    float AttackTimer = 3;
 
     Monster();
     ~Monster();

@@ -144,8 +144,7 @@ void Player::OnUpdate()
         return;
     }
 
-    // Si le clic gauche est pressé et que le joueur n'est pas déjà en train d'attaquer
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking && !BuildingMode) {
         isAttacking = true;
         attackTimer = attackDuration; // Durée de l'attaque
         SetState(PlayerState::Attacking); // Changer l'état du joueur
@@ -157,6 +156,10 @@ void Player::OnUpdate()
         if (attackTimer <= 0) {
             isAttacking = false; 
         }
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+        ToogleMode();
     }
 
     // Gestion des déplacements classiques
@@ -288,6 +291,11 @@ void Player::SetImage(const char* path)
 void Player::ChangeHaircut(const char* haircut)
 {
 	PlayerHair->InitBodyPart(haircut);
+}
+
+void Player::ToogleMode()
+{
+    BuildingMode = !BuildingMode;
 }
 
 void Player::OnCollision(Entity* pCollidedWith)
