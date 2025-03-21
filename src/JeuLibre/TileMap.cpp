@@ -37,8 +37,6 @@ void TileMap::create(const std::string& path)
             }
 
             // Debug : Afficher les infos de la tile
-            std::cout << "Tile '" << c << "' ? Pos (" << posX << ", " << posY
-                << "), Texture (" << texture.getSize().x << "x" << texture.getSize().y << ")" << std::endl;
 
             lineTiles.emplace_back(c, texture, posX, posY);
             posX += tileSize;

@@ -27,6 +27,8 @@ public:
     void HangToEntity(Entity* _parent);
 
     bool HandleClick(float mouseX, float mouseY);
+    bool HandleClick(sf::Vector2f MousePos);
+
     void Open();
     void Close();
 

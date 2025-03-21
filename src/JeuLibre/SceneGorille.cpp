@@ -7,6 +7,7 @@ void SceneGorille::OnInitialize()
 {
     Win = GameManager::Get()->Window;
     Win->setMouseCursorVisible(true);
+
     lPointer = CreateEntity<Pointer>("Pointer");
     lPointer->SetScale((Win->getSize().x * 0.13) / 100, (Win->getSize().x * 0.13) / 100);
     lPointer->SetOrigin(0, 0);
@@ -34,11 +35,9 @@ void SceneGorille::OnInitialize()
     LifeBar->Layout = 1;
     LifeBar->HangToEntity(lPlayer);
     LifeBar->SetGap(0, GameManager::Get()->Window->getSize().y / 20);
-    
-   Options = CreateEntity<OptionMenu>("croix");
-   Options->SetOrigin(0.5f, 0.5f);
-   Options->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
-   Options->SetScale(100, 100);
+
+   
+    //optionsMenu->AddUIElement(ButtonCancel);
 }
 
 void SceneGorille::OnEvent(const sf::Event& event)
@@ -66,7 +65,14 @@ void SceneGorille::OnEvent(const sf::Event& event)
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         sf::Vector2f mousePos = Win->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-        ButtonCancel->HandleClick(mousePos.x, mousePos.y);
+        
+        if (ButtonCancel->HandleClick(mousePos)) {
+            std::cout << "Jean" << std::endl;
+        };
+        if (ButtonValid->HandleClick(mousePos))
+        {
+            std::cout << "Julian" << std::endl;
+        }
     }
 }
 

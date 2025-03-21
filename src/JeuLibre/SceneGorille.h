@@ -18,6 +18,8 @@ class SceneGorille : public Scene
 	UI* ButtonCancel;
 	UI* ButtonValid;
 
+	OptionMenu* optionsMenu = nullptr;
+
 
 public:
 

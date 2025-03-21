@@ -7,6 +7,8 @@
 
 void SceneChevalier::OnInitialize()
 {
+    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+
     cam = CreateEntity<CameraSys>("0");
     cam->Layout = -1;
 
