@@ -39,13 +39,14 @@ void sFollowPlayer_Action::Update(Monster* pMonster)
     if (pMonster->mTarget != nullptr)
     {
         pMonster->GoToPosition(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed );
+        pMonster->OrientToTarget();
     }
 }
 
 void sFollowPlayer_Action::End(Monster* pMonster) 
 {
     pMonster->isMoving = false;
-    //pMonster->SetVelocity(0, 0); // Ajoute cette ligne pour stopper le mouvement
+    pMonster->StopGo();
 }
 
 
@@ -61,7 +62,10 @@ void sAttack_Action::Start(Monster* pMonster)
 
 void sAttack_Action::Update(Monster* pMonster) 
 {
-    // Logique d'attaque (lancer une attaque, vérification de collision, etc.)
+    if (pMonster->mTarget != nullptr)
+    {
+        pMonster->OrientToTarget();
+    }
 }
 
 void sAttack_Action::End(Monster* pMonster) 
@@ -76,6 +80,14 @@ void sReturnToPosition_Action::Start(Monster* pMonster)
     pMonster->SetImage("skeleton_walk_strip8");
     if (pMonster->mWalkAnimator) pMonster->mWalkAnimator->Reset();
     pMonster->LineColor = sf::Color::Red;
+    if (pMonster->InitialPosition.x < pMonster->GetPosition().x)
+    {
+        pMonster->FaceLeft();
+    }
+    else
+    {
+        pMonster->FaceRight();
+    }
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 
@@ -85,6 +97,8 @@ void sReturnToPosition_Action::Update(Monster* pMonster)
 
 void sReturnToPosition_Action::End(Monster* pMonster) 
 {
+    pMonster->StopGo();
+    pMonster->OrientToTarget();
     pMonster->isMoving = false;
 }
 

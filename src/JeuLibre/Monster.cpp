@@ -34,7 +34,7 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
         *GameManager::Get()->GetAssetManager(),
         std::string("skeleton_attack_strip7"),
         7,    // nombre de frames roll
-        0.04f  // durée par frame roll
+        AttackSpeed  // durée par frame roll
     );
 
     // --- ÉTAT IDLE ---
@@ -52,8 +52,8 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
         // -> GoBack (si le joueur est trop loin)
         {
             auto transition = bMonsterIdle->CreateTransition(State::sGoBack);
-            auto condition = transition->AddCondition<FarFromPlayerCondition>();
-            condition->expected = true;
+            auto condition = transition->AddCondition<IsAtHome>();
+            condition->expected = false;
         }
     }
 
@@ -98,8 +98,8 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
         // -> Idle (si le monstre est revenu à sa position d'origine)
         {
             auto transition = bGoBack->CreateTransition(State::sIdle);
-            auto condition = transition->AddCondition<FarFromPlayerCondition>(); // Une autre condition pour vérifier si la position est atteinte
-            condition->expected = false;
+            auto condition = transition->AddCondition<IsAtHome>(); // Une autre condition pour vérifier si la position est atteinte
+            condition->expected = true;
         }
 
         // -> Walk (si le joueur revient dans la zone)
@@ -109,8 +109,6 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
             condition->expected = true;
         }
     }
-    std::cout << GetPosition().x << std::endl;
-    InitialPosition = { GetPosition().x, GetPosition().y };
 
     DeffensiveMonsterState.SetState(State::sIdle);
 }
@@ -127,7 +125,7 @@ void Monster::OnAnimationUpdate()
     float dt = GetDeltaTime();
     int state = DeffensiveMonsterState.GetCurrentState();
     // Mise à jour des animations selon l'état
-    if (state == 1 || state == 4) {
+    if (state == 1 || state == 3) {
         mWalkAnimator->Update(dt);
     }
     else if (state == 0 && mIdleAnimator) {
@@ -148,9 +146,28 @@ void Monster::FaceLeft()
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
 }
 
+void Monster::SetInitialPosition()
+{
+    InitialPosition = { GetPosition().x, GetPosition().y };
+}
+
 void Monster::SetTarget(Entity* _Target)
 {
     mTarget = _Target;
+}
+
+void Monster::OrientToTarget()
+{
+    if (!mTarget) return;
+
+    if (mTarget->GetPosition().x < GetPosition().x)
+    {
+        FaceLeft();
+    }
+    else
+    {
+        FaceRight();
+    }
 }
 
 void Monster::OnUpdate()
@@ -160,7 +177,7 @@ void Monster::OnUpdate()
 
     if (true)
     {
-        if (mTarget == nullptr) {return;}
+        if (!mTarget) return;
         Debug::DrawLine(mTarget->GetPosition().x, mTarget->GetPosition().y, GetPosition().x, GetPosition().y, LineColor);
     }
 }

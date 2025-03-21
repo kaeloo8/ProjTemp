@@ -23,6 +23,7 @@ protected:
 public:
 	bool KeyHPressed;
 	bool KeyEscPressed;
+	bool KeyMPressed;
 	std::string SceneName;
 
 	template<typename T>
