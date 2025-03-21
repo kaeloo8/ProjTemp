@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Pointer.h"
+#include "CameraSys.h"
 #include "UI.h"
 #include "OptionMenu.h"
 
@@ -13,12 +14,18 @@ class SceneGorille : public Scene
 	OptionMenu* Options;
 	Pointer* lPointer;
 
+	CameraSys* cam;
 	Player* lPlayer;
 	UI* LifeBar;
 	UI* ButtonCancel;
 	UI* ButtonValid;
+	
+	UI* Background;
+	UI* Background2;
 
 	OptionMenu* optionsMenu = nullptr;
+
+	bool mOpen;
 
 
 public:
