@@ -23,7 +23,7 @@ void SceneChevalier::OnInitialize()
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
-
+    /*
     for (int i = 0;i < 10; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
@@ -33,7 +33,7 @@ void SceneChevalier::OnInitialize()
         M->AddAABBHitbox();
         M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
         M->Layout = 2;
-    }
+    }*/
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
     cam->SetTarget(lPlayer);
