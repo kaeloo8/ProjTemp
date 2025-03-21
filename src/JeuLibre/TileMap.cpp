@@ -7,7 +7,7 @@
 
 void TileMap::create(const std::string& path)
 {
-    float tileSize = 30.0f; // Taille fixe des tiles
+     // Taille fixe des tiles
     float posX = 0;
     float posY = 0;
 
@@ -26,9 +26,13 @@ void TileMap::create(const std::string& path)
         std::vector<Tile> lineTiles;
         posX = 0; // Réinitialisation de X pour chaque ligne
 
-        for (char c : line) {
-            std::string textureId(1, c);
-            const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture(textureId);
+        std::istringstream lineStream(line);
+        std::string textureId;
+
+        while (lineStream >> textureId) { // Extraction propre en ignorant les espaces
+            const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture("TileMap_"+textureId);
+
+            std::cout << texture.getSize().x << " : " << texture.getSize().y << std::endl;
 
             // Vérification que la texture est valide
             if (texture.getSize().x == 0 || texture.getSize().y == 0) {
@@ -36,9 +40,8 @@ void TileMap::create(const std::string& path)
                 continue;
             }
 
-            // Debug : Afficher les infos de la tile
-
-            lineTiles.emplace_back(c, texture, posX, posY);
+            // Ajout de la tile
+            lineTiles.emplace_back(textureId, texture, posX, posY);
             posX += tileSize;
         }
 

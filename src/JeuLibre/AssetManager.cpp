@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 
 AssetManager::AssetManager() {
 
@@ -56,13 +57,17 @@ void AssetManager::parseTileMap(const std::string& chemin, const std::string& fi
             sf::Texture tileTexture;
             tileTexture.loadFromImage(fullTexture.copyToImage(), sf::IntRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight));
 
-            std::string tileName = baseName + "_" + std::to_string(index);
+            // Formatage de l'index sur 4 chiffres
+            std::ostringstream formattedIndex;
+            formattedIndex << std::setw(4) << std::setfill('0') << index;
+
+            std::string tileName = baseName + "_" + formattedIndex.str();
             images.push_back({ tileName, tileTexture });
 
             std::cout << "Tile chargée : " << tileName << std::endl;
             index++;
 
-            loaded++;  // Déplacer `loaded++` ici pour éviter les doublons
+            loaded++;
             loadedImg++;
             updateProgressBar();
         }
