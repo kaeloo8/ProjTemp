@@ -175,6 +175,16 @@ void Monster::OnUpdate()
     OnAnimationUpdate();
     DeffensiveMonsterState.Update();
 
+    if (isAttacking)
+    {
+        AttackTimer -= GameManager::Get()->GetDeltaTime();
+
+        if (AttackTimer <= 0)
+        {
+            isAttacking = false;
+        }
+    }
+
     if (true)
     {
         if (!mTarget) return;

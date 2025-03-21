@@ -8,6 +8,7 @@
 bool AttackThePlayerCondition::OnTest(Monster* pMonster)
 {
     if (!pMonster || !pMonster->mTarget) return false;
+    if (pMonster->isAttacking == true) return true;
 
     float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
     float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
@@ -20,7 +21,7 @@ bool AttackThePlayerCondition::OnTest(Monster* pMonster)
 bool DistanceToPlayerCondition::OnTest(Monster* pMonster)
 {
     if (!pMonster || !pMonster->mTarget) return false;
-
+    
     float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
     float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
     float distanceSquared = dx * dx + dy * dy;

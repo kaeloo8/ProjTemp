@@ -58,6 +58,7 @@ void sAttack_Action::Start(Monster* pMonster)
     pMonster->SetImage("skeleton_attack_strip7");
     if (pMonster->mAttackAnimator) pMonster->mAttackAnimator->Reset();
     pMonster->LineColor = sf::Color::Magenta;
+    pMonster->AttackTimer = 7 * pMonster->AttackSpeed;
 }
 
 void sAttack_Action::Update(Monster* pMonster) 
