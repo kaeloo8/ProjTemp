@@ -45,7 +45,7 @@ void sFollowPlayer_Action::Update(Monster* pMonster)
 void sFollowPlayer_Action::End(Monster* pMonster) 
 {
     pMonster->isMoving = false;
-    //pMonster->SetVelocity(0, 0); // Ajoute cette ligne pour stopper le mouvement
+    pMonster->StopGo();
 }
 
 
@@ -61,7 +61,7 @@ void sAttack_Action::Start(Monster* pMonster)
 
 void sAttack_Action::Update(Monster* pMonster) 
 {
-    // Logique d'attaque (lancer une attaque, vérification de collision, etc.)
+
 }
 
 void sAttack_Action::End(Monster* pMonster) 
@@ -85,6 +85,7 @@ void sReturnToPosition_Action::Update(Monster* pMonster)
 
 void sReturnToPosition_Action::End(Monster* pMonster) 
 {
+    pMonster->StopGo();
     pMonster->isMoving = false;
 }
 

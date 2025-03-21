@@ -49,7 +49,7 @@ public:
     bool isAttacking;
 
     float SeeDistance = 500;
-    float AttackDistance = 100;
+    float AttackDistance = 30;
 
     Monster();
     ~Monster();
@@ -57,6 +57,7 @@ public:
     void FaceRight();
     void FaceLeft();
 
+    void SetInitialPosition();
     void SetTarget(Entity* _Target);
 
     void OnUpdate() override;

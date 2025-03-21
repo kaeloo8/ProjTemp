@@ -25,6 +25,7 @@ void SceneEloulou::OnInitialize() {
     Skeleton->SetScale(3, 3);
     Skeleton->SetOrigin(0.5f, 0.5f);
     Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
+    Skeleton->SetInitialPosition();
     Skeleton->SetSpeed(100);
     Skeleton->SetTarget(lPlayer);
     Skeleton->Layout = 2;

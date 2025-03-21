@@ -109,8 +109,6 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
             condition->expected = true;
         }
     }
-    std::cout << GetPosition().x << std::endl;
-    InitialPosition = { GetPosition().x, GetPosition().y };
 
     DeffensiveMonsterState.SetState(State::sIdle);
 }
@@ -148,6 +146,11 @@ void Monster::FaceLeft()
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
 }
 
+void Monster::SetInitialPosition()
+{
+    InitialPosition = { GetPosition().x, GetPosition().y };
+}
+
 void Monster::SetTarget(Entity* _Target)
 {
     mTarget = _Target;
@@ -163,6 +166,7 @@ void Monster::OnUpdate()
         if (mTarget == nullptr) {return;}
         Debug::DrawLine(mTarget->GetPosition().x, mTarget->GetPosition().y, GetPosition().x, GetPosition().y, LineColor);
     }
+    std::cout << mSpeed << std::endl;
 }
 
 void Monster::OnCollision(Entity* pCollidedWith)
