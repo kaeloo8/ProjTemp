@@ -21,6 +21,21 @@ bool UI::HandleClick(float mouseX, float mouseY)
 	
 }
 
+bool UI::HandleClick(sf::Vector2f MousePos)
+{
+	if (IsClickable == false) { return 0; }
+
+	if (mSprite.getGlobalBounds().contains(MousePos))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+	return false;
+}
+
 void UI::Open()
 {
 	std::cout << "Open" << std::endl;
