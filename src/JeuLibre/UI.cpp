@@ -6,7 +6,7 @@ UI::UI()
 	mSprite = mImage;
 }
 
-void UI::HandleClick(float mouseX, float mouseY)
+bool UI::HandleClick(float mouseX, float mouseY)
 {
 	if (mSprite.getGlobalBounds().contains(mouseX, mouseY))
 	{
