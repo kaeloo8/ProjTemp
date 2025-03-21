@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Debug.h"
 #include "Condition.h"
 #include "Monster.h"
 #include "MonsterAction.h"
@@ -13,7 +14,6 @@
 
 Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
-    InitialPosition = { GetPosition().x, GetPosition().y };
 
     mIdleAnimator = new Animator(
         &mSprite,
@@ -42,22 +42,18 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
         bMonsterIdle->AddAction(new sIdle_Action());
 
-        //-> Walk (se déplacer)
+        // -> Walk (si le joueur est proche)
         {
             auto transition = bMonsterIdle->CreateTransition(State::sWalk);
             auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
+            condition->expected = true;
         }
 
-        //-> Attack (attaquer)
+        // -> GoBack (si le joueur est trop loin)
         {
-        }
-
-        //-> GoBack (revenir à la position d'origine)
-        {
-            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
-            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
+            auto transition = bMonsterIdle->CreateTransition(State::sGoBack);
+            auto condition = transition->AddCondition<FarFromPlayerCondition>();
+            condition->expected = true;
         }
     }
 
@@ -66,19 +62,18 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         Behaviour<Monster>* bWalk = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
         bWalk->AddAction(new sFollowPlayer_Action());
 
-        //-> Idle (rester inactif)
+        // -> Idle (si le joueur est trop loin, donc il ne peut plus le suivre)
         {
             auto transition = bWalk->CreateTransition(State::sIdle);
-            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = false;  // Le monstre commence à marcher si le joueur est à une certaine distance
+            auto condition = transition->AddCondition<FarFromPlayerCondition>();
+            condition->expected = true;
         }
 
-        //-> Attack (attaquer)
+        // -> Attack (si le monstre est assez proche pour attaquer)
         {
-        }
-
-        //-> GoBack (revenir à la position d'origine)
-        {
+            auto transition = bWalk->CreateTransition(State::sAttack);
+            auto condition = transition->AddCondition<AttackThePlayerCondition>(); // Ajoute une condition de distance plus proche
+            condition->expected = true;
         }
     }
 
@@ -87,16 +82,11 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         Behaviour<Monster>* bAttack = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
         bAttack->AddAction(new sAttack_Action());
 
-        //-> Idle (rester inactif)
+        // -> Walk (si le joueur s'éloigne)
         {
-        }
-
-        //-> Walk (se déplacer)
-        {
-        }
-
-        //-> GoBack (revenir à la position d'origine)
-        {
+            auto transition = bAttack->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<AttackThePlayerCondition>(); // Si le joueur fuit
+            condition->expected = false;
         }
     }
 
@@ -105,22 +95,22 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         Behaviour<Monster>* bGoBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
         bGoBack->AddAction(new sReturnToPosition_Action());
 
-        //-> Idle (rester inactif)
+        // -> Idle (si le monstre est revenu à sa position d'origine)
         {
+            auto transition = bGoBack->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<FarFromPlayerCondition>(); // Une autre condition pour vérifier si la position est atteinte
+            condition->expected = false;
         }
 
-        //-> Walk (se déplacer)
+        // -> Walk (si le joueur revient dans la zone)
         {
             auto transition = bGoBack->CreateTransition(State::sWalk);
             auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = true;  // Le monstre commence à marcher si le joueur est à une certaine distance
-        }
-
-        //-> Attack (attaquer)
-        {
+            condition->expected = true;
         }
     }
-
+    std::cout << GetPosition().x << std::endl;
+    InitialPosition = { GetPosition().x, GetPosition().y };
 
     DeffensiveMonsterState.SetState(State::sIdle);
 }
@@ -158,37 +148,25 @@ void Monster::FaceLeft()
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
 }
 
+void Monster::SetTarget(Entity* _Target)
+{
+    mTarget = _Target;
+}
+
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
     DeffensiveMonsterState.Update();
+
+    if (true)
+    {
+        if (mTarget == nullptr) {return;}
+        Debug::DrawLine(mTarget->GetPosition().x, mTarget->GetPosition().y, GetPosition().x, GetPosition().y, LineColor);
+    }
 }
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
-}
-
-void Monster::SetState(State state)
-{
-    if (mState != state)
-    {
-        mState = state;
-
-        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
-        if (mState == State::sIdle) {
-            SetImage("skeleton_idle_strip6");
-            if (mIdleAnimator) mIdleAnimator->Reset();
-        }
-        else if (mState == State::sWalk || mState == State::sGoBack) {
-            SetImage("skeleton_walk_strip8");
-            if (mWalkAnimator) mWalkAnimator->Reset();
-        }
-        else if (mState == State::sAttack) {
-            SetImage("skeleton_attack_strip7");
-            if (mAttackAnimator) mAttackAnimator->Reset();
-        }
-
-    }
 }
 
 void Monster::SetImage(const char* path)

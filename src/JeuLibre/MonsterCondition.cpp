@@ -5,28 +5,38 @@
 #include <iostream>
 #include <cmath> // Pour utiliser sqrt
 
-
-bool DistanceToPlayerCondition::OnTest(Monster* pMonster) 
+bool AttackThePlayerCondition::OnTest(Monster* pMonster)
 {
-    float distance = sqrt(pow(pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x, 2) +
-        pow(pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y, 2)); 
+    if (!pMonster || !pMonster->mTarget) return false;
 
-    if (distance < pMonster->SeeDistance)
-    {
-        return true;
-    }
-    if (distance > pMonster->SeeDistance)
-    {
-        return false;
-    }
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float AttackDistanceSquared = pMonster->AttackDistance * pMonster->AttackDistance;
+
+    return distanceSquared < AttackDistanceSquared;
 }
 
-
-bool FarFromPlayerCondition::OnTest(Monster* pMonster) 
+bool DistanceToPlayerCondition::OnTest(Monster* pMonster)
 {
-    if (pMonster->mTarget == nullptr) return false;
+    if (!pMonster || !pMonster->mTarget) return false;
 
-    float distance = sqrt(pow(pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x, 2) +
-        pow(pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y, 2));
-    return distance > pMonster->SeeDistance;
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float seeDistanceSquared = pMonster->SeeDistance * pMonster->SeeDistance;
+
+    return distanceSquared < seeDistanceSquared;
+}
+
+bool FarFromPlayerCondition::OnTest(Monster* pMonster)
+{
+    if (!pMonster || !pMonster->mTarget) return false;
+
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float seeDistanceSquared = pMonster->SeeDistance * pMonster->SeeDistance;
+
+    return distanceSquared > seeDistanceSquared;
 }
