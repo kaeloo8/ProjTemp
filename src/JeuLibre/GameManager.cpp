@@ -58,8 +58,17 @@ void GameManager::Update() {
 	if (mpScene) {
 		mpScene->OnUpdate();
 	}
+
 	if (camera) {
 		camera->OnUpdate();
+	}
+	else
+	{
+		sf::Vector2f pos(150.0f,-150.0f);
+		sf::View DefView;
+		DefView.setSize(Window->getSize().x, Window->getSize().y);
+		DefView.move(pos.x,pos.y);
+		Window->setView(DefView);
 	}
 
 	for (auto it = mEntities.begin(); it != mEntities.end();) {

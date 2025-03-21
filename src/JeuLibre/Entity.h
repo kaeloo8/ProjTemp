@@ -53,6 +53,7 @@ public:
     bool GoToPosition(int x, int y, float speed);
     bool MoveHorizontal(int x, float speed);
     bool MoveVertical(int y, float speed);
+    void StopGo();
 
     void SetPosition(float x, float y, float ratioX = 0.5f, float ratioY = 0.5f);
     void SetDirection(float x, float y, float speed = -1.f);

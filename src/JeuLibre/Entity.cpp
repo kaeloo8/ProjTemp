@@ -132,6 +132,13 @@ bool Entity::GoToPosition(int x, int y, float speed)
 	return true;
 }
 
+void Entity::StopGo()
+{
+	mDirection = { 0.f, 0.f };
+
+	mTarget.isSet = false;
+}
+
 bool Entity::MoveHorizontal(int x, float speed)
 {
 	if (GoToDirection(x, GetPosition().y, speed) == false)

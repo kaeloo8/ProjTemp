@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Animator.h"
 #include "StateMachine.h"
-
+#include "Player.h"
 
 class Monster : public Entity
 {
@@ -11,10 +11,15 @@ private:
     Animator* mWalkAnimator;
     Animator* mAttackAnimator;
 
+
     void OnAnimationUpdate();
+
+    sf::Vector2f InitialPosition;
+    sf::Color LineColor;
 
 public:
 
+    Entity* mTarget;
     StateMachine<Monster> DeffensiveMonsterState;
 
     enum State
@@ -30,43 +35,38 @@ public:
 
 private:
 
-    State mState = State::sIdle;
-
     int mTransitions[DeffensiveMonsterState_count][DeffensiveMonsterState_count] = {
-        {0,1,1,1},
-        {1,0,1,1},
-        {1,1,0,1},
-        {1,1,1,0}
+        {1,1,1,1},
+        {1,1,1,1},
+        {1,1,1,1},
+        {1,1,1,1}
     };
 
 public:
-
-    int Speed;
     int Life;
 
     bool isMoving;
     bool isAttacking;
 
-    const char* PlayerHaircut = "shorthair_idle_strip9";
+    float SeeDistance = 500;
+    float AttackDistance = 30;
 
     Monster();
     ~Monster();
 
-    float attackTimer;
-    float attackCooldown = 0.f;
-    const float attackDuration = 0.7f;
-
     void FaceRight();
     void FaceLeft();
 
+    void SetInitialPosition();
+    void SetTarget(Entity* _Target);
+
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
-
     void SetImage(const char* path) override;
 
     friend class sIdle_Action;
-    friend class sCharge_Action;
+    friend class sFollowPlayer_Action;
     friend class sAttack_Action;
-    friend class sGoBack_Action;
+    friend class sReturnToPosition_Action;
 };
 

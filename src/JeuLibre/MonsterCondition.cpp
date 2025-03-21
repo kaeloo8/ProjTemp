@@ -3,61 +3,40 @@
 #include "Monster.h"
 
 #include <iostream>
+#include <cmath> // Pour utiliser sqrt
 
-bool RugbyManCondition_HaveTheBall::OnTest(Monster* lRugbyMan)
+bool AttackThePlayerCondition::OnTest(Monster* pMonster)
 {
-    bool condition = false;
+    if (!pMonster || !pMonster->mTarget) return false;
 
-    return condition;
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float AttackDistanceSquared = pMonster->AttackDistance * pMonster->AttackDistance;
+
+    return distanceSquared < AttackDistanceSquared;
 }
 
-bool RugbyManCondition_TeamHasTheBall::OnTest(Monster* lRugbyMan)
+bool DistanceToPlayerCondition::OnTest(Monster* pMonster)
 {
-    bool condition = false;
+    if (!pMonster || !pMonster->mTarget) return false;
 
-    return condition;
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float seeDistanceSquared = pMonster->SeeDistance * pMonster->SeeDistance;
+
+    return distanceSquared < seeDistanceSquared;
 }
 
-bool RugbyManCondition_NearEnnemy::OnTest(Monster* lRugbyMan)
+bool FarFromPlayerCondition::OnTest(Monster* pMonster)
 {
-    bool condition = false;
+    if (!pMonster || !pMonster->mTarget) return false;
 
-    return condition;
-}
+    float dx = pMonster->GetPosition().x - pMonster->mTarget->GetPosition().x;
+    float dy = pMonster->GetPosition().y - pMonster->mTarget->GetPosition().y;
+    float distanceSquared = dx * dx + dy * dy;
+    float seeDistanceSquared = pMonster->SeeDistance * pMonster->SeeDistance;
 
-bool RugbyManCondition_NearMate::OnTest(Monster* lRugbyMan)
-{
-    bool condition = false;
-
-    return condition;
-}
-
-
-bool RugbyManCondition_EnnemieAveBall::OnTest(Monster* lRugbyMan)
-{
-    bool condition = false;
-
-    return condition;
-}
-
-bool RugbyManCondition_AllieAveBall::OnTest(Monster* lRugbyMan)
-{
-    bool condition = false;
-
-    return condition;
-}
-
-
-bool RugbyManCondition_DebugModeOn::OnTest(Monster* lRugbyMan)
-{
-    bool condition = false;
-
-    return condition;
-}
-
-bool RugbyManCondition_devantlemecqualaballe::OnTest(Monster* lRugbyMan)
-{
-    bool condition = false;
-
-    return condition;
+    return distanceSquared > seeDistanceSquared;
 }

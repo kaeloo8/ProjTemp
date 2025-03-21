@@ -13,6 +13,8 @@ void GameManager::LaunchScene()
 	for (auto En : mEntities) {
 		En->Destroy();
 	}
+	camera = nullptr;
+	
 
 	T* newScene = new T();
 	newScene->SetGameManager(this);
