@@ -16,6 +16,8 @@ class UI : public Entity
     float mGapX = 0;
     float mGapY = 0;
 
+    bool IsClickable;
+
 
 public:
     

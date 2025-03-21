@@ -8,22 +8,28 @@ UI::UI()
 
 bool UI::HandleClick(float mouseX, float mouseY)
 {
+	if (IsClickable == false) { return 0; }
+
 	if (mSprite.getGlobalBounds().contains(mouseX, mouseY))
 	{
-		std::cout << "Retour Menu" << std::endl;
-		GameManager::Get()->LaunchScene<S0Menu>();
+		return 1;
+	}
+	else
+	{
+		return 0;
 	}
 	
 }
 
 void UI::Open()
 {
+	std::cout << "Open" << std::endl;
 
 }
 
 void UI::Close() 
 {
-
+	std::cout << "Close" << std::endl;
 }
 
 void UI::SetPointer(Pointer* _pointer)

@@ -48,7 +48,6 @@ void SceneGorille::OnEvent(const sf::Event& event)
             std::cout << "Retour Menu" << std::endl;
             GameManager::Get()->LaunchScene<S0Menu>();
         }
-        Options->OpenOptionMenu();
     }
     else {
         KeyEscPressed = false;
@@ -58,8 +57,7 @@ void SceneGorille::OnEvent(const sf::Event& event)
         if (!KeyMPressed) {
             std::cout << "Options Ouvert" << std::endl;
             KeyMPressed = true;
-        }
-        ;
+        };
     }
     else
     {
