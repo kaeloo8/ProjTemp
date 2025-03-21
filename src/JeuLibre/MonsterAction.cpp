@@ -52,6 +52,7 @@ void sFollowPlayer_Action::End(Monster* pMonster)
 void sAttack_Action::Start(Monster* pMonster) 
 {
     pMonster->isAttacking = true;
+    pMonster->isMoving = false;
     std::cout << "Attack" << std::endl;
     pMonster->SetImage("skeleton_attack_strip7");
     if (pMonster->mAttackAnimator) pMonster->mAttackAnimator->Reset();
@@ -72,6 +73,8 @@ void sReturnToPosition_Action::Start(Monster* pMonster)
 {
     pMonster->isMoving = true;
     std::cout << "goBack" << std::endl;
+    pMonster->SetImage("skeleton_walk_strip8");
+    if (pMonster->mWalkAnimator) pMonster->mWalkAnimator->Reset();
     pMonster->LineColor = sf::Color::Red;
 }
 

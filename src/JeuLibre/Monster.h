@@ -35,8 +35,6 @@ public:
 
 private:
 
-    State mState = State::sIdle;
-
     int mTransitions[DeffensiveMonsterState_count][DeffensiveMonsterState_count] = {
         {1,1,1,1},
         {1,1,1,1},
@@ -55,10 +53,6 @@ public:
 
     Monster();
     ~Monster();
-
-    float attackTimer;
-    float attackCooldown = 0.f;
-    const float attackDuration = 0.7f;
 
     void FaceRight();
     void FaceLeft();

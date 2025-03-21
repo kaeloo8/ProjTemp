@@ -12,7 +12,7 @@
 
 // ... le reste du code reste inchangé ...
 
-Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
+Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
 
     mIdleAnimator = new Animator(
@@ -27,14 +27,14 @@ Monster::Monster() : mState(State::sIdle), DeffensiveMonsterState(this, State::s
         *GameManager::Get()->GetAssetManager(),
         std::string("skeleton_walk_strip8"),
         8,    // nombre de frames walk
-        0.1f  // durée par frame walk
+        0.07f  // durée par frame walk
     );
     mAttackAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
         std::string("skeleton_attack_strip7"),
         7,    // nombre de frames roll
-        0.07f  // durée par frame roll
+        0.04f  // durée par frame roll
     );
 
     // --- ÉTAT IDLE ---
@@ -125,15 +125,15 @@ Monster::~Monster()
 void Monster::OnAnimationUpdate()
 {
     float dt = GetDeltaTime();
-
+    int state = DeffensiveMonsterState.GetCurrentState();
     // Mise à jour des animations selon l'état
-    if (mState == sWalk && mWalkAnimator || mState == State::sGoBack && mWalkAnimator) {
+    if (state == 1 || state == 4) {
         mWalkAnimator->Update(dt);
     }
-    else if (mState == sIdle && mIdleAnimator) {
+    else if (state == 0 && mIdleAnimator) {
         mIdleAnimator->Update(dt);
     }
-    else if (mState == sAttack && mAttackAnimator) {
+    else if (state == 2 && mAttackAnimator) {
         mAttackAnimator->Update(dt);
     }
 }
