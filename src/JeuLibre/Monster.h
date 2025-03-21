@@ -14,13 +14,13 @@ private:
 
     void OnAnimationUpdate();
 
-    sf::Vector2f InitialPosition;
     sf::Color LineColor;
 
 public:
 
-    Entity* mTarget;
+    Entity* mTarget = nullptr;
     StateMachine<Monster> DeffensiveMonsterState;
+    sf::Vector2f InitialPosition;
 
     enum State
     {
@@ -28,6 +28,8 @@ public:
         sWalk,
         sAttack,
         sGoBack,
+        sStunt,
+        sDied,
 
         sCount
     };
@@ -49,7 +51,8 @@ public:
     bool isAttacking;
 
     float SeeDistance = 500;
-    float AttackDistance = 30;
+    float AttackDistance = 50;
+    float AttackSpeed = 0.08f;
 
     Monster();
     ~Monster();
@@ -59,6 +62,7 @@ public:
 
     void SetInitialPosition();
     void SetTarget(Entity* _Target);
+    void OrientToTarget();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

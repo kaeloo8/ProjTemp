@@ -40,3 +40,16 @@ bool FarFromPlayerCondition::OnTest(Monster* pMonster)
 
     return distanceSquared > seeDistanceSquared;
 }
+
+bool IsAtHome::OnTest(Monster* pMonster)
+{
+    if (!pMonster || !pMonster->mTarget) return false;
+
+    if (pMonster->GetPosition() == pMonster->InitialPosition)
+    {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
