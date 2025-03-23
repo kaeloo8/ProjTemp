@@ -119,16 +119,10 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Walk (si le joueur est proche)
         {
-            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
-            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = true;
         }
 
         // -> GoBack (si le joueur est trop loin)
         {
-            auto transition = bMonsterIdle->CreateTransition(State::sGoBack);
-            auto condition = transition->AddCondition<IsAtHome>();
-            condition->expected = false;
         }
     }
 
@@ -139,16 +133,10 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Idle (si le joueur est trop loin, donc il ne peut plus le suivre)
         {
-            auto transition = bWalk->CreateTransition(State::sIdle);
-            auto condition = transition->AddCondition<FarFromPlayerCondition>();
-            condition->expected = true;
         }
 
         // -> Attack (si le monstre est assez proche pour attaquer)
         {
-            auto transition = bWalk->CreateTransition(State::sAttack);
-            auto condition = transition->AddCondition<AttackThePlayerCondition>(); // Ajoute une condition de distance plus proche
-            condition->expected = true;
         }
     }
 
@@ -159,9 +147,6 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Walk (si le joueur s'éloigne)
         {
-            auto transition = bAttack->CreateTransition(State::sWalk);
-            auto condition = transition->AddCondition<AttackThePlayerCondition>(); // Si le joueur fuit
-            condition->expected = false;
         }
     }
 
@@ -172,16 +157,10 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Idle (si le monstre est revenu à sa position d'origine)
         {
-            auto transition = bGoBack->CreateTransition(State::sIdle);
-            auto condition = transition->AddCondition<IsAtHome>(); // Une autre condition pour vérifier si la position est atteinte
-            condition->expected = true;
         }
 
         // -> Walk (si le joueur revient dans la zone)
         {
-            auto transition = bGoBack->CreateTransition(State::sWalk);
-            auto condition = transition->AddCondition<DistanceToPlayerCondition>();
-            condition->expected = true;
         }
     }
 
@@ -218,7 +197,6 @@ void Monster::OrientToTarget(bool Oposite)
             FaceLeft();
         }
     }
-    
 }
 
 void Monster::OnUpdate()

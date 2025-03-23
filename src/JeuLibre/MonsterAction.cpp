@@ -85,7 +85,6 @@ void sAttack_Action::Start(Monster* pMonster)
 void sAttack_Action::Update(Monster* pMonster) 
 {
 	pMonster->OrientToTarget(true);
-
 }
 
 void sAttack_Action::End(Monster* pMonster) 

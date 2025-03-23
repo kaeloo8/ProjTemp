@@ -3,26 +3,21 @@
 #include "Condition.h"
 #include "Monster.h"
 
-class AttackThePlayerCondition : public Condition<Monster>
+class AttackDistance : public Condition<Monster>
 {
 public:
 	bool OnTest(Monster* owner) override;
 };
 
-class DistanceToPlayerCondition : public Condition<Monster>
+class CanSeeThePlayer : public Condition<Monster>
 {
 public:
 	bool OnTest(Monster* owner) override;
 };
 
-class FarFromPlayerCondition : public Condition<Monster>
+class IsAtInitialPosition : public Condition<Monster>
 {
 public:
 	bool OnTest(Monster* owner) override;
 };
 
-class IsAtHome : public Condition<Monster>
-{
-public:
-	bool OnTest(Monster* owner) override;
-};
