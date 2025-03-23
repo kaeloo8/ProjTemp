@@ -4,106 +4,179 @@
 #include "Debug.h"
 #include <iostream>
 
-
+//----------------------  IDLE  ---------------------------------------
 void sIdle_Action::Start(Monster* pMonster)
 {
-    pMonster->isMoving = false;
-    std::cout << "IDle" << std::endl;
-    pMonster->SetImage("skeleton_idle_strip6");
-    if (pMonster->mIdleAnimator) pMonster->mIdleAnimator->Reset();
-    pMonster->LineColor = sf::Color::Blue;
+	pMonster->isMoving = false;
+	pMonster->isAttacking = false;
 }
 
 void sIdle_Action::Update(Monster* pMonster) 
 {
-    if (pMonster->mTarget != nullptr)
-    {
-    }
+
 }
 
 void sIdle_Action::End(Monster* pMonster)
 {
+	
 }
 
+//----------------------  WALK  ---------------------------------------
 void sFollowPlayer_Action::Start(Monster* pMonster) 
 {
-    pMonster->isMoving = true;
-    std::cout << "Follow" << std::endl;
-    pMonster->SetImage("skeleton_walk_strip8");
-    if (pMonster->mWalkAnimator) pMonster->mWalkAnimator->Reset();
-    pMonster->LineColor = sf::Color::Green;
+	pMonster->isMoving = true;
 }
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
 {
-    if (pMonster->mTarget != nullptr)
-    {
-        pMonster->GoToPosition(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed );
-        pMonster->OrientToTarget();
-    }
+
 }
 
 void sFollowPlayer_Action::End(Monster* pMonster) 
 {
-    pMonster->isMoving = false;
-    pMonster->StopGo();
+
 }
 
+//----------------------  CHARGE  ---------------------------------------
+void sCharge_Action::Start(Monster* pMonster)
+{
+	pMonster->isMoving = true;
+}
 
+void sCharge_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sCharge_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  RUNAWAY  ---------------------------------------
+void sRunAway_Action::Start(Monster* pMonster)
+{
+	pMonster->isMoving = true;
+}
+
+void sRunAway_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sRunAway_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  ATTACK  ---------------------------------------
 void sAttack_Action::Start(Monster* pMonster) 
 {
-    pMonster->isAttacking = true;
-    pMonster->isMoving = false;
-    std::cout << "Attack" << std::endl;
-    pMonster->SetImage("skeleton_attack_strip7");
-    if (pMonster->mAttackAnimator) pMonster->mAttackAnimator->Reset();
-    pMonster->LineColor = sf::Color::Magenta;
-    pMonster->AttackTimer = 7 * pMonster->AttackSpeed;
+	pMonster->isAttacking = true;
 }
 
 void sAttack_Action::Update(Monster* pMonster) 
 {
-    if (pMonster->mTarget != nullptr)
-    {
-        pMonster->OrientToTarget();
-        if (pMonster->mAttackAnimator->GetFrameNumber() == 6)
-        {
-            pMonster->mTarget->DamageLife( 10);
-        }
-    }
+
 }
 
 void sAttack_Action::End(Monster* pMonster) 
 {
-    pMonster->isAttacking = false;
+
 }
 
+//----------------------  SHOT  ---------------------------------------
+void sShot_Action::Start(Monster* pMonster)
+{
+	pMonster->isShooting = true;
+}
+
+void sShot_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sShot_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  GOBACK  ---------------------------------------
 void sReturnToPosition_Action::Start(Monster* pMonster) 
 {
-    pMonster->isMoving = true;
-    std::cout << "goBack" << std::endl;
-    pMonster->SetImage("skeleton_walk_strip8");
-    if (pMonster->mWalkAnimator) pMonster->mWalkAnimator->Reset();
-    pMonster->LineColor = sf::Color::Red;
-    if (pMonster->InitialPosition.x < pMonster->GetPosition().x)
-    {
-        pMonster->FaceLeft();
-    }
-    else
-    {
-        pMonster->FaceRight();
-    }
+	pMonster->isMoving = true;
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 
 {
-    pMonster->GoToPosition(pMonster->InitialPosition.x, pMonster->InitialPosition.y, pMonster->mSpeed);
+
 }
 
 void sReturnToPosition_Action::End(Monster* pMonster) 
 {
-    pMonster->StopGo();
-    pMonster->OrientToTarget();
-    pMonster->isMoving = false;
+
 }
 
+//----------------------  STUNT  ---------------------------------------
+void sStunt_Action::Start(Monster* pMonster)
+{
+	pMonster->isMoving = false;
+}
+
+void sStunt_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sStunt_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  DAMAGED  ---------------------------------------
+void sDamaged_Action::Start(Monster* pMonster)
+{
+
+}
+
+void sDamaged_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sDamaged_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  DIED  ---------------------------------------
+void sDied_Action::Start(Monster* pMonster)
+{
+
+}
+
+void sDied_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sDied_Action::End(Monster* pMonster)
+{
+
+}
+
+//----------------------  VICTORY  ---------------------------------------
+void sVictory_Action::Start(Monster* pMonster)
+{
+
+}
+
+void sVictory_Action::Update(Monster* pMonster)
+{
+
+}
+
+void sVictory_Action::End(Monster* pMonster)
+{
+
+}
