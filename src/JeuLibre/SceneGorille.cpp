@@ -28,6 +28,13 @@ void SceneGorille::OnInitialize()
     ButtonCancel->AddAABBHitbox();
     ButtonCancel->Layout = 1;
 
+    ButtonValid = CreateEntity<UI>("confirm");
+    ButtonValid->SetScale(3, 3);
+    ButtonValid->SetOrigin(0.5f, 0.5f);
+    ButtonValid->SetPosition((GetWindowWidth() / 3), (GetWindowHeight() / 2));
+    ButtonValid->AddAABBHitbox();
+    ButtonValid->Layout = 1;
+
     LifeBar = CreateEntity<UI>("greenbar_06");
     LifeBar->SetScale(3, 3);
     LifeBar->SetOrigin(0.5f, 0.5f);
