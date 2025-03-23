@@ -14,27 +14,90 @@
 
 Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
-    mIdleAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("skeleton_idle_strip6"),
-        6,    // nombre de frames idle
-        0.2f  // durée par frame idle
-    );
-    mWalkAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("skeleton_walk_strip8"),
-        8,    // nombre de frames walk
-        0.07f  // durée par frame walk
-    );
-    mAttackAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("skeleton_attack_strip7"),
-        7,    // nombre de frames roll
-        AttackSpeed  // durée par frame roll
-    );
+    MonsterName = "skeleton";
+    InitMonster(MonsterName);
+}
+
+Monster::~Monster()
+{
+    ClearAnimation();
+}
+
+void Monster::OnAnimationUpdate()
+{
+    float dt = GetDeltaTime();
+    int state = DeffensiveMonsterState.GetCurrentState();
+
+    if (state == 1 || state == 3) {
+        mWalkAnimator->Update(dt);
+    }
+    else if (state == 0 && mIdleAnimator) {
+        mIdleAnimator->Update(dt);
+    }
+    else if (state == 2 && mAttackAnimator) {
+        mAttackAnimator->Update(dt);
+    }
+}
+
+void Monster::FaceRight()
+{
+    GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
+}
+
+void Monster::FaceLeft()
+{
+    GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
+}
+
+void Monster::ClearAnimation()
+{
+    delete mIdleAnimator;    // 1
+    delete mWalkAnimator;    // 2 et 11
+    delete mChargeAnimator;  // 3
+    delete mRunAwayAnimator; // 4
+    delete mAttackAnimator;  // 5
+    delete mShotAnimator;    // 6
+    delete mStuntAnimator;   // 7
+    delete mDamagedAnimator; // 8
+    delete mDiedAnimator;    // 9
+    delete mVictoryAnimator; // 10
+}
+
+void Monster::SetInitialPosition()
+{
+    InitialPosition = { GetPosition().x, GetPosition().y };
+}
+
+void Monster::InitMonster(const char* _MonsterName)
+{
+    MonsterName = _MonsterName;
+
+    if (mIdleAnimator != nullptr)
+    {
+        ClearAnimation();
+    }
+
+    cIdle = std::string(MonsterName) + "_walk_strip8";
+    cWalk = std::string(MonsterName) + "_run_strip8";
+    cCharge = std::string(MonsterName) + "_run_strip8";
+    cRunAway = std::string(MonsterName) + "_roll_strip10";
+    cAttack = std::string(MonsterName) + "_idle_strip9";
+    cShot = std::string(MonsterName) + "_attack_strip10";
+    cStunt = std::string(MonsterName) + "_attack_strip10";
+    cDamaged = std::string(MonsterName) + "_attack_strip10";
+    cDied = std::string(MonsterName) + "_attack_strip10";
+    cVictory = std::string(MonsterName) + "_attack_strip10";
+
+    mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cIdle, 8, 0.1f);
+    mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cWalk, 9, 0.2f);
+    mChargeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cCharge, 8, 0.08f);
+    mRunAwayAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
+    mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cAttack, 10, 0.07f);
+    mShotAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cShot, 10, 0.1f);
+    mStuntAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cStunt, 10, 0.07f);
+    mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
+    mDiedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 10, 0.07f);
+    mVictoryAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cVictory, 10, 0.07f);
 
     // --- ÉTAT IDLE ---
     {
@@ -110,76 +173,6 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
     }
 
     DeffensiveMonsterState.SetState(State::sIdle);
-}
-
-Monster::~Monster()
-{
-    ClearAnimation();
-}
-
-void Monster::OnAnimationUpdate()
-{
-    float dt = GetDeltaTime();
-    int state = DeffensiveMonsterState.GetCurrentState();
-    // Mise à jour des animations selon l'état
-    if (state == 1 || state == 3) {
-        mWalkAnimator->Update(dt);
-    }
-    else if (state == 0 && mIdleAnimator) {
-        mIdleAnimator->Update(dt);
-    }
-    else if (state == 2 && mAttackAnimator) {
-        mAttackAnimator->Update(dt);
-    }
-}
-
-void Monster::FaceRight()
-{
-    GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
-}
-
-void Monster::FaceLeft()
-{
-    GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
-}
-
-void Monster::ClearAnimation()
-{
-    delete mIdleAnimator;    // 1
-    delete mWalkAnimator;    // 2 et 11
-    delete mChargeAnimator;  // 3
-    delete mRunAwayAnimator; // 4
-    delete mAttackAnimator;  // 5
-    delete mShotAnimator;    // 6
-    delete mStuntAnimator;   // 7
-    delete mDamagedAnimator; // 8
-    delete mDiedAnimator;    // 9
-    delete mVictoryAnimator; // 10
-}
-
-void Monster::SetInitialPosition()
-{
-    InitialPosition = { GetPosition().x, GetPosition().y };
-}
-
-void Monster::InitMonster(const char* _MonsterName)
-{
-    MonsterName = _MonsterName;
-
-    if (mIdleAnimator != nullptr)
-    {
-        ClearAnimation();
-    }
-
-    cIdle = std::string(MonsterName) + "_walk_strip8";
-    cWalk = std::string(MonsterName) + "_run_strip8";
-    cRunAway = std::string(MonsterName) + "_roll_strip10";
-    cAttack = std::string(MonsterName) + "_idle_strip9";
-    cShot = std::string(MonsterName) + "_attack_strip10";
-    cStunt = std::string(MonsterName) + "_attack_strip10";
-    cDamaged = std::string(MonsterName) + "_attack_strip10";
-    cDied = std::string(MonsterName) + "_attack_strip10";
-    cVictory = std::string(MonsterName) + "_attack_strip10";
 }
 
 void Monster::SetTarget(Entity* _Target)

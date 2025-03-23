@@ -57,11 +57,11 @@ public:
 
         sCount
     };
-    static const int DeffensiveMonsterState_count = (int)State::sCount;
+    static const int MonsterState_count = (int)State::sCount;
 
 private:
 
-    int mTransitions[DeffensiveMonsterState_count][DeffensiveMonsterState_count] = {
+    int mTransitions[MonsterState_count][MonsterState_count] = {
         {1,1,1,1},
         {1,1,1,1},
         {1,1,1,1},
@@ -87,6 +87,7 @@ public:
     float AttackTimer = 3;
 
     Monster();
+    Monster(const char* _MonsterName);
     ~Monster();
 
     void FaceRight();
