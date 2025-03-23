@@ -14,11 +14,11 @@ GameManager::GameManager() {
 	Window = nullptr;
 	DeltaTime = 0.0f;
 	mpScene = nullptr;
-	 widthWin = -1;
-	 heightWin = -1;
-	 SceneLoaded.clear();
-	 NumberScene = 0;
-	 DrawHitBox = true;
+	widthWin = -1;
+	heightWin = -1;
+	SceneLoaded.clear();
+	NumberScene = 0;
+	DrawHitBox = true;
 }
 
 GameManager::~GameManager() {

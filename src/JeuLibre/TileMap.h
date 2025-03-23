@@ -19,6 +19,9 @@ struct Tile {
 
 class TileMap : public Entity {
 public:
+
+    Tile* SelectedTile;
+
     float tileSize = 50;
     std::vector<std::vector<Tile>> tiles;
 

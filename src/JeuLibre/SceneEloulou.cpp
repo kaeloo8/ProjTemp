@@ -8,6 +8,7 @@
 void SceneEloulou::OnInitialize() {
 
     GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+    map = new TileMap();
 
     Cam = CreateEntity<CameraSys>("0");
     Cam->Layout = -1;
@@ -90,12 +91,17 @@ void SceneEloulou::OnInitialize() {
     Button6->SetScale(sizeX, sizeY);
     Button6->Layout = 2;
 
-    TileMap* map = new TileMap();
     map->create("mapVille"); // Charge la map
     GameManager::Get()->SetTileMap(map);
 }
 
 void SceneEloulou::OnEvent(const sf::Event& event) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
+        if (!KeyEscPressed) {
+            std::cout << "Tile select" << std::endl;
+            map->tiles[1].clear();
+        }
+    }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         if (!KeyEscPressed) {
@@ -141,5 +147,5 @@ void SceneEloulou::Load()
 void SceneEloulou::OnUpdate() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
     lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2, mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
-    std::cout << lPlayer->GetPosition().x << std::endl;
+    //std::cout << lPlayer->GetPosition().x << std::endl;
 }
