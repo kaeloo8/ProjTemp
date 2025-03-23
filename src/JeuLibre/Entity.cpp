@@ -97,6 +97,12 @@ sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 	return position;
 }
 
+void Entity::SetLife(int _Life)
+{
+	mIsAlive = true;
+	mLife = _Life;
+}
+
 void Entity::HealLife(int _Heal)
 {
 	mLife = mLife + _Heal;

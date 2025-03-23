@@ -14,7 +14,6 @@
 
 Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
-
     mIdleAnimator = new Animator(
         &mSprite,
         *GameManager::Get()->GetAssetManager(),
@@ -115,9 +114,7 @@ Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(fa
 
 Monster::~Monster()
 {
-    delete mWalkAnimator;
-    delete mIdleAnimator;
-    delete mAttackAnimator;
+    ClearAnimation();
 }
 
 void Monster::OnAnimationUpdate()
@@ -146,9 +143,43 @@ void Monster::FaceLeft()
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
 }
 
+void Monster::ClearAnimation()
+{
+    delete mIdleAnimator;    // 1
+    delete mWalkAnimator;    // 2 et 11
+    delete mChargeAnimator;  // 3
+    delete mRunAwayAnimator; // 4
+    delete mAttackAnimator;  // 5
+    delete mShotAnimator;    // 6
+    delete mStuntAnimator;   // 7
+    delete mDamagedAnimator; // 8
+    delete mDiedAnimator;    // 9
+    delete mVictoryAnimator; // 10
+}
+
 void Monster::SetInitialPosition()
 {
     InitialPosition = { GetPosition().x, GetPosition().y };
+}
+
+void Monster::InitMonster(const char* _MonsterName)
+{
+    MonsterName = _MonsterName;
+
+    if (mIdleAnimator != nullptr)
+    {
+        ClearAnimation();
+    }
+
+    cIdle = std::string(MonsterName) + "_walk_strip8";
+    cWalk = std::string(MonsterName) + "_run_strip8";
+    cRunAway = std::string(MonsterName) + "_roll_strip10";
+    cAttack = std::string(MonsterName) + "_idle_strip9";
+    cShot = std::string(MonsterName) + "_attack_strip10";
+    cStunt = std::string(MonsterName) + "_attack_strip10";
+    cDamaged = std::string(MonsterName) + "_attack_strip10";
+    cDied = std::string(MonsterName) + "_attack_strip10";
+    cVictory = std::string(MonsterName) + "_attack_strip10";
 }
 
 void Monster::SetTarget(Entity* _Target)

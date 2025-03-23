@@ -31,9 +31,11 @@ protected:
     bool haveHitbox;
 
 public:
+
     std::string SceneName;
     sf::Sprite mSprite;
     Collider* mHitbox;
+
     float mX;
     float mY;
     float dirX;
@@ -51,6 +53,8 @@ public:
 
     int mLife;
     bool mIsAlive;
+
+    void SetLife(int _Life);
     void HealLife(int _Heal);
     void DamageLife(int _Damage);
 

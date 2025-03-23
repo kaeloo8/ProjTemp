@@ -10,6 +10,7 @@ private:
     Animator* mIdleAnimator;
     Animator* mWalkAnimator;
     Animator* mChargeAnimator;
+    Animator* mRunAwayAnimator;
     Animator* mAttackAnimator;
     Animator* mShotAnimator;
     Animator* mStuntAnimator;
@@ -17,15 +18,16 @@ private:
     Animator* mDiedAnimator;
     Animator* mVictoryAnimator;
 
-    std::string sIdle;
-    std::string sWalk;
-    std::string sCharge;
-    std::string sAttack;
-    std::string sShot;
-    std::string sStunt;
-    std::string sDamaged;
-    std::string sDied;
-    std::string sVictory;
+    std::string cIdle;
+    std::string cWalk;
+    std::string cCharge;
+    std::string cRunAway;
+    std::string cAttack;
+    std::string cShot;
+    std::string cStunt;
+    std::string cDamaged;
+    std::string cDied;
+    std::string cVictory;
 
     void OnAnimationUpdate();
 
@@ -34,6 +36,7 @@ private:
 
 public:
 
+    const char* MonsterName;
     Entity* mTarget = nullptr;
     StateMachine<Monster> DeffensiveMonsterState;
     sf::Vector2f InitialPosition;
@@ -43,6 +46,7 @@ public:
         sIdle,
         sWalk,
         sCharge,
+        sRunAway,
         sAttack,
         sShot,
         sGoBack,
@@ -66,8 +70,12 @@ private:
 
 
 public:
-    int Life;
+    bool CanShoot;
+    bool CanRunAway;
+    bool CanCharge;
+    bool CanTaunt;
 
+    bool isStunt;
     bool isMoving;
     bool isAttacking;
 
@@ -84,8 +92,9 @@ public:
     void FaceRight();
     void FaceLeft();
 
+    void ClearAnimation();
     void SetInitialPosition();
-    void InitMonster(const char* MonsterName);
+    void InitMonster(const char* _MonsterName);
     void SetTarget(Entity* _Target);
     void OrientToTarget();
 
