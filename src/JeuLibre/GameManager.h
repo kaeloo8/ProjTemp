@@ -52,8 +52,6 @@ private:
 
 	void SetDeltaTime(float deltaTime) { DeltaTime = deltaTime; }
 
-	sf::RenderWindow* GetWindow() const { return Window; }
-
 public:
 
 	bool DrawHitBox;
@@ -77,6 +75,8 @@ public:
 	sf::Font& GetFont() { return mFont; };
 
 	sf::Texture& GetTexture(const std::string _name);
+
+	sf::RenderWindow* GetWindow() const { return Window; }
 
 	void SetTileMap(TileMap*);
 	void SetCamera(CameraSys* cam);

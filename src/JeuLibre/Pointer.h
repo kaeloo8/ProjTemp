@@ -4,7 +4,7 @@
 class Pointer : public Entity
 {
 public:
-	std::string Img = "Pointer";
+	sf::RenderWindow* Win;
 
 	Pointer();
 	void OnUpdate() override;
