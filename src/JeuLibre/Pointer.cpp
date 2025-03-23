@@ -4,6 +4,7 @@
 
 Pointer::Pointer() {
     Win = GameManager::Get()->GetWindow();
+    SetOrigin(0, 0);
 }
 
 void Pointer::OnUpdate() {

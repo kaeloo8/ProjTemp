@@ -9,11 +9,27 @@ class Monster : public Entity
 private:
     Animator* mIdleAnimator;
     Animator* mWalkAnimator;
+    Animator* mChargeAnimator;
     Animator* mAttackAnimator;
+    Animator* mShotAnimator;
+    Animator* mStuntAnimator;
+    Animator* mDamagedAnimator;
+    Animator* mDiedAnimator;
+    Animator* mVictoryAnimator;
 
+    std::string sIdle;
+    std::string sWalk;
+    std::string sCharge;
+    std::string sAttack;
+    std::string sShot;
+    std::string sStunt;
+    std::string sDamaged;
+    std::string sDied;
+    std::string sVictory;
 
     void OnAnimationUpdate();
 
+    //Debug
     sf::Color LineColor;
 
 public:
@@ -26,10 +42,14 @@ public:
     {
         sIdle,
         sWalk,
+        sCharge,
         sAttack,
+        sShot,
         sGoBack,
         sStunt,
+        sDamaged,
         sDied,
+        sVictory,
 
         sCount
     };
@@ -52,6 +72,8 @@ public:
     bool isAttacking;
 
     float SeeDistance = 500;
+    float ShotDistance = 100;
+    float ShotSpeed = 0.1f;
     float AttackDistance = 50;
     float AttackSpeed = 0.08f;
     float AttackTimer = 3;
@@ -63,6 +85,7 @@ public:
     void FaceLeft();
 
     void SetInitialPosition();
+    void InitMonster(const char* MonsterName);
     void SetTarget(Entity* _Target);
     void OrientToTarget();
 
