@@ -29,34 +29,40 @@ void sFollowPlayer_Action::Start(Monster* pMonster)
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
 {
-
+	pMonster->GoToPosition(pMonster->mTarget->GetPosition().x, pMonster->mTarget->GetPosition().y, pMonster->mSpeed);
+	pMonster->OrientToTarget(true);
 }
 
 void sFollowPlayer_Action::End(Monster* pMonster) 
 {
-
+	pMonster->StopGo();
+	pMonster->isMoving = false;
 }
 
 //----------------------  CHARGE  ---------------------------------------
 void sCharge_Action::Start(Monster* pMonster)
 {
 	pMonster->isMoving = true;
+	pMonster->OrientToTarget(true);
+	pMonster->mTargetPosition = pMonster->mTarget->GetPosition();
 }
 
 void sCharge_Action::Update(Monster* pMonster)
 {
-
+	pMonster->GoToPosition(pMonster->mTargetPosition.x, pMonster->mTargetPosition.y, pMonster->mSpeed * pMonster->ChargeMultiplicator);
 }
 
 void sCharge_Action::End(Monster* pMonster)
 {
-
+	pMonster->StopGo();
+	pMonster->isMoving = false;
 }
 
 //----------------------  RUNAWAY  ---------------------------------------
 void sRunAway_Action::Start(Monster* pMonster)
 {
 	pMonster->isMoving = true;
+	pMonster->OrientToTarget(false);
 }
 
 void sRunAway_Action::Update(Monster* pMonster)
@@ -66,7 +72,8 @@ void sRunAway_Action::Update(Monster* pMonster)
 
 void sRunAway_Action::End(Monster* pMonster)
 {
-
+	pMonster->StopGo();
+	pMonster->isMoving = false;
 }
 
 //----------------------  ATTACK  ---------------------------------------
@@ -77,12 +84,13 @@ void sAttack_Action::Start(Monster* pMonster)
 
 void sAttack_Action::Update(Monster* pMonster) 
 {
+	pMonster->OrientToTarget(true);
 
 }
 
 void sAttack_Action::End(Monster* pMonster) 
 {
-
+	pMonster->isAttacking = false;
 }
 
 //----------------------  SHOT  ---------------------------------------
@@ -98,23 +106,33 @@ void sShot_Action::Update(Monster* pMonster)
 
 void sShot_Action::End(Monster* pMonster)
 {
-
+	pMonster->isShooting = false;
 }
 
 //----------------------  GOBACK  ---------------------------------------
 void sReturnToPosition_Action::Start(Monster* pMonster) 
 {
 	pMonster->isMoving = true;
+	if (pMonster->InitialPosition.x < pMonster->GetPosition().x)
+	{
+		pMonster->FaceLeft();
+	}
+	else
+	{
+		pMonster->FaceRight();
+	}
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 
 {
-
+	pMonster->GoToPosition(pMonster->InitialPosition.x, pMonster->InitialPosition.y, pMonster->mSpeed);
 }
 
 void sReturnToPosition_Action::End(Monster* pMonster) 
 {
-
+	pMonster->StopGo();
+	pMonster->OrientToTarget(true);
+	pMonster->isMoving = false;
 }
 
 //----------------------  STUNT  ---------------------------------------
@@ -136,7 +154,7 @@ void sStunt_Action::End(Monster* pMonster)
 //----------------------  DAMAGED  ---------------------------------------
 void sDamaged_Action::Start(Monster* pMonster)
 {
-
+	pMonster->DamageLife(pMonster->PlayerDamage);
 }
 
 void sDamaged_Action::Update(Monster* pMonster)

@@ -37,7 +37,10 @@ private:
 public:
 
     const char* MonsterName;
+
     Entity* mTarget = nullptr;
+    sf::Vector2f mTargetPosition;
+
     StateMachine<Monster> MonsterState;
     sf::Vector2f InitialPosition;
 
@@ -80,10 +83,18 @@ public:
     bool isAttacking;
     bool isShooting;
 
+    //RUN
+    float DistanceMin = 40;
+    //DAMAGE
     float PlayerDamage = 10;
+    //DETECTION
     float SeeDistance = 500;
+    //CHARGE
+    float ChargeMultiplicator = 2;
+    //SHOT
     float ShotDistance = 100;
     float ShotSpeed = 0.1f;
+    //ATTACK
     float AttackDistance = 50;
     float AttackSpeed = 0.08f;
     float AttackTimer = 3;
@@ -98,7 +109,7 @@ public:
     void SetInitialPosition();
     void InitMonster(const char* _MonsterName);
     void SetTarget(Entity* _Target);
-    void OrientToTarget();
+    void OrientToTarget(bool Oposite);
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

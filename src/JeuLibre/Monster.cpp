@@ -193,18 +193,32 @@ void Monster::SetTarget(Entity* _Target)
     mTarget = _Target;
 }
 
-void Monster::OrientToTarget()
+void Monster::OrientToTarget(bool Oposite)
 {
     if (!mTarget) return;
-
-    if (mTarget->GetPosition().x < GetPosition().x)
+    if (Oposite)
     {
-        FaceLeft();
+        if (mTarget->GetPosition().x < GetPosition().x)
+        {
+            FaceLeft();
+        }
+        else
+        {
+            FaceRight();
+        }
     }
     else
     {
-        FaceRight();
+        if (mTarget->GetPosition().x < GetPosition().x)
+        {
+            FaceRight();
+        }
+        else
+        {
+            FaceLeft();
+        }
     }
+    
 }
 
 void Monster::OnUpdate()
