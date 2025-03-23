@@ -38,7 +38,7 @@ public:
 
     const char* MonsterName;
     Entity* mTarget = nullptr;
-    StateMachine<Monster> DeffensiveMonsterState;
+    StateMachine<Monster> MonsterState;
     sf::Vector2f InitialPosition;
 
     enum State
@@ -79,6 +79,7 @@ public:
     bool isMoving;
     bool isAttacking;
 
+    float PlayerDamage = 10;
     float SeeDistance = 500;
     float ShotDistance = 100;
     float ShotSpeed = 0.1f;
@@ -87,7 +88,6 @@ public:
     float AttackTimer = 3;
 
     Monster();
-    Monster(const char* _MonsterName);
     ~Monster();
 
     void FaceRight();
@@ -105,7 +105,14 @@ public:
 
     friend class sIdle_Action;
     friend class sFollowPlayer_Action;
+    friend class sCharge_Action;
+    friend class sRunAway_Action;
     friend class sAttack_Action;
+    friend class sShot_Action;
     friend class sReturnToPosition_Action;
+    friend class sStunt_Action;
+    friend class sDamaged_Action;
+    friend class sDied_Action;
+    friend class sVictory_Action;
 };
 

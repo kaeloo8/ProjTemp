@@ -12,7 +12,7 @@
 
 // ... le reste du code reste inchangé ...
 
-Monster::Monster() : DeffensiveMonsterState(this, State::sCount), isAttacking(false), isMoving(false)
+Monster::Monster() : MonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
     MonsterName = "skeleton";
     InitMonster(MonsterName);
@@ -26,7 +26,7 @@ Monster::~Monster()
 void Monster::OnAnimationUpdate()
 {
     float dt = GetDeltaTime();
-    int state = DeffensiveMonsterState.GetCurrentState();
+    int state = MonsterState.GetCurrentState();
 
     if (state == 1 || state == 3) {
         mWalkAnimator->Update(dt);
@@ -90,18 +90,31 @@ void Monster::InitMonster(const char* _MonsterName)
 
     mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cIdle, 8, 0.1f);
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cWalk, 9, 0.2f);
-    mChargeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cCharge, 8, 0.08f);
-    mRunAwayAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
     mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cAttack, 10, 0.07f);
-    mShotAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cShot, 10, 0.1f);
     mStuntAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cStunt, 10, 0.07f);
     mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
     mDiedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 10, 0.07f);
-    mVictoryAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cVictory, 10, 0.07f);
+
+    if (CanCharge)
+    {
+        mChargeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cCharge, 8, 0.08f);
+    }
+    if (CanRunAway)
+    {
+        mRunAwayAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
+    }
+    if (CanShoot)
+    {
+        mShotAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cShot, 10, 0.1f);
+    }
+    if (CanTaunt)
+    {
+        mVictoryAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cVictory, 10, 0.07f);
+    }
 
     // --- ÉTAT IDLE ---
     {
-        Behaviour<Monster>* bMonsterIdle = DeffensiveMonsterState.CreateBehaviour(State::sIdle);
+        Behaviour<Monster>* bMonsterIdle = MonsterState.CreateBehaviour(State::sIdle);
         bMonsterIdle->AddAction(new sIdle_Action());
 
         // -> Walk (si le joueur est proche)
@@ -121,7 +134,7 @@ void Monster::InitMonster(const char* _MonsterName)
 
     // --- ÉTAT WALK ---
     {
-        Behaviour<Monster>* bWalk = DeffensiveMonsterState.CreateBehaviour(State::sWalk);
+        Behaviour<Monster>* bWalk = MonsterState.CreateBehaviour(State::sWalk);
         bWalk->AddAction(new sFollowPlayer_Action());
 
         // -> Idle (si le joueur est trop loin, donc il ne peut plus le suivre)
@@ -141,7 +154,7 @@ void Monster::InitMonster(const char* _MonsterName)
 
     // --- ÉTAT ATTACK ---
     {
-        Behaviour<Monster>* bAttack = DeffensiveMonsterState.CreateBehaviour(State::sAttack);
+        Behaviour<Monster>* bAttack = MonsterState.CreateBehaviour(State::sAttack);
         bAttack->AddAction(new sAttack_Action());
 
         // -> Walk (si le joueur s'éloigne)
@@ -154,7 +167,7 @@ void Monster::InitMonster(const char* _MonsterName)
 
     // --- ÉTAT GO BACK ---
     {
-        Behaviour<Monster>* bGoBack = DeffensiveMonsterState.CreateBehaviour(State::sGoBack);
+        Behaviour<Monster>* bGoBack = MonsterState.CreateBehaviour(State::sGoBack);
         bGoBack->AddAction(new sReturnToPosition_Action());
 
         // -> Idle (si le monstre est revenu à sa position d'origine)
@@ -172,7 +185,7 @@ void Monster::InitMonster(const char* _MonsterName)
         }
     }
 
-    DeffensiveMonsterState.SetState(State::sIdle);
+    MonsterState.SetState(State::sIdle);
 }
 
 void Monster::SetTarget(Entity* _Target)
@@ -197,7 +210,7 @@ void Monster::OrientToTarget()
 void Monster::OnUpdate()
 {
     OnAnimationUpdate();
-    DeffensiveMonsterState.Update();
+    MonsterState.Update();
 
     if (isAttacking)
     {
