@@ -66,6 +66,10 @@ void sAttack_Action::Update(Monster* pMonster)
     if (pMonster->mTarget != nullptr)
     {
         pMonster->OrientToTarget();
+        if (pMonster->mAttackAnimator->GetFrameNumber() == 6)
+        {
+            pMonster->mTarget->DamageLife( 10);
+        }
     }
 }
 

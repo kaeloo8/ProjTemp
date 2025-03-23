@@ -121,6 +121,8 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
+    //std::cout << mLife << std::endl;
+
     PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
     PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
 

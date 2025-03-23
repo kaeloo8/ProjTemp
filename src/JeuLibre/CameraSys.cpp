@@ -13,8 +13,8 @@ sf::View CameraSys::getView() {
     return camera;
 }
 
-void CameraSys::SetTarget(Player* player) {
-    target = player;
+void CameraSys::SetTarget(Entity* _Entity) {
+    target = _Entity;
 }
 
 void CameraSys::OnUpdate() {

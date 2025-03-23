@@ -49,6 +49,11 @@ public:
     int mTag;
     int Layout;
 
+    int mLife;
+    bool mIsAlive;
+    void HealLife(int _Heal);
+    void DamageLife(int _Damage);
+
     bool GoToDirection(float x, float y, float speed);
     bool GoToPosition(int x, int y, float speed);
     bool MoveHorizontal(int x, float speed);

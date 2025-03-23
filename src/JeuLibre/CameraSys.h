@@ -7,7 +7,7 @@
 class CameraSys : public Entity
 {
     sf::View camera;
-    Player* target = nullptr; // Référence vers le joueur
+    Entity* target = nullptr; // Référence vers le joueur
     float smoothFactor = 0.1f; // Plus proche de 1 = caméra rapide, plus proche de 0 = lente
 
 public:
@@ -15,5 +15,5 @@ public:
     sf::View getView();
     void OnUpdate() override;
 
-    void SetTarget(Player* player);
+    void SetTarget(Entity* _Entity);
 };

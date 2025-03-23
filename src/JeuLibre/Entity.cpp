@@ -97,6 +97,16 @@ sf::Vector2f Entity::GetPosition(float ratioX, float ratioY) const
 	return position;
 }
 
+void Entity::HealLife(int _Heal)
+{
+	mLife = mLife + _Heal;
+}
+
+void Entity::DamageLife(int _Damage)
+{
+	mLife = mLife - _Damage;
+}
+
 bool Entity::GoToDirection(float x, float y, float speed)
 {
 	if (speed <= 0.f) {
@@ -355,6 +365,10 @@ void Entity::Update()
 		timerAnnim -= GetDeltaTime();
 	}
 
+	if (mLife <= 0 && mIsAlive == true)
+	{
+		Destroy();
+	}
 
 	if (haveHitbox) {
 		DrawHitbox();

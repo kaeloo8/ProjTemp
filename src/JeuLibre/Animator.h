@@ -27,6 +27,7 @@ public:
     // Met à jour l'animation (appelé chaque frame)
     void Update(float deltaTime);
 
+    int GetFrameNumber();
     // Remet l'animation à zéro (par ex. si le perso s'arrête)
     void Reset();
 };

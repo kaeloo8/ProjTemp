@@ -48,6 +48,11 @@ void Animator::Update(float deltaTime)
     }
 }
 
+int Animator::GetFrameNumber()
+{
+    return mCurrentFrame;
+}
+
 void Animator::Reset()
 {
     mCurrentFrame = 0;

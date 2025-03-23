@@ -36,6 +36,7 @@ public:
 	bool isAttacking;
     bool isStunt;
 
+
 	const char* PlayerHaircut = "shorthair_idle_strip9";
 
     Player(); 
