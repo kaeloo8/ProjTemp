@@ -78,6 +78,7 @@ public:
     bool isStunt;
     bool isMoving;
     bool isAttacking;
+    bool isShooting;
 
     float PlayerDamage = 10;
     float SeeDistance = 500;
