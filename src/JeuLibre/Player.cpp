@@ -9,14 +9,14 @@ Player::Player()
     mLife = 100;
     mIsAlive = true;
     // INITIALISATION CHEVEUX 
-    PlayerHair = CreateEntity<PlayerPart>("croix");
+    PlayerHair = CreateEntity<PlayerPart>("0");
     PlayerHair->InitBodyPart("bowlhair");
     PlayerHair->SetScale(3, 3);
     PlayerHair->SetOrigin(0.5, 0.5);
     PlayerHair->Layout = 10;
 
     // INITIALISATION MAIN
-    PlayerHand = CreateEntity<PlayerPart>("croix");
+    PlayerHand = CreateEntity<PlayerPart>("0");
     PlayerHand->InitBodyPart("tools");
     PlayerHand->SetScale(3, 3);
     PlayerHand->SetOrigin(0.5, 0.5);

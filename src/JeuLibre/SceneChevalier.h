@@ -5,6 +5,7 @@
 #include "TileMap.h"
 #include "CameraSys.h"
 #include "Monster.h"
+#include "Entity.h"
 
 class SceneChevalier : public Scene
 {
@@ -20,6 +21,10 @@ class SceneChevalier : public Scene
 	CameraSys* cam;
 
 	std::vector<Monster*> lEnnemie;
+
+	std::vector<Entity*> lColide;
+
+	Entity* CamFocus;
 
 
 public:
