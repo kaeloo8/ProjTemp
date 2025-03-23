@@ -237,6 +237,15 @@ void Entity::GetSize()
 	mHeight = sizeTexture.y;
 }
 
+float Entity::GetDistanceTo(Entity* _Entity)
+{
+	float dx = GetPosition().x - _Entity->GetPosition().x;
+	float dy = GetPosition().y - _Entity->GetPosition().y;
+	float distanceSquared = dx * dx + dy * dy;
+
+	return distanceSquared;
+}
+
 void Entity::AddCircleHitbox()
 {
 	mHitbox = new CircleCollider();

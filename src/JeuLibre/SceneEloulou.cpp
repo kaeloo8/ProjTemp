@@ -25,8 +25,6 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(25, 20);
-    lPlayer->mLife = 100;
-    lPlayer->mIsAlive = true;
     lPlayer->Layout = 1;
 
 
@@ -39,7 +37,7 @@ void SceneEloulou::OnInitialize() {
     Skeleton->SetTarget(lPlayer);
     Skeleton->Layout = 2;
 
-    Cam->SetTarget(Skeleton);
+    Cam->SetTarget(lPlayer);
 
     float sizeX = 5;
     float sizeY = 5;
@@ -143,4 +141,5 @@ void SceneEloulou::Load()
 void SceneEloulou::OnUpdate() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
     lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2, mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
+    std::cout << lPlayer->GetPosition().x << std::endl;
 }

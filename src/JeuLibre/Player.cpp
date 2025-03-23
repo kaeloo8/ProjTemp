@@ -5,6 +5,9 @@
 Player::Player()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::Idle)
 {
+
+    mLife = 100;
+    mIsAlive = true;
     // INITIALISATION CHEVEUX 
     PlayerHair = CreateEntity<PlayerPart>("croix");
     PlayerHair->InitBodyPart("bowlhair");

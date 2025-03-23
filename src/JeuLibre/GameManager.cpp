@@ -80,6 +80,7 @@ void GameManager::Update() {
 			continue;
 		}
 		mEntitiesToDestroy.push_back(entity);
+		entity = nullptr;
 		it = mEntities.erase(it);
 	}
 
