@@ -16,6 +16,14 @@ void SceneGorille::OnInitialize()
     lPointer->SetOrigin(0, 0);
     lPointer->Layout = 200;
 
+    lPlayer = CreateEntity<Player>("base_idle_strip9");
+    lPlayer->SetScale(3, 3);
+    lPlayer->SetOrigin(0.5f, 0.5f);
+    lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
+    lPlayer->AddAABBHitbox();
+    lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
+    lPlayer->Layout = 2;
+
     ButtonCancel = CreateEntity<UI>("cancel");
     ButtonCancel->SetScale(3,3);
     ButtonCancel->SetOrigin(0.5f, 0.5f);
@@ -33,6 +41,14 @@ void SceneGorille::OnInitialize()
     Background->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
     Background->Layout = 2;
     //optionsMenu->AddUIElement(ButtonCancel);
+
+    ButtonCancel = CreateEntity<UI>("cancel");
+    ButtonCancel->AddCircleHitbox();
+    ButtonCancel->SetPosition((GetWindowWidth() / 3), (GetWindowHeight() / 2));
+
+    ButtonValid = CreateEntity<UI>("confirm");
+    ButtonValid->AddCircleHitbox();;
+    ButtonValid->SetPosition((GetWindowWidth() / 3), (GetWindowHeight() / 2));
 }
 
 void SceneGorille::OnEvent(const sf::Event& event)
@@ -90,8 +106,7 @@ void SceneGorille::OnEvent(const sf::Event& event)
 void SceneGorille::OnUpdate()
 {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
-    lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2,
-        mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
+    lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2,mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
 }
 
 void SceneGorille::SetName()
