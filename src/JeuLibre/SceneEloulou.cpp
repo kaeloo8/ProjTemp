@@ -6,6 +6,12 @@
 #include <iostream>
 
 void SceneEloulou::OnInitialize() {
+
+    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+
+    Cam = CreateEntity<CameraSys>("0");
+    Cam->Layout = -1;
+
     Win = GameManager::Get()->Window;
     Win->setMouseCursorVisible(false);
     lPointer = CreateEntity<Pointer>("Pointer");
@@ -20,6 +26,8 @@ void SceneEloulou::OnInitialize() {
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
+
+    Cam->SetTarget(lPlayer);
 
     Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
     Skeleton->SetScale(3, 3);
@@ -126,7 +134,12 @@ void SceneEloulou::SetName() {
     SceneName = "SceneEloulou";
 }
 
+void SceneEloulou::Load()
+{
+}
+
 void SceneEloulou::OnUpdate() {
     sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
-    lPointer->SetPosition(mousePos.x, mousePos.y);
+    lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2, mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
+
 }
