@@ -28,7 +28,7 @@ public:
 
     bool HandleClick(float mouseX, float mouseY);
     bool HandleClick(sf::Vector2f MousePos);
-
+    void HandleHover(sf::Vector2f MousePos);
     void Open();
     void Close();
 

@@ -36,6 +36,19 @@ bool UI::HandleClick(sf::Vector2f MousePos)
 	return false;
 }
 
+void UI::HandleHover(sf::Vector2f MousePos)
+{
+	if (mSprite.getGlobalBounds().contains(MousePos))
+	{
+		mSprite.setColor(sf::Color::Blue);
+		std::cout << "Changement de couleure" << std::endl;
+	}
+	else
+	{
+		mSprite.setColor(sf::Color::White);
+	}
+}
+
 void UI::Open()
 {
 	std::cout << "Open" << std::endl;
@@ -85,7 +98,7 @@ void UI::OnCollision(Entity* pCollidedWith)
 {
 	if (pCollidedWith = mPointer )
 	{
-		std::cout << "souris" << std::endl;
+
 	}
 }
 
