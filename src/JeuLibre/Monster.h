@@ -46,17 +46,17 @@ public:
 
     enum State
     {
-        sIdle,
-        sWalk,
-        sCharge,
-        sRunAway,
-        sAttack,
-        sShot,
-        sGoBack,
-        sStunt,
-        sDamaged,
-        sDied,
-        sVictory,
+        sIdle,      //0
+        sWalk,      //1
+        sCharge,    //2
+        sRunAway,   //3
+        sAttack,    //4
+        sShot,      //5
+        sGoBack,    //6
+        sStunt,     //7
+        sDamaged,   //8
+        sDied,      //9
+        sVictory,   //10
 
         sCount
     };
@@ -102,6 +102,8 @@ public:
 
     Monster();
     ~Monster();
+
+    void MonsterOption(bool CanItShoot, bool CanItRunAway, bool CanItCharge, bool CanItTaunt);
 
     void FaceRight();
     void FaceLeft();

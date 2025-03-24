@@ -5,10 +5,10 @@
 #include <iostream>
 #include <cmath> // Pour utiliser sqrt
 
-bool AttackDistance::OnTest(Monster* pMonster)
+bool IsAtAttackDistance::OnTest(Monster* pMonster)
 {
     if (!pMonster || !pMonster->mTarget) return false;
-    if (pMonster->isAttacking == true) return true;
+    //if (pMonster->isAttacking == true) return true;
 
     float distanceSquared = pMonster->GetDistanceTo(pMonster->mTarget);
     float AttackDistanceSquared = pMonster->AttackDistance * pMonster->AttackDistance;
