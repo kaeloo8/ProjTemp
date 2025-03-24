@@ -7,8 +7,10 @@
 
 void SceneEloulou::OnInitialize() {
 
-    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
-    map = new TileMap();
+    //GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+    //map = new TileMap();
+    //map->create("mapVille"); // Charge la map
+    //GameManager::Get()->SetTileMap(map);
 
     Cam = CreateEntity<CameraSys>("0");
     Cam->Layout = -1;
@@ -30,6 +32,8 @@ void SceneEloulou::OnInitialize() {
 
 
     Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
+    Skeleton->MonsterOption(true, true, true, true);
+    Skeleton->InitMonster("skeleton");
     Skeleton->SetScale(3, 3);
     Skeleton->SetOrigin(0.5f, 0.5f);
     Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
@@ -91,8 +95,6 @@ void SceneEloulou::OnInitialize() {
     Button6->SetScale(sizeX, sizeY);
     Button6->Layout = 2;
 
-    map->create("mapVille"); // Charge la map
-    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneEloulou::OnEvent(const sf::Event& event) {
