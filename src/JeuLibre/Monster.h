@@ -60,7 +60,8 @@ public:
 
         sCount
     };
-    static const int MonsterState_count = (int)State::sCount;
+    static const int MonsterState_count = (int)State::sCount; 
+    std::string GetCurrentStateName();
 
 private:
 

@@ -32,9 +32,32 @@ bool IsAtInitialPosition::OnTest(Monster* pMonster)
 
     if (pMonster->GetPosition() == pMonster->InitialPosition)
     {
-        return 1;
+        return true;
     }
     else {
-        return 0;
+        return false;
     }
+}
+
+bool IsTargetAlive::OnTest(Monster* pMonster)
+{
+    if (!pMonster || !pMonster->mTarget) return false;
+
+    if (pMonster->mTarget->mIsAlive == true && pMonster->mLife < 0)
+    {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+bool IsTargettoClose::OnTest(Monster* pMonster)
+{
+    if (!pMonster || !pMonster->mTarget) return false;
+
+    float distanceSquared = pMonster->GetDistanceTo(pMonster->mTarget);
+    float RunAwayDistanceSquared = pMonster->DistanceMin * pMonster->DistanceMin;
+
+    return distanceSquared < RunAwayDistanceSquared;
 }

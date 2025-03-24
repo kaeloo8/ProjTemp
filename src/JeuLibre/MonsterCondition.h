@@ -6,18 +6,29 @@
 class AttackDistance : public Condition<Monster>
 {
 public:
-	bool OnTest(Monster* owner) override;
+	bool OnTest(Monster* pMonster) override;
 };
 
 class CanSeeThePlayer : public Condition<Monster>
 {
 public:
-	bool OnTest(Monster* owner) override;
+	bool OnTest(Monster* pMonster) override;
 };
 
 class IsAtInitialPosition : public Condition<Monster>
 {
 public:
-	bool OnTest(Monster* owner) override;
+	bool OnTest(Monster* pMonster) override;
 };
 
+class IsTargetAlive : public Condition<Monster>
+{
+public:
+	bool OnTest(Monster* pMonster) override;
+};
+
+class IsTargettoClose : public Condition<Monster>
+{
+public:
+	bool OnTest(Monster* pMonster) override;
+};

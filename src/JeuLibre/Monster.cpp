@@ -51,6 +51,10 @@ void Monster::FaceLeft()
 
 void Monster::ClearAnimation()
 {
+    if (mIdleAnimator != nullptr)
+    {
+        return;
+    }
     delete mIdleAnimator;    // 1
     delete mWalkAnimator;    // 2 et 11
     delete mChargeAnimator;  // 3
@@ -72,27 +76,24 @@ void Monster::InitMonster(const char* _MonsterName)
 {
     MonsterName = _MonsterName;
 
-    if (mIdleAnimator != nullptr)
-    {
-        ClearAnimation();
-    }
+    ClearAnimation();
 
-    cIdle = std::string(MonsterName) + "_walk_strip8";
-    cWalk = std::string(MonsterName) + "_run_strip8";
-    cCharge = std::string(MonsterName) + "_run_strip8";
-    cRunAway = std::string(MonsterName) + "_roll_strip10";
-    cAttack = std::string(MonsterName) + "_idle_strip9";
-    cShot = std::string(MonsterName) + "_attack_strip10";
-    cStunt = std::string(MonsterName) + "_attack_strip10";
-    cDamaged = std::string(MonsterName) + "_attack_strip10";
-    cDied = std::string(MonsterName) + "_attack_strip10";
-    cVictory = std::string(MonsterName) + "_attack_strip10";
+    cIdle = std::string(MonsterName) + "_idle_strip6";
+    cWalk = std::string(MonsterName) + "_walk_strip8";
+    cCharge = std::string(MonsterName) + "_walk_strip8";
+    cRunAway = std::string(MonsterName) + "_walk_strip8";
+    cAttack = std::string(MonsterName) + "_attack_strip7";
+    cShot = std::string(MonsterName) + "_jump_strip10";
+    cStunt = std::string(MonsterName) + "_death_strip10";
+    cDamaged = std::string(MonsterName) + "_death_strip10";
+    cDied = std::string(MonsterName) + "_death_strip10";
+    cVictory = std::string(MonsterName) + "_jump_strip10";
 
-    mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cIdle, 8, 0.1f);
-    mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cWalk, 9, 0.2f);
-    mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cAttack, 10, 0.07f);
+    mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cIdle, 6, 0.1f);
+    mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cWalk, 8, 0.2f);
+    mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cAttack, 7, 0.07f);
     mStuntAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cStunt, 10, 0.07f);
-    mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
+    mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 8, 0.1f);
     mDiedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 10, 0.07f);
 
     if (CanCharge)
@@ -101,11 +102,11 @@ void Monster::InitMonster(const char* _MonsterName)
     }
     if (CanRunAway)
     {
-        mRunAwayAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 10, 0.1f);
+        mRunAwayAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 8, 0.1f);
     }
     if (CanShoot)
     {
-        mShotAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cShot, 10, 0.1f);
+        mShotAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cShot, 10, 0.2f);
     }
     if (CanTaunt)
     {
@@ -218,6 +219,7 @@ void Monster::OnUpdate()
     {
         if (!mTarget) return;
         Debug::DrawLine(mTarget->GetPosition().x, mTarget->GetPosition().y, GetPosition().x, GetPosition().y, LineColor);
+        Debug::DrawText(GetPosition().x, GetPosition().y + 30, GetCurrentStateName(), sf::Color::Yellow);
     }
 }
 
@@ -228,4 +230,14 @@ void Monster::OnCollision(Entity* pCollidedWith)
 void Monster::SetImage(const char* path)
 {
     mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
+}
+
+std::string Monster::GetCurrentStateName() {
+    switch (MonsterState.GetCurrentState()) {
+    case State::sIdle: return "Idle";
+    case State::sWalk: return "Walk";
+    case State::sAttack: return "Attack";
+    case State::sGoBack: return "GoBack";
+    default: return "Unknown";
+    }
 }
