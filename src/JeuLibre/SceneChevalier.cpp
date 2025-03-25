@@ -31,7 +31,7 @@ void SceneChevalier::OnInitialize()
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
-    /*
+    
     for (int i = 0;i < 10; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
@@ -41,13 +41,14 @@ void SceneChevalier::OnInitialize()
         M->AddAABBHitbox();
         M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
         M->Layout = 2;
-    }*/
+        M->mTarget = lPlayer;
+    }
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
 
     TileMap* map = new TileMap();
     map->SetPosition(0, 0);
-    map->create("Donjon_00"); // Charge la map
+    map->createD();
     GameManager::Get()->SetTileMap(map);
 
     Entity* W1 = CreateEntity<Entity>("0");

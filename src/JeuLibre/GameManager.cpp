@@ -115,6 +115,7 @@ void GameManager::Update() {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
 		if (!KeyPressed) {
+			KeyPressed = true;
 			DrawHitBox = !DrawHitBox;
 			std::cout << "hitbox draw : " << DrawHitBox << std::endl;
 		}
@@ -122,6 +123,7 @@ void GameManager::Update() {
 	else {
 		KeyPressed = false;
 	}
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
