@@ -1,12 +1,18 @@
 #pragma once
 #include "Entity.h"
 #include "S0Menu.h"
+#include "Pointer.h"
 
 class UI : public Entity
 {
     sf::Font mFont;
-    sf::Sprite mImage;
+
+    sf::Sprite mDefaultImage;
+    std::string cDefaultImage;
+
     sf::Sprite mHoverImage;
+    std::string cHoverImage;
+
     sf::RectangleShape background;
     
     sf::Text title;
@@ -17,12 +23,13 @@ class UI : public Entity
     float mGapX = 0;
     float mGapY = 0;
 
-    bool IsClickable;
 
 
 public:
     
     UI();
+
+    bool IsClickable;
 
     void SetPointer(Pointer* _pointer);
     void HangToEntity(Entity* _parent);

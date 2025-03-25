@@ -3,7 +3,10 @@
 
 UI::UI()
 {
-	//mSprite = mImage;
+	mDefaultImage = mSprite;
+	//cDefaultImage =
+	cHoverImage = cDefaultImage + "_pressed";
+	IsClickable = false;
 }
 
 bool UI::HandleClick(float mouseX, float mouseY)
@@ -38,13 +41,11 @@ bool UI::HandleHover(sf::Vector2f MousePos)
 {
 	if (mSprite.getGlobalBounds().contains(MousePos))
 	{
-		std::cout << "Changement de couleur" << std::endl;
 		return true;
 	}
 	else
 	{
 		return false;
-
 	}
 }
 
@@ -91,6 +92,17 @@ void UI::OnUpdate()
 	{
 		SetPosition(mParent->GetPosition().x + mGapX, mParent->GetPosition().y + mGapY);
 	}
+	if (IsClickable)
+	{
+		if (HandleHover(mPointer->worldPos))
+		{
+			SetImage(cHoverImage.c_str());
+		}
+		else
+		{
+			SetImage(cDefaultImage.c_str());
+		}
+	}
 }
 
 void UI::OnCollision(Entity* pCollidedWith)
@@ -103,4 +115,5 @@ void UI::OnCollision(Entity* pCollidedWith)
 
 void UI::SetImage(const char* path)
 {
+	mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }

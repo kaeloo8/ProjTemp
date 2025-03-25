@@ -23,6 +23,7 @@ class SceneGorille : public Scene
 	UI* Background;
 	UI* Background2;
 	UI* Image;
+	UI* TEST;
 
 	OptionMenu* optionsMenu = nullptr;
 

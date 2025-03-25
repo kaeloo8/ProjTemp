@@ -16,19 +16,30 @@ void SceneGorille::OnInitialize()
     lPointer->SetOrigin(0, 0);
     lPointer->Layout = 200;
 
+    TEST = CreateEntity<UI>("BButton");
+    TEST->SetPointer(lPointer);
+    TEST->SetOrigin(0.5, 0.5);
+    TEST->SetScale(3, 3);
+    TEST->SetPosition(GetWindowWidth() / 2, GetWindowHeight() / 2);
+    TEST->IsClickable = false;
+    TEST->Layout = 100;
+
     ButtonCancel = CreateEntity<UI>("cancel");
+    ButtonCancel->SetPointer(lPointer);
     ButtonCancel->SetScale(3,3);
     ButtonCancel->SetOrigin(0.5f, 0.5f);
     ButtonCancel->SetPosition((Win->getPosition().x / 2), (Win->getPosition().y / 2));
     ButtonCancel->AddAABBHitbox();
     ButtonCancel->Layout = 1;
 
-    Background2 = CreateEntity<UI>("bouttonBleu");
+    Background2 = CreateEntity<UI>("BButton_pressed");
+    Background2->SetPointer(lPointer);
     Background2->SetOrigin(0.5f, 0.5f);
     Background2->SetScale(Win->getSize().x, Win->getSize().y);
     Background2->Layout = 4;
     
     Background = CreateEntity<UI>("FondEcran");
+    Background->SetPointer(lPointer);
     Background->SetOrigin(0.5f, 0.5f);
     Background->SetPosition(500, 500);
     Background->SetSize(400, 600);
@@ -36,6 +47,7 @@ void SceneGorille::OnInitialize()
     //optionsMenu->AddUIElement(ButtonCancel);
 
     Image = CreateEntity<UI>(15, sf::Color::White);
+    Image->SetPointer(lPointer);
     Image->AddAABBHitbox();
     Image->SetOrigin(0.5f, 0.5f);
     Image->SetPosition(Background->GetPosition().x , Background->GetPosition().y );
