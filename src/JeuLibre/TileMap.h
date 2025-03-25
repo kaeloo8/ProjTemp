@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 struct Tile {
+public:
     float tileSize = 50;
     sf::Sprite sprite;
     std::string id;

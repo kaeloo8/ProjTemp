@@ -305,6 +305,5 @@ void Player::ToogleMode()
 
 void Player::OnCollision(Entity* pCollidedWith)
 {
-    std::cout << pCollidedWith << std::endl;
-    // Gestion des collisions...
+    //
 }

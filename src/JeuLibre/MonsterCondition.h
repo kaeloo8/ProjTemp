@@ -3,7 +3,7 @@
 #include "Condition.h"
 #include "Monster.h"
 
-class AttackDistance : public Condition<Monster>
+class IsAtAttackDistance : public Condition<Monster>
 {
 public:
 	bool OnTest(Monster* pMonster) override;

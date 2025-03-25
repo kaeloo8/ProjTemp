@@ -9,6 +9,8 @@ void SceneEloulou::OnInitialize() {
 
     GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
     map = new TileMap();
+    map->create("mapVille"); // Charge la map
+    GameManager::Get()->SetTileMap(map);
 
     Cam = CreateEntity<CameraSys>("0");
     Cam->Layout = -1;
@@ -28,8 +30,13 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
 
+    lBuild = CreateEntity<BuildSystem>("0");
+    lBuild->SetPlayer(lPlayer);
+    lBuild->SetPointer(lPointer);
 
     Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
+    Skeleton->MonsterOption(true, true, true, true);
+    Skeleton->InitMonster("skeleton");
     Skeleton->SetScale(3, 3);
     Skeleton->SetOrigin(0.5f, 0.5f);
     Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
@@ -91,8 +98,6 @@ void SceneEloulou::OnInitialize() {
     Button6->SetScale(sizeX, sizeY);
     Button6->Layout = 2;
 
-    map->create("mapVille"); // Charge la map
-    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneEloulou::OnEvent(const sf::Event& event) {
@@ -100,6 +105,13 @@ void SceneEloulou::OnEvent(const sf::Event& event) {
         if (!KeyEscPressed) {
             std::cout << "Tile select" << std::endl;
             map->tiles[1].clear();
+        }
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
+        if (!KeyEscPressed) {
+            lBuild->ChooseTile();
+            map->tiles[lBuild->Tiley][lBuild->Tilex].sprite.setTexture(GameManager::Get()->GetTexture("TileMap_0004"));
         }
     }
 

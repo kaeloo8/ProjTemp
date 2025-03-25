@@ -16,12 +16,14 @@ class SceneGorille : public Scene
 
 	CameraSys* cam;
 	Player* lPlayer;
+
 	UI* LifeBar;
 	UI* ButtonCancel;
 	UI* ButtonValid;
-	
 	UI* Background;
 	UI* Background2;
+	UI* Image;
+	UI* TEST;
 
 	OptionMenu* optionsMenu = nullptr;
 

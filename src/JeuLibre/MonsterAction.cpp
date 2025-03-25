@@ -9,6 +9,8 @@ void sIdle_Action::Start(Monster* pMonster)
 {
 	pMonster->isMoving = false;
 	pMonster->isAttacking = false;
+	pMonster->SetImage(pMonster->cIdle.c_str());
+	pMonster->mIdleAnimator->Reset();
 }
 
 void sIdle_Action::Update(Monster* pMonster) 
@@ -25,6 +27,8 @@ void sIdle_Action::End(Monster* pMonster)
 void sFollowPlayer_Action::Start(Monster* pMonster) 
 {
 	pMonster->isMoving = true;
+	pMonster->SetImage(pMonster->cWalk.c_str());
+	pMonster->mWalkAnimator->Reset();
 }
 
 void sFollowPlayer_Action::Update(Monster* pMonster) 
@@ -45,6 +49,8 @@ void sCharge_Action::Start(Monster* pMonster)
 	pMonster->isMoving = true;
 	pMonster->OrientToTarget(true);
 	pMonster->mTargetPosition = pMonster->mTarget->GetPosition();
+	pMonster->SetImage(pMonster->cCharge.c_str());
+	pMonster->mChargeAnimator->Reset();
 }
 
 void sCharge_Action::Update(Monster* pMonster)
@@ -63,6 +69,8 @@ void sRunAway_Action::Start(Monster* pMonster)
 {
 	pMonster->isMoving = true;
 	pMonster->OrientToTarget(false);
+	pMonster->SetImage(pMonster->cRunAway.c_str());
+	pMonster->mRunAwayAnimator->Reset();
 }
 
 void sRunAway_Action::Update(Monster* pMonster)
@@ -80,6 +88,8 @@ void sRunAway_Action::End(Monster* pMonster)
 void sAttack_Action::Start(Monster* pMonster) 
 {
 	pMonster->isAttacking = true;
+	pMonster->SetImage(pMonster->cAttack.c_str());
+	pMonster->mAttackAnimator->Reset();
 }
 
 void sAttack_Action::Update(Monster* pMonster) 
@@ -96,6 +106,7 @@ void sAttack_Action::End(Monster* pMonster)
 void sShot_Action::Start(Monster* pMonster)
 {
 	pMonster->isShooting = true;
+	pMonster->SetImage(pMonster->cShot.c_str());
 }
 
 void sShot_Action::Update(Monster* pMonster)
@@ -120,6 +131,7 @@ void sReturnToPosition_Action::Start(Monster* pMonster)
 	{
 		pMonster->FaceRight();
 	}
+	pMonster->SetImage(pMonster->cWalk.c_str());
 }
 
 void sReturnToPosition_Action::Update(Monster* pMonster) 

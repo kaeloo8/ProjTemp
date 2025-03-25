@@ -16,43 +16,49 @@ void SceneGorille::OnInitialize()
     lPointer->SetOrigin(0, 0);
     lPointer->Layout = 200;
 
-    lPlayer = CreateEntity<Player>("base_idle_strip9");
-    lPlayer->SetScale(3, 3);
-    lPlayer->SetOrigin(0.5f, 0.5f);
-    lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
-    lPlayer->AddAABBHitbox();
-    lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
-    lPlayer->Layout = 2;
+    TEST = CreateEntity<UI>("BButton");
+    TEST->SetPointer(lPointer);
+    TEST->SetOrigin(0.5, 0.5);
+    TEST->SetScale(3, 3);
+    TEST->SetPosition(GetWindowWidth() / 2, GetWindowHeight() / 2);
+    TEST->IsClickable = false;
+    TEST->Layout = 100;
 
     ButtonCancel = CreateEntity<UI>("cancel");
+    ButtonCancel->SetPointer(lPointer);
     ButtonCancel->SetScale(3,3);
     ButtonCancel->SetOrigin(0.5f, 0.5f);
-    ButtonCancel->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
+    ButtonCancel->SetPosition((Win->getPosition().x / 2), (Win->getPosition().y / 2));
     ButtonCancel->AddAABBHitbox();
     ButtonCancel->Layout = 1;
 
-    Background2 = CreateEntity<UI>("LoadingScreen");
+    Background2 = CreateEntity<UI>("BButton_pressed");
+    Background2->SetPointer(lPointer);
     Background2->SetOrigin(0.5f, 0.5f);
     Background2->SetScale(Win->getSize().x, Win->getSize().y);
     Background2->Layout = 4;
     
     Background = CreateEntity<UI>("FondEcran");
+    Background->SetPointer(lPointer);
     Background->SetOrigin(0.5f, 0.5f);
-    Background->SetPosition((GetWindowWidth() / 2), (GetWindowHeight() / 2));
-    Background->Layout = 2;
+    Background->SetPosition(500, 500);
+    Background->SetSize(400, 600);
+    Background->Layout = -1;
     //optionsMenu->AddUIElement(ButtonCancel);
 
-    ButtonCancel = CreateEntity<UI>("cancel");
-    ButtonCancel->AddCircleHitbox();
-    ButtonCancel->SetPosition((GetWindowWidth() / 3), (GetWindowHeight() / 2));
-
-    ButtonValid = CreateEntity<UI>("confirm");
-    ButtonValid->AddCircleHitbox();;
-    ButtonValid->SetPosition((GetWindowWidth() / 3), (GetWindowHeight() / 2));
+    Image = CreateEntity<UI>(15, sf::Color::White);
+    Image->SetPointer(lPointer);
+    Image->AddAABBHitbox();
+    Image->SetOrigin(0.5f, 0.5f);
+    Image->SetPosition(Background->GetPosition().x , Background->GetPosition().y );
+    Image->SetSize(100, 300);
+    Image->Layout = -1;
 }
 
 void SceneGorille::OnEvent(const sf::Event& event)
 {
+    sf::Vector2f mousePos = Win->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
         if (!KeyEscPressed) {
             std::cout << "Retour Menu" << std::endl;
@@ -69,16 +75,17 @@ void SceneGorille::OnEvent(const sf::Event& event)
             KeyMPressed = true;
             if (mOpen) {
                 // Afficher le menu
-                std::cout << "Options Ouvert" << std::endl;
                 ButtonCancel->Layout = 5;
                 Background->Layout = 4;
-                ButtonCancel->SetPosition(Background->GetPosition().x, Background->GetPosition().y);
+                Image->Layout = 5;
+                ButtonCancel->SetPosition(Background->GetPosition().x + 130 , Background->GetPosition().y - 250);
+                Image->HandleHover(mousePos);
             }
             else {
                 // Cacher le menu
-                std::cout << "Options Ferme" << std::endl;
-                ButtonCancel->Layout = 1;
-                Background->Layout = 1;
+                ButtonCancel->Layout = -1;
+                Background->Layout = -1;
+                Image->Layout = -1;
             }
         };
     }
@@ -88,25 +95,18 @@ void SceneGorille::OnEvent(const sf::Event& event)
     }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        sf::Vector2f mousePos = Win->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-        
+
         if (mOpen && ButtonCancel->HandleClick(mousePos)) {
             mOpen = false;
-            ButtonCancel->Layout = 1;
-            Background->Layout = 1;
-            
+            ButtonCancel->Layout = -1;
+            Background->Layout = -1;
+            Image->Layout = -1;
         };
-        if (ButtonValid->HandleClick(mousePos))
-        {
-            std::cout << "Julian" << std::endl;
-        }
     }
 }
 
 void SceneGorille::OnUpdate()
 {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(*Win);
-    lPointer->SetPosition(mousePos.x + lPlayer->GetPosition().x - GameManager::Get()->Window->getSize().x / 2,mousePos.y + lPlayer->GetPosition().y - GameManager::Get()->Window->getSize().y / 2);
 }
 
 void SceneGorille::SetName()

@@ -23,21 +23,54 @@ Monster::~Monster()
     ClearAnimation();
 }
 
+void Monster::MonsterOption(bool CanItShoot, bool CanItRunAway, bool CanItCharge, bool CanItTaunt)
+{
+    CanShoot = CanItShoot;
+    CanRunAway = CanItRunAway;
+    CanCharge = CanItCharge;
+    CanTaunt = CanItTaunt;
+}
+
 void Monster::OnAnimationUpdate()
 {
     float dt = GetDeltaTime();
     int state = MonsterState.GetCurrentState();
 
-    if (state == 1 || state == 3) {
-        mWalkAnimator->Update(dt);
-    }
-    else if (state == 0 && mIdleAnimator) {
+    switch (state) {
+    case State::sIdle:
         mIdleAnimator->Update(dt);
-    }
-    else if (state == 2 && mAttackAnimator) {
+        break;
+    case State::sWalk:
+    case 6: // Si 6 correspond aussi à Walk
+        mWalkAnimator->Update(dt);
+        break;
+    case State::sCharge:
+        mChargeAnimator->Update(dt);
+        break;
+    case State::sRunAway:
+        mRunAwayAnimator->Update(dt);
+        break;
+    case State::sAttack:
         mAttackAnimator->Update(dt);
+        break;
+    case State::sShot:
+        mShotAnimator->Update(dt);
+        break;
+    case State::sStunt:
+        mStuntAnimator->Update(dt);
+        break;
+    case State::sDamaged:
+        mDamagedAnimator->Update(dt);
+        break;
+    case State::sDied:
+        mDiedAnimator->Update(dt);
+        break;
+    case State::sVictory:
+        mVictoryAnimator->Update(dt);
+        break;
     }
 }
+
 
 void Monster::FaceRight()
 {
@@ -120,10 +153,16 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Walk (si le joueur est proche)
         {
+            auto transition = bMonsterIdle->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<CanSeeThePlayer>();
+            condition->expected = true;
         }
 
-        // -> GoBack (si le joueur est trop loin)
+        // -> Goback
         {
+            auto transition = bMonsterIdle->CreateTransition(State::sGoBack);
+            auto condition = transition->AddCondition<IsAtInitialPosition>();
+            condition->expected = false;
         }
     }
 
@@ -132,22 +171,18 @@ void Monster::InitMonster(const char* _MonsterName)
         Behaviour<Monster>* bWalk = MonsterState.CreateBehaviour(State::sWalk);
         bWalk->AddAction(new sFollowPlayer_Action());
 
-        // -> Idle (si le joueur est trop loin, donc il ne peut plus le suivre)
+        // -> Idle
         {
+            auto transition = bWalk->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<CanSeeThePlayer>();
+            condition->expected = false;
         }
 
-        // -> Attack (si le monstre est assez proche pour attaquer)
+        // -> Attack
         {
-        }
-    }
-
-    // --- ÉTAT ATTACK ---
-    {
-        Behaviour<Monster>* bAttack = MonsterState.CreateBehaviour(State::sAttack);
-        bAttack->AddAction(new sAttack_Action());
-
-        // -> Walk (si le joueur s'éloigne)
-        {
+            auto transition = bWalk->CreateTransition(State::sAttack);
+            auto condition = transition->AddCondition<IsAtAttackDistance>();
+            condition->expected = true;
         }
     }
 
@@ -158,12 +193,33 @@ void Monster::InitMonster(const char* _MonsterName)
 
         // -> Idle (si le monstre est revenu à sa position d'origine)
         {
+            auto transition = bGoBack->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<IsAtInitialPosition>();
+            condition->expected = true;
         }
 
         // -> Walk (si le joueur revient dans la zone)
         {
+            auto transition = bGoBack->CreateTransition(State::sWalk);
+            auto condition = transition->AddCondition<CanSeeThePlayer>();
+            condition->expected = true;
         }
     }
+
+    // --- ÉTAT ATTACK ---
+    {
+        Behaviour<Monster>* bAttack = MonsterState.CreateBehaviour(State::sAttack);
+        bAttack->AddAction(new sAttack_Action());
+
+        // -> Walk
+        {
+            auto transition = bAttack->CreateTransition(State::sIdle);
+            auto condition = transition->AddCondition<IsAtAttackDistance>();
+            condition->expected = false;
+        }
+    }
+
+    
 
     MonsterState.SetState(State::sIdle);
 }
@@ -205,16 +261,6 @@ void Monster::OnUpdate()
     OnAnimationUpdate();
     MonsterState.Update();
 
-    if (isAttacking)
-    {
-        AttackTimer -= GameManager::Get()->GetDeltaTime();
-
-        if (AttackTimer <= 0)
-        {
-            isAttacking = false;
-        }
-    }
-
     if (true)
     {
         if (!mTarget) return;
@@ -225,6 +271,7 @@ void Monster::OnUpdate()
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
+    
 }
 
 void Monster::SetImage(const char* path)
