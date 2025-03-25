@@ -7,10 +7,10 @@
 
 void SceneEloulou::OnInitialize() {
 
-    //GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
-    //map = new TileMap();
-    //map->create("mapVille"); // Charge la map
-    //GameManager::Get()->SetTileMap(map);
+    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+    map = new TileMap();
+    map->create("mapVille"); // Charge la map
+    GameManager::Get()->SetTileMap(map);
 
     Cam = CreateEntity<CameraSys>("0");
     Cam->Layout = -1;
