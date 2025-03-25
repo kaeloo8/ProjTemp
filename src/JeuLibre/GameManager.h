@@ -18,18 +18,6 @@ namespace sf
 
 class GameManager 
 {
-	enum Tag {
-		tPlayer,
-		tEnnemie,
-		tVilagois,
-		tMBoss,
-		tBoss,
-		tSolide,
-
-		nOfTag
-	};
-
-
 	bool Loaded = false;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
@@ -65,6 +53,17 @@ private:
 	void SetDeltaTime(float deltaTime) { DeltaTime = deltaTime; }
 
 public:
+
+	enum Tag {
+		tPlayer,
+		tEnnemie,
+		tVilagois,
+		tMBoss,
+		tBoss,
+		tSolide,
+
+		nOfTag
+	};
 
 	bool DrawHitBox;
 	bool KeyPressed;
