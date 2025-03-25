@@ -30,6 +30,9 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
 
+    lBuild = CreateEntity<BuildSystem>("0");
+    lBuild->SetPlayer(lPlayer);
+    lBuild->SetPointer(lPointer);
 
     Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
     Skeleton->MonsterOption(true, true, true, true);
@@ -102,6 +105,13 @@ void SceneEloulou::OnEvent(const sf::Event& event) {
         if (!KeyEscPressed) {
             std::cout << "Tile select" << std::endl;
             map->tiles[1].clear();
+        }
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
+        if (!KeyEscPressed) {
+            lBuild->ChooseTile();
+            map->tiles[lBuild->Tiley][lBuild->Tilex].sprite.setTexture(GameManager::Get()->GetTexture("TileMap_0004"));
         }
     }
 

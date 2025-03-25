@@ -3,7 +3,7 @@
 
 UI::UI()
 {
-	mSprite = mImage;
+	//mSprite = mImage;
 }
 
 bool UI::HandleClick(float mouseX, float mouseY)
@@ -23,8 +23,6 @@ bool UI::HandleClick(float mouseX, float mouseY)
 
 bool UI::HandleClick(sf::Vector2f MousePos)
 {
-	if (IsClickable == false) { return 0; }
-
 	if (mSprite.getGlobalBounds().contains(MousePos))
 	{
 		return 1;
@@ -36,16 +34,17 @@ bool UI::HandleClick(sf::Vector2f MousePos)
 	return false;
 }
 
-void UI::HandleHover(sf::Vector2f MousePos)
+bool UI::HandleHover(sf::Vector2f MousePos)
 {
 	if (mSprite.getGlobalBounds().contains(MousePos))
 	{
-		mSprite.setColor(sf::Color::Blue);
-		std::cout << "Changement de couleure" << std::endl;
+		std::cout << "Changement de couleur" << std::endl;
+		return true;
 	}
 	else
 	{
-		mSprite.setColor(sf::Color::White);
+		return false;
+
 	}
 }
 

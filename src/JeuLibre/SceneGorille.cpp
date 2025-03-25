@@ -32,15 +32,15 @@ void SceneGorille::OnInitialize()
     Background->SetOrigin(0.5f, 0.5f);
     Background->SetPosition(500, 500);
     Background->SetSize(400, 600);
-    Background->Layout = 2;
+    Background->Layout = -1;
     //optionsMenu->AddUIElement(ButtonCancel);
 
-    Image = CreateEntity<UI>("0");
+    Image = CreateEntity<UI>(15, sf::Color::White);
     Image->AddAABBHitbox();
     Image->SetOrigin(0.5f, 0.5f);
-    Image->SetPosition(Background->GetPosition().x - 25, Background->GetPosition().y + 30);
-    Image->SetSize(200, 400);
-    Image->Layout = 2;
+    Image->SetPosition(Background->GetPosition().x , Background->GetPosition().y );
+    Image->SetSize(100, 300);
+    Image->Layout = -1;
 }
 
 void SceneGorille::OnEvent(const sf::Event& event)
@@ -63,7 +63,6 @@ void SceneGorille::OnEvent(const sf::Event& event)
             KeyMPressed = true;
             if (mOpen) {
                 // Afficher le menu
-                std::cout << "Options Ouvert" << std::endl;
                 ButtonCancel->Layout = 5;
                 Background->Layout = 4;
                 Image->Layout = 5;
@@ -72,10 +71,9 @@ void SceneGorille::OnEvent(const sf::Event& event)
             }
             else {
                 // Cacher le menu
-                std::cout << "Options Ferme" << std::endl;
-                ButtonCancel->Layout = 1;
-                Background->Layout = 1;
-                Image->Layout = 1;
+                ButtonCancel->Layout = -1;
+                Background->Layout = -1;
+                Image->Layout = -1;
             }
         };
     }
@@ -85,19 +83,13 @@ void SceneGorille::OnEvent(const sf::Event& event)
     }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        
-        
+
         if (mOpen && ButtonCancel->HandleClick(mousePos)) {
             mOpen = false;
-            //ButtonCancel->Layout = 1;
-            //Background->Layout = 1;
-            std::cout << "Menu Ferme" << std::endl;
-            
+            ButtonCancel->Layout = -1;
+            Background->Layout = -1;
+            Image->Layout = -1;
         };
-        if (ButtonValid->HandleClick(mousePos))
-        {
-            std::cout << "Julian" << std::endl;
-        }
     }
 }
 
