@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "Pointer.h"
 #include "CameraSys.h"
+#include "BuildSystem.h"
 
 class SceneEloulou : public Scene
 {
@@ -17,6 +18,7 @@ class SceneEloulou : public Scene
 	Pointer* lPointer;
 
 	Player* lPlayer;
+	BuildSystem* lBuild;
 
 	Monster* Skeleton;
 
