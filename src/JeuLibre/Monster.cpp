@@ -271,6 +271,7 @@ void Monster::OnUpdate()
 
 void Monster::OnCollision(Entity* pCollidedWith)
 {
+    if (pCollidedWith == )
 }
 
 void Monster::SetImage(const char* path)

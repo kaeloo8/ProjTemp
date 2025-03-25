@@ -18,6 +18,18 @@ namespace sf
 
 class GameManager 
 {
+	enum Tag {
+		tPlayer,
+		tEnnemie,
+		tVilagois,
+		tMBoss,
+		tBoss,
+		tSolide,
+
+		nOfTag
+	};
+
+
 	bool Loaded = false;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
