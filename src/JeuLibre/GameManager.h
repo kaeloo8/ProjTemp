@@ -18,18 +18,6 @@ namespace sf
 
 class GameManager 
 {
-	enum Tag {
-		tPlayer,
-		tEnnemie,
-		tVilagois,
-		tMBoss,
-		tBoss,
-		tSolide,
-
-		nOfTag
-	};
-
-
 	bool Loaded = false;
 	std::list<Entity*> mEntities;
 	std::list<Entity*> mEntitiesToDestroy;
@@ -66,6 +54,17 @@ private:
 
 public:
 
+	enum Tag {
+		tPlayer,
+		tEnnemie,
+		tVilagois,
+		tMBoss,
+		tBoss,
+		tSolide,
+
+		nOfTag
+	};
+
 	bool DrawHitBox;
 	bool KeyPressed;
 	
@@ -82,6 +81,7 @@ public:
 	void LaunchScene();
 
 	float GetDeltaTime() const { return DeltaTime; }
+	sf::Vector2i GetPointer() { return sf::Mouse::getPosition(); }
 	AssetManager* GetAssetManager() { return &AssetMana; }
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };
