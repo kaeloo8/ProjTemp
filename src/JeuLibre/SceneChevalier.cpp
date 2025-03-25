@@ -12,8 +12,11 @@ void SceneChevalier::OnInitialize()
     cam = CreateEntity<CameraSys>("0");
     cam->Layout = -1;
 
+    Decalx = 1300;
+    Decaly = 700;
+
     CamFocus = CreateEntity<Entity>("0");
-    CamFocus->SetPosition(650, 340);
+    CamFocus->SetPosition(Decalx / 2, Decaly / 2);
     CamFocus->Layout = -1;
 
     cam->SetTarget(CamFocus);
@@ -27,12 +30,12 @@ void SceneChevalier::OnInitialize()
     lPlayer = CreateEntity<Player>("base_idle_strip9");
     lPlayer->SetScale(3, 3);
     lPlayer->SetOrigin(0.5f, 0.5f);
-    lPlayer->SetPosition(650,340);
+    lPlayer->SetPosition(Decalx / 2, Decaly / 2);
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
     
-    for (int i = 0;i < 10; i++) {
+    /*for (int i = 0;i < 10; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
         M->SetScale(3, 3);
@@ -42,7 +45,7 @@ void SceneChevalier::OnInitialize()
         M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
         M->Layout = 2;
         M->mTarget = lPlayer;
-    }
+    }*/
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
 
@@ -50,38 +53,6 @@ void SceneChevalier::OnInitialize()
     map->SetPosition(0, 0);
     map->createD();
     GameManager::Get()->SetTileMap(map);
-
-    Entity* W1 = CreateEntity<Entity>("0");
-    W1->Layout = -1;
-    W1->AddAABBHitbox();
-    W1->SetHitboxSize(1300, 50);
-    W1->SetPosition(650, 25);
-
-    lColide.push_back(W1);
-
-    Entity* W2 = CreateEntity<Entity>("0");
-    W2->Layout = -1;
-    W2->AddAABBHitbox();
-    W2->SetHitboxSize(1300, 50);
-    W2->SetPosition(650, 675);
-    
-    lColide.push_back(W2);
-
-    Entity* W3 = CreateEntity<Entity>("0");
-    W3->Layout = -1;
-    W3->AddAABBHitbox();
-    W3->SetHitboxSize(50, 700);
-    W3->SetPosition(25, 350);
-
-    lColide.push_back(W3);
-
-    Entity* W4 = CreateEntity<Entity>("0");
-    W4->Layout = -1;
-    W4->AddAABBHitbox();
-    W4->SetHitboxSize(50, 700);
-    W4->SetPosition(1275, 350);
-
-    lColide.push_back(W4);
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)
@@ -112,6 +83,17 @@ void SceneChevalier::OnEvent(const sf::Event& event)
 
 void SceneChevalier::OnUpdate()
 {
+    if (lPlayer->GetPosition().x < CamFocus->GetPosition().x - (Decalx / 2))
+        CamFocus->SetPosition(CamFocus->GetPosition().x - Decalx, CamFocus->GetPosition().y);
+
+    if (lPlayer->GetPosition().x > CamFocus->GetPosition().x + (Decalx / 2))
+        CamFocus->SetPosition(CamFocus->GetPosition().x + Decalx, CamFocus->GetPosition().y);
+
+    if (lPlayer->GetPosition().y < CamFocus->GetPosition().y - (Decaly / 2))
+        CamFocus->SetPosition(CamFocus->GetPosition().x, CamFocus->GetPosition().y - Decaly);
+
+    if (lPlayer->GetPosition().y > CamFocus->GetPosition().y + (Decaly / 2))
+        CamFocus->SetPosition(CamFocus->GetPosition().x, CamFocus->GetPosition().y + Decaly);
     
 }
 

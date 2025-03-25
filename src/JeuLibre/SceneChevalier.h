@@ -26,6 +26,9 @@ class SceneChevalier : public Scene
 
 	Entity* CamFocus;
 
+	int Decalx;
+	int Decaly;
+
 
 public:
 
