@@ -81,6 +81,7 @@ public:
 	void LaunchScene();
 
 	float GetDeltaTime() const { return DeltaTime; }
+	sf::Vector2i GetPointer() { return sf::Mouse::getPosition(); }
 	AssetManager* GetAssetManager() { return &AssetMana; }
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };
