@@ -8,6 +8,7 @@ class UI : public Entity
     sf::Sprite mImage;
     sf::Sprite mHoverImage;
     sf::RectangleShape background;
+    
     sf::Text title;
     sf::Text closeText;
     Pointer* mPointer;
@@ -28,7 +29,7 @@ public:
 
     bool HandleClick(float mouseX, float mouseY);
     bool HandleClick(sf::Vector2f MousePos);
-    void HandleHover(sf::Vector2f MousePos);
+    bool HandleHover(sf::Vector2f MousePos);
     void Open();
     void Close();
 
