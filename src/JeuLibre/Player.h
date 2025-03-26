@@ -31,7 +31,6 @@ private:
     void OnAnimationUpdate();
 
 public:
-    bool BuildingMode;
 
     bool isMoving;
     bool isSprinting;
@@ -44,7 +43,6 @@ public:
     int DamageDistance = 40;
 
     float tBeforSwitch = 0;
-
 
 	const char* PlayerHaircut = "shorthair_idle_strip9";
 

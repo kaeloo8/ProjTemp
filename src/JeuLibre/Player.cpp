@@ -163,7 +163,7 @@ void Player::OnUpdate()
         return;
     }
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking && !BuildingMode) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
         isAttacking = true;
         attackTimer = attackDuration; // Durée de l'attaque
         SetState(PlayerState::Attacking); // Changer l'état du joueur
@@ -316,7 +316,8 @@ void Player::ChangeHaircut(const char* haircut)
 
 void Player::ToogleMode()
 {
-    BuildingMode = !BuildingMode;
+    GetScene()->IsInBuildingMode = !GetScene()->IsInBuildingMode;
+    std::cout << GetScene()->IsInBuildingMode << std::endl;
 }
 
 void Player::OnCollision(Entity* pCollidedWith)
