@@ -114,7 +114,6 @@ void Entity::DamageLife(int _Damage)
 bool Entity::GoToDirection(float x, float y, float speed)
 {
 	if (speed <= 0.f) {
-		std::cerr << "GoToDirection: Speed must be positive." << std::endl;
 		return false;
 	}
 
@@ -286,14 +285,15 @@ void Entity::AddAABBHitbox()
 
 void Entity::DrawHitbox() {
 	if (auto* circleCollider = dynamic_cast<CircleCollider*>(mHitbox)) {
-		// Centre du cercle ajusté par l'origine
 
+		// Centre du cercle ajusté par l'origine
 		sf::Vector2f position = GetPosition();
+		Debug::DrawCircle(position.x, position.y, circleCollider->radius, { 255,0,0,75 });
 	}
 
 	if (auto* aabbCollider = dynamic_cast<AABBCollider*>(mHitbox)) {
-		// Limites de l'AABB ajustées par l'origine
 
+		// Limites de l'AABB ajustées par l'origine
 		sf::Vector2f position = GetPosition();
 
 		int halfOffsetWidth = mHitboxWidth / 2;

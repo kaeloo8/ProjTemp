@@ -167,7 +167,7 @@ void Player::OnUpdate()
         isAttacking = true;
         attackTimer = attackDuration; // Durée de l'attaque
         SetState(PlayerState::Attacking); // Changer l'état du joueur
-        //cAttack();
+        cAttack();
     }
 
     // Mettre à jour le timer de l'attaque
