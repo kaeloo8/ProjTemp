@@ -33,7 +33,6 @@ void SceneEloulou::OnInitialize() {
     lBuild = CreateEntity<BuildSystem>("0");
     lBuild->SetPlayer(lPlayer);
     lBuild->SetPointer(lPointer);
-    lBuild->SetEditableTilemap(map);
 
     //Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
     //Skeleton->MonsterOption(true, true, true, true);
