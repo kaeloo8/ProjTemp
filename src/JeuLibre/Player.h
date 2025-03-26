@@ -5,11 +5,19 @@
 #include "DamageZone.h"
 
 enum class PlayerState {
-    Idle,
-    Walking,
-    Sprinting,
-	Attacking,
-    Dashing 
+    sIdle,
+    sWalking,
+    sSprinting,
+	sAttacking,
+    sDashing,
+    sHurt,
+    sCasting,
+    sReeling,
+    sCaught,
+    sDig,
+    sAxe,
+    sMinning,
+    sWattering,
 };
 
 

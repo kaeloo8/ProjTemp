@@ -29,11 +29,11 @@ void BuildSystem::ChooseTile()
     }
     sf::Vector2f pointerPos = PointerReference->worldPos;
     float tileSize = 50;
-    std::cout << pointerPos.x << " : " << pointerPos.y << std::endl;
+    //std::cout << pointerPos.x << " : " << pointerPos.y << std::endl;
     int tileX = pointerPos.x / tileSize;
     int tileY = pointerPos.y / tileSize;
-    std::cout << tileX << std::endl;
-    std::cout << tileY << std::endl;
+    //std::cout << tileX << std::endl;
+    //std::cout << tileY << std::endl;
 
     // Vérifier que les indices sont valides dans le vecteur de tile
     if (tileY >= 0 && tileY <= 19 && tileX >= 0 && tileX <= 29) {
