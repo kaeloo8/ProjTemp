@@ -78,11 +78,11 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
     Win = W;
     std::vector<std::string> DosierListe = {
         "../../../img/",
-        "../../../img/Ui/",
         "../../../img/Player/",
         "../../../img/Hair/",
         "../../../img/Hand/",
-        "../../../img/Monster/"
+        "../../../img/Monster/",
+        "../../../img/Ui/"
     };
     LoadFromFile(DosierListe);
 }
