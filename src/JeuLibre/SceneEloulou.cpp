@@ -52,35 +52,16 @@ void SceneEloulou::OnInitialize() {
 }
 
 void SceneEloulou::OnEvent(const sf::Event& event) {
-    // Gestion du clic de souris pour le menu
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-        // Si la souris est dans la zone du menu (ex : dernière 80 pixels de la fenêtre)
-        if (mousePos.x > Win->getSize().x - 80) {
-            lBuild->HandleMenuClick(mousePos);
-            return; // On ne change pas de tile si on clique dans le menu
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
+        if (!KeyEscPressed) {
+            std::cout << "Tile select" << std::endl;
+            map->tiles[1].clear();
         }
     }
-
-    // Si la touche T est pressée, on remplace la texture de la tile sélectionnée
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
         if (!KeyEscPressed) {
-            // Appel de ChooseTile qui va placer le sprite de remplacement sur la tile sélectionnée
-            lBuild->ChooseTile();
-            // Mise à jour de la texture de la tile dans la map
-            sf::Texture& newTexture = GameManager::Get()->AssetMana.GetTexture(lBuild->currentTextureID);
-            map->tiles[lBuild->Tiley][lBuild->Tilex].sprite.setTexture(newTexture);
+            map->tiles[lBuild->Tiley][lBuild->Tilex].sprite.setTexture(GameManager::Get()->GetTexture("TileMap_0004"));
         }
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        if (!KeyEscPressed) {
-            std::cout << "Retour Menu" << std::endl;
-            GameManager::Get()->LaunchScene<S0Menu>();
-        }
-    }
-    else {
-        KeyEscPressed = false;
     }
 }
 
@@ -95,6 +76,6 @@ void SceneEloulou::Load()
 void SceneEloulou::OnUpdate() {
     if (IsInBuildingMode)
     {
-        //lBuild->ChooseTile();
+        lBuild->ChooseTile();
     }
 }

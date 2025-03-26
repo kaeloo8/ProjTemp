@@ -7,6 +7,8 @@
 class BuildSystem : public Entity
 {
 public:
+    Entity* SelectedTileImg;
+
     bool BuildingMode;
 
     Player* PlayerReference;

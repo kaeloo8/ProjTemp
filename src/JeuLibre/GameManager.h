@@ -91,6 +91,8 @@ public:
 	sf::RenderWindow* GetWindow() const { return Window; }
 
 	void SetTileMap(TileMap*);
+	TileMap* GetTilemap();
+
 	void SetCamera(CameraSys* cam);
 
 	friend Scene;

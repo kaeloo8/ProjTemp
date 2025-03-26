@@ -3,6 +3,9 @@
 
 BuildSystem::BuildSystem()
 {
+    SelectedTileImg = CreateEntity<Entity>("3");
+    SelectedTileImg->Layout = 10;
+    SelectedTileImg->SetSize(50,50);
 }
 
 BuildSystem::~BuildSystem()
@@ -33,10 +36,11 @@ void BuildSystem::ChooseTile()
     std::cout << tileY << std::endl;
 
     // Vérifier que les indices sont valides dans le vecteur de tile
-    if (tileY >= 0 && tileX >= 0 ) {
+    if (tileY >= 0 && tileY <= 19 && tileX >= 0 && tileX <= 29) {
         Tilex = tileX;
         Tiley = tileY;
         std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
+        SelectedTileImg->SetPosition(GameManager::Get()->GetTilemap()->tiles[Tiley][Tilex].sprite.getPosition().x, GameManager::Get()->GetTilemap()->tiles[Tiley][Tilex].sprite.getPosition().y);
     }
     else {
         std::cout << "Aucune tile trouvée sous le pointeur !" << std::endl;
