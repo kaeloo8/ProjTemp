@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Color.hpp>
-
 class GameManager;
 
 class Scene
@@ -28,6 +27,7 @@ public:
 	bool KeyMPressed;
 	std::string SceneName;
 
+
 	template<typename T>
 	T* CreateEntity(float radius, const sf::Color& color);
 
@@ -35,7 +35,6 @@ public:
 	T* CreateEntity(const char* path);
 
 	float GetDeltaTime() const;
-
 	int GetWindowWidth() const;
 	int GetWindowHeight() const;
 

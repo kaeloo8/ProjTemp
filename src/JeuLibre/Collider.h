@@ -24,24 +24,3 @@ public:
     float yMax;
     bool IsColliding(Collider* pOther) override;
 };
-
-class TriangleCollider : public Collider {
-public:
-    enum Orientation { BD, BG, HD, HG };
-    Orientation type;
-    float width, height;
-    sf::Vector2f points[3];
-
-    TriangleCollider(float x, float y, float w, float h, Orientation t);
-    bool IsColliding(Collider* pOther) override;
-    bool ContainsPoint(const sf::Vector2f& point);
-};
-
-class ModularCollider : public Collider {
-public:
-    std::vector<sf::Vector2f> points;
-    ModularCollider(const std::vector<sf::Vector2f>& pts);
-    bool IsColliding(Collider* pOther) override;
-    bool SATCollision(ModularCollider* other);
-};
-
