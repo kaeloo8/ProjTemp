@@ -44,6 +44,7 @@ void SceneEloulou::OnInitialize() {
     Mur1->AddAABBHitbox();
     Mur1->SetHitboxSize(Mur1->mSprite.getGlobalBounds().width, Mur1->mSprite.getGlobalBounds().height);
     Mur1->SolidHitbox();
+
     //Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
     //Skeleton->MonsterOption(true, true, true, true);
     //Skeleton->InitMonster("skeleton");
