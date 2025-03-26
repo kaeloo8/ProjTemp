@@ -20,7 +20,6 @@ void DamageZone::OnCollision(Entity* pCollidedWith) {
 			return; 
 		}
 	}
-	//pCollidedWith->DamageLife(Damage);
 	pCollidedWith->Destroy();
 	if (UniqueColide) {
 		Destroy();

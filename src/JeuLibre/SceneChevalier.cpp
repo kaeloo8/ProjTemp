@@ -38,13 +38,17 @@ void SceneChevalier::OnInitialize()
     for (int i = 0;i < 10; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
+        M->AddCircleHitbox();
+        M->MonsterOption(true, true, true, true);
+        M->InitMonster("skeleton");
         M->SetScale(3, 3);
         M->SetOrigin(0.5f, 0.5f);
-        M->SetPosition((std::rand() % 600) + 100, (std::rand() % 400) + 100);
-        M->AddAABBHitbox();
-        M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
+        M->SetPosition((std::rand() % 301) + (400 * (std::rand() % 2))+ 100, (std::rand() % 201) + (200 * (std::rand() % 2)) + 100);
+        M->SetInitialPosition();
+        M->SetSpeed(100);
+        M->SetTarget(lPlayer);
         M->Layout = 2;
-        M->mTarget = lPlayer;
+        lEnnemie.push_back(M);
     }
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
