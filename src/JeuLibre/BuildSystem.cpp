@@ -40,7 +40,12 @@ void BuildSystem::ChooseTile()
         Tilex = tileX;
         Tiley = tileY;
         std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
-        SelectedTileImg->SetPosition(GameManager::Get()->GetTilemap()->tiles[Tiley][Tilex].sprite.getPosition().x, GameManager::Get()->GetTilemap()->tiles[Tiley][Tilex].sprite.getPosition().y);
+
+        if (GameManager::Get()->GetTileMap(1)) {
+            auto& tile = GameManager::Get()->GetTileMap(0)->tiles[Tiley][Tilex];
+            SelectedTileImg->SetPosition(tile.sprite.getPosition().x, tile.sprite.getPosition().y);
+        }
+
     }
     else {
         std::cout << "Aucune tile trouvée sous le pointeur !" << std::endl;

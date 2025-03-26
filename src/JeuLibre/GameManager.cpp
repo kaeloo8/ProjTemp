@@ -153,15 +153,12 @@ void GameManager::Draw() {
 		Window->setView(camera->getView());
 	}
 
-	if (tileMap) {
-		for (const auto& line : tileMap->tiles) {
+	for (auto* tm : GameManager::Get()->GetTileMaps()) {
+		for (const auto& line : tm->tiles) {
 			for (const auto& tile : line) {
 				Window->draw(tile.sprite);
 			}
 		}
-	}
-	else {
-		//std::cerr << "Warning : tileMap est NULL dans Draw() !" << std::endl;
 	}
 
 	TrieEntity.clear();
@@ -242,15 +239,19 @@ void GameManager::VerifWin() {
 								//	SetTileMap	//
 ///////////////////////////////////////////////////////////////////////////////////
 
-void GameManager::SetTileMap(TileMap* map) {
-	tileMap = map;
+void GameManager::AddTileMap(TileMap* map) {
+	tileMaps.push_back(map);
 }
 
-TileMap* GameManager::GetTilemap()
-{
-	return tileMap;
+TileMap* GameManager::GetTileMap(size_t index) {
+	if (index < tileMaps.size())
+		return tileMaps[index];
+	return nullptr; // Retourne nullptr si l'index est invalide
 }
 
+const std::vector<TileMap*>& GameManager::GetTileMaps() const {
+	return tileMaps;
+}
 ///////////////////////////////////////////////////////////////////////////////////
 								//	SetCamera	//
 ///////////////////////////////////////////////////////////////////////////////////

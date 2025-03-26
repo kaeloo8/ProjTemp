@@ -8,9 +8,12 @@
 void SceneEloulou::OnInitialize() {
 
     GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+    Ocean = new TileMap();
+    Ocean->create("Ocean"); // Charge la map
+    GameManager::Get()->AddTileMap(Ocean);
     map = new TileMap();
-    map->create("Ocean"); // Charge la map
-    GameManager::Get()->SetTileMap(map);
+    map->create("Ile");
+    GameManager::Get()->AddTileMap(map);
 
     Cam = CreateEntity<CameraSys>("0");
     Cam->Layout = -1;
@@ -78,5 +81,5 @@ void SceneEloulou::OnUpdate() {
     {
         lBuild->ChooseTile();
     }
-    map->UpdateWater();
+    Ocean->UpdateWater();
 }
