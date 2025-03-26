@@ -8,7 +8,7 @@ enum class PlayerState {
     sIdle,
     sWalking,
     sSprinting,
-	sAttacking,
+    sAttacking,
     sDashing,
     sHurt,
     sCasting,
@@ -17,7 +17,8 @@ enum class PlayerState {
     sDig,
     sAxe,
     sMinning,
-    sWattering,
+
+    sCount
 };
 
 
@@ -27,11 +28,19 @@ private:
     PlayerPart* PlayerHair;
     PlayerPart* PlayerHand;
 
-    Animator* mWalkAnimator; 
-    Animator* mIdleAnimator; 
+    Animator* mIdleAnimator;
+    Animator* mWalkAnimator;
     Animator* mSprintAnimator;
-    Animator* mDashAnimator;
     Animator* mAttackAnimator;
+    Animator* mDashAnimator;
+    Animator* mHurtAnimator;
+    Animator* mCastingAnimator;
+    Animator* mReelingAnimator;
+    Animator* mCaughtAnimator;
+    Animator* mDigAnimator;
+    Animator* mAxeAnimator;
+    Animator* mMinningAnimator;
+    Animator* mWatteringAnimator;
     PlayerState mState;
 
     DamageZone* AttackArea = nullptr;

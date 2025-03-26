@@ -32,11 +32,9 @@ void BuildSystem::ChooseTile()
     //std::cout << pointerPos.x << " : " << pointerPos.y << std::endl;
     int tileX = pointerPos.x / tileSize;
     int tileY = pointerPos.y / tileSize;
-    //std::cout << tileX << std::endl;
-    //std::cout << tileY << std::endl;
 
     // Vérifier que les indices sont valides dans le vecteur de tile
-    if (tileY >= 0 && tileY <= 19 && tileX >= 0 && tileX <= 29) {
+    if (tileY >= 0 && tileY <= 39 && tileX >= 0 && tileX <= 63) {
         Tilex = tileX;
         Tiley = tileY;
         std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;

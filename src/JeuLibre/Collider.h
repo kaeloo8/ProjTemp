@@ -4,6 +4,7 @@
 class Collider {
 public:
     float x, y;
+    bool Solid = false;
     virtual bool IsColliding(Collider* pOther) = 0;
 };
 
