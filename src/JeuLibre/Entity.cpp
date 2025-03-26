@@ -283,6 +283,14 @@ void Entity::AddAABBHitbox()
 	haveHitbox = true;
 }
 
+void AddTriangleHitbox() {
+
+}
+
+void AddModularHitbox() {
+
+}
+
 void Entity::DrawHitbox() {
 	if (auto* circleCollider = dynamic_cast<CircleCollider*>(mHitbox)) {
 
