@@ -56,7 +56,6 @@ void SceneChevalier::OnInitialize()
     TileMap* map = new TileMap();
     map->SetPosition(0, 0);
     map->createD();
-    GameManager::Get()->SetTileMap(map);
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)

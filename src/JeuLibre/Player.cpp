@@ -3,7 +3,7 @@
 #include "GameManager.h"
 
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::Idle)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::sIdle)
 {
     mLife = 100;
     mIsAlive = true;
@@ -83,23 +83,23 @@ void Player::SetState(PlayerState state)
         mState = state;
 
         // Modification de l'image et réinitialisation de l'animation en fonction de l'état
-        if (mState == PlayerState::Idle) {
+        if (mState == PlayerState::sIdle) {
             SetImage("base_idle_strip9");
             if (mIdleAnimator) mIdleAnimator->Reset();
         }
-        else if (mState == PlayerState::Walking) {
+        else if (mState == PlayerState::sWalking) {
             SetImage("base_walk_strip8");
             if (mWalkAnimator) mWalkAnimator->Reset();
         }
-        else if (mState == PlayerState::Sprinting) {
+        else if (mState == PlayerState::sSprinting) {
             SetImage("base_run_strip8");
             if (mSprintAnimator) mSprintAnimator->Reset();
         }
-        else if (mState == PlayerState::Dashing) {
+        else if (mState == PlayerState::sDashing) {
             SetImage("base_roll_strip10");
             if (mDashAnimator) mDashAnimator->Reset();
         }
-        else if (mState == PlayerState::Attacking) {
+        else if (mState == PlayerState::sAttacking) {
             SetImage("base_attack_strip10"); 
             if (mAttackAnimator) mAttackAnimator->Reset();
         }
@@ -163,10 +163,10 @@ void Player::OnUpdate()
         return;
     }
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking && !BuildingMode) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
         isAttacking = true;
         attackTimer = attackDuration; // Durée de l'attaque
-        SetState(PlayerState::Attacking); // Changer l'état du joueur
+        SetState(PlayerState::sAttacking); // Changer l'état du joueur
         cAttack();
     }
 
@@ -253,30 +253,30 @@ void Player::OnUpdate()
     {
         PlayerHair->SetState(PlayerPartState::Attacking);
         PlayerHand->SetState(PlayerPartState::Attacking);
-        SetState(PlayerState::Attacking);
+        SetState(PlayerState::sAttacking);
         return;
     }
     if (isDashing) {
         PlayerHair->SetState(PlayerPartState::Dashing);
         PlayerHand->SetState(PlayerPartState::Dashing);
-        SetState(PlayerState::Dashing);
+        SetState(PlayerState::sDashing);
     }
     else if (isMoving) {
         if (isSprinting) {
             PlayerHair->SetState(PlayerPartState::Sprinting);
             PlayerHand->SetState(PlayerPartState::Sprinting);
-            SetState(PlayerState::Sprinting);
+            SetState(PlayerState::sSprinting);
         }
         else {
             PlayerHair->SetState(PlayerPartState::Walking);
             PlayerHand->SetState(PlayerPartState::Walking);
-            SetState(PlayerState::Walking);
+            SetState(PlayerState::sWalking);
         }
     }
     else {
         PlayerHair->SetState(PlayerPartState::Idle);
         PlayerHand->SetState(PlayerPartState::Idle);
-        SetState(PlayerState::Idle);
+        SetState(PlayerState::sIdle);
     }
 }
 
@@ -285,19 +285,19 @@ void Player::OnAnimationUpdate()
     float dt = GetDeltaTime();
 
     // Mise à jour des animations selon l'état
-    if (mState == PlayerState::Walking && mWalkAnimator) {
+    if (mState == PlayerState::sWalking && mWalkAnimator) {
         mWalkAnimator->Update(dt);
     }
-    else if (mState == PlayerState::Idle && mIdleAnimator) {
+    else if (mState == PlayerState::sIdle && mIdleAnimator) {
         mIdleAnimator->Update(dt);
     }
-    else if (mState == PlayerState::Sprinting && mSprintAnimator) {
+    else if (mState == PlayerState::sSprinting && mSprintAnimator) {
         mSprintAnimator->Update(dt);
     }
-    else if (mState == PlayerState::Dashing && mDashAnimator) {
+    else if (mState == PlayerState::sDashing && mDashAnimator) {
         mDashAnimator->Update(dt);
     }
-    else if (mState == PlayerState::Attacking && mAttackAnimator) {
+    else if (mState == PlayerState::sAttacking && mAttackAnimator) {
         mAttackAnimator->Update(dt);
     }
 
@@ -316,7 +316,8 @@ void Player::ChangeHaircut(const char* haircut)
 
 void Player::ToogleMode()
 {
-    BuildingMode = !BuildingMode;
+    GetScene()->IsInBuildingMode = !GetScene()->IsInBuildingMode;
+    std::cout << GetScene()->IsInBuildingMode << std::endl;
 }
 
 void Player::OnCollision(Entity* pCollidedWith)

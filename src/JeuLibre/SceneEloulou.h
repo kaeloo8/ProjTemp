@@ -11,7 +11,9 @@ class SceneEloulou : public Scene
 
 	std::vector<Entity*> entitylist;
 
+	TileMap* Ocean;
 	TileMap* map;
+
 	CameraSys* Cam;
 
 	sf::RenderWindow* Win;

@@ -3,7 +3,6 @@
 #include "GameManager.h"
 #include "S0Menu.h"
 
-
 int main() {
 	GameManager* pInstance = GameManager::Get();
 

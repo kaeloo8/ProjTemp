@@ -20,6 +20,8 @@ protected:
 	virtual void SetName() = 0;
 
 public:
+	bool IsInBuildingMode = false;
+
 	bool KeyHPressed;
 	bool KeyEscPressed;
 	bool KeyMPressed;

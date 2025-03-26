@@ -26,11 +26,19 @@ struct Room {
 class TileMap : public Entity {
 public:
 
-    Tile* SelectedTile;
-
+    float WaterSpeed = 0.5f;
     float tileSize = 50;
     std::vector<std::vector<Tile>> tiles;
 
+    std::vector<std::vector<std::string>> animCycles = {
+        { "0208", "0209", "0210", "0211" },
+        { "0212", "0213", "0214", "0215" },
+        { "0216", "0217", "0218", "0219" },
+        { "0220", "0221", "0222", "0223" }
+    };
+
     void create(const std::string& path);
     void createD();
+    void UpdateWater();
+
 };

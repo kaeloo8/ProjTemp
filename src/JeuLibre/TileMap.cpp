@@ -136,4 +136,29 @@ void TileMap::createD() {
     }
 }
 
+void TileMap::UpdateWater()
+{
+    static float animationTimer = 0.f;
+    animationTimer += GameManager::Get()->GetDeltaTime();
+
+    if (animationTimer >= WaterSpeed) {
+        for (auto& line : tiles) {
+            for (auto& tile : line) {
+                // Pour chaque cycle, vérifier si l'ID de la tile est dans le cycle
+                for (const auto& cycle : animCycles) {
+                    auto it = std::find(cycle.begin(), cycle.end(), tile.id);
+                    if (it != cycle.end()) {
+                        int index = std::distance(cycle.begin(), it);
+                        index = (index + 1) % cycle.size();
+                        tile.id = cycle[index];
+                        // Met à jour la texture en fonction du nouvel ID
+                        tile.sprite.setTexture(GameManager::Get()->AssetMana.GetTexture("TileMap_" + tile.id));
+                        break; // On passe à la tile suivante dès qu'un cycle est trouvé
+                    }
+                }
+            }
+        }
+        animationTimer = 0.f;
+    }
+}
 

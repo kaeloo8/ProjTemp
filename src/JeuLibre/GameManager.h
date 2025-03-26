@@ -67,8 +67,12 @@ public:
 
 	bool DrawHitBox;
 	bool KeyPressed;
-	
-	TileMap* tileMap;
+
+	std::vector<TileMap*> tileMaps;
+	void AddTileMap(TileMap* map);
+	TileMap* GetTileMap(size_t index);
+	const std::vector<TileMap*>& GetTileMaps() const;
+
 	sf::RenderWindow* Window;
 	AssetManager AssetMana;
 
@@ -90,12 +94,11 @@ public:
 
 	sf::RenderWindow* GetWindow() const { return Window; }
 
-	void SetTileMap(TileMap*);
 	void SetCamera(CameraSys* cam);
 
 	friend Scene;
 
-	void ClearAll();
+	//void ClearAll();
 };
 
 #include "GameManager.inl" 
