@@ -13,7 +13,6 @@ void Entity::Initialize(float radius, const sf::Color& color)
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
 	mToDestroy = false;
-	mTag = -1;
 	mHitbox = nullptr;
 
 	mShape.setRadius(radius);
@@ -35,7 +34,6 @@ void Entity::Initialize(const char* path)
 	mDirection = sf::Vector2f(0.0f, 0.0f);
 	mSpeed = 0.0f;
 	mToDestroy = false;
-	mTag = -1;
 	mSprite.setTexture(GameManager::Get()->GetTexture(path));
 	mHitbox = nullptr;
 

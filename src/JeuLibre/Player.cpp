@@ -5,7 +5,6 @@
 Player::Player()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::Idle)
 {
-
     mLife = 100;
     mIsAlive = true;
     // INITIALISATION CHEVEUX 
@@ -63,6 +62,8 @@ Player::Player()
         10,    // nombre de frames roll
         0.07f  // durée par frame roll
     );
+
+    mTag = GameManager::Tag::tPlayer;
 }
 
 Player::~Player()
@@ -108,6 +109,7 @@ void Player::SetState(PlayerState state)
 
 void Player::FaceLeft()
 {
+    isTurn = true;
     // Inverser l'orientation du sprite du joueur (gauche)
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -116,6 +118,7 @@ void Player::FaceLeft()
 
 void Player::FaceRight()
 {
+    isTurn = false;
     // Inverser l'orientation du sprite du joueur (droite)
     GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -124,7 +127,18 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
+    if (AttackArea != NULL) {
+        if (isTurn) {
+            AttackArea->SetPosition(this->GetPosition().x - DamageDistance, this->GetPosition().y - DamageDistance / 2);
+        }
+        else {
+            AttackArea->SetPosition(this->GetPosition().x + DamageDistance, this->GetPosition().y - DamageDistance / 2);
+        }
+    }
+
     //std::cout << mLife << std::endl;
+    if (tBeforSwitch > 0)
+        tBeforSwitch -= GameManager::Get()->GetDeltaTime();
 
     PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
     PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
@@ -153,6 +167,7 @@ void Player::OnUpdate()
         isAttacking = true;
         attackTimer = attackDuration; // Durée de l'attaque
         SetState(PlayerState::Attacking); // Changer l'état du joueur
+        //cAttack();
     }
 
     // Mettre à jour le timer de l'attaque
@@ -163,8 +178,9 @@ void Player::OnUpdate()
         }
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)&& tBeforSwitch <=0) {
         ToogleMode();
+        tBeforSwitch = 2;
     }
 
     // Gestion des déplacements classiques
@@ -306,4 +322,13 @@ void Player::ToogleMode()
 void Player::OnCollision(Entity* pCollidedWith)
 {
     //
+}
+
+void Player::cAttack() {
+    AttackArea = CreateEntity<DamageZone>("0");
+    AttackArea->Layout = -1;
+    AttackArea->AddAABBHitbox();
+    AttackArea->SetHitboxSize(100, 100);
+    AttackArea->LifeTime = 0.5;
+    AttackArea->IgnoreTag(GameManager::Tag::tPlayer);   
 }

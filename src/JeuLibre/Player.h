@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Animator.h"
 #include "PlayerPart.h"
+#include "DamageZone.h"
 
 enum class PlayerState {
     Idle,
@@ -25,6 +26,8 @@ private:
     Animator* mAttackAnimator;
     PlayerState mState;
 
+    DamageZone* AttackArea = nullptr;
+
     void OnAnimationUpdate();
 
 public:
@@ -35,6 +38,12 @@ public:
 	bool isDashing;
 	bool isAttacking;
     bool isStunt;
+
+    bool isTurn;
+
+    int DamageDistance = 40;
+
+    float tBeforSwitch = 0;
 
 
 	const char* PlayerHaircut = "shorthair_idle_strip9";
@@ -63,6 +72,8 @@ public:
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
     void SetState(PlayerState state);
+
+    void cAttack();
 
     void SetImage(const char* path) override;
 };

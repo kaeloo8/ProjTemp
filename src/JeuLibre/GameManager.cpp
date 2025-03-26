@@ -112,18 +112,6 @@ void GameManager::Update() {
 	}
 	mEntitiesToAdd.clear();
 
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-		if (!KeyPressed) {
-			KeyPressed = true;
-			DrawHitBox = !DrawHitBox;
-			std::cout << "hitbox draw : " << DrawHitBox << std::endl;
-		}
-	}
-	else {
-		KeyPressed = false;
-	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +128,17 @@ void GameManager::HandleInput() {
 		}
 
 		mpScene->OnEvent(event);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+		if (!KeyPressed) {
+			KeyPressed = true;
+			DrawHitBox = !DrawHitBox;
+			std::cout << "hitbox draw : " << DrawHitBox << std::endl;
+		}
+	}
+	else {
+		KeyPressed = false;
 	}
 }
 

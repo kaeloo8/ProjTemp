@@ -48,7 +48,7 @@ public:
     float timer;
     float timerAnnim;
     bool mToDestroy ;
-    int mTag;
+    int mTag = -1;
     int Layout;
 
     int mLife;

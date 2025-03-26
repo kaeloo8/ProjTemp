@@ -2,9 +2,9 @@
 #include "TileMap.h"
 #include "GameManager.h"
 #include <fstream>
-#include <vector>
-#include <iostream>
 #include <random>
+#include <stack>
+#include <algorithm>
 
 void TileMap::create(const std::string& path)
 {
@@ -69,20 +69,44 @@ void TileMap::createD() {
 
     std::vector<std::vector<Room>> rooms(rows, std::vector<Room>(cols));
 
-    // Génération des salles avec connexions aléatoires
+    // Initialisation des salles sans connexions
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             Room& room = rooms[i][j];
             room.x = j * roomWidth * tileSize;
             room.y = i * roomHeight * tileSize;
+            room.doors[0] = room.doors[1] = room.doors[2] = room.doors[3] = false; // Pas de portes initialement
+        }
+    }
 
-            room.doors[0] = (i > 0) ? (rand() % 2) : false; // Haut
-            room.doors[1] = (i < rows - 1) ? (rand() % 2) : false; // Bas
-            room.doors[2] = (j > 0) ? (rand() % 2) : false; // Gauche
-            room.doors[3] = (j < cols - 1) ? (rand() % 2) : false; // Droite
+    // Connexité garantie avec un parcours DFS
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+    std::stack<std::pair<int, int>> stack;
+    stack.push({ 0, 0 }); // Commencer depuis la première salle
+    visited[0][0] = true;
 
-            if (i > 0 && rooms[i - 1][j].doors[1]) room.doors[0] = true;
-            if (j > 0 && rooms[i][j - 1].doors[3]) room.doors[2] = true;
+    while (!stack.empty()) {
+        auto [i, j] = stack.top();
+        stack.pop();
+
+        std::vector<std::pair<int, int>> neighbors;
+        if (i > 0 && !visited[i - 1][j]) neighbors.push_back({ i - 1, j }); // Haut
+        if (i < rows - 1 && !visited[i + 1][j]) neighbors.push_back({ i + 1, j }); // Bas
+        if (j > 0 && !visited[i][j - 1]) neighbors.push_back({ i, j - 1 }); // Gauche
+        if (j < cols - 1 && !visited[i][j + 1]) neighbors.push_back({ i, j + 1 }); // Droite
+
+        std::shuffle(neighbors.begin(), neighbors.end(), gen); // Mélanger pour variété
+
+        for (auto [ni, nj] : neighbors) {
+            if (!visited[ni][nj]) {
+                if (ni == i - 1) { rooms[i][j].doors[0] = true; rooms[ni][nj].doors[1] = true; }
+                if (ni == i + 1) { rooms[i][j].doors[1] = true; rooms[ni][nj].doors[0] = true; }
+                if (nj == j - 1) { rooms[i][j].doors[2] = true; rooms[ni][nj].doors[3] = true; }
+                if (nj == j + 1) { rooms[i][j].doors[3] = true; rooms[ni][nj].doors[2] = true; }
+
+                visited[ni][nj] = true;
+                stack.push({ ni, nj });
+            }
         }
     }
 
@@ -111,4 +135,5 @@ void TileMap::createD() {
         }
     }
 }
+
 

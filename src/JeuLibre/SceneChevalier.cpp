@@ -7,7 +7,7 @@
 
 void SceneChevalier::OnInitialize()
 {
-    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
+    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/Donjon");
 
     cam = CreateEntity<CameraSys>("0");
     cam->Layout = -1;
@@ -35,7 +35,7 @@ void SceneChevalier::OnInitialize()
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
     
-    /*for (int i = 0;i < 10; i++) {
+    for (int i = 0;i < 10; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
         M->SetScale(3, 3);
@@ -45,7 +45,7 @@ void SceneChevalier::OnInitialize()
         M->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width / 6, lPlayer->mSprite.getGlobalBounds().height / 4);
         M->Layout = 2;
         M->mTarget = lPlayer;
-    }*/
+    }
 
     // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
 

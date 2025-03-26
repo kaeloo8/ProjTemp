@@ -8,10 +8,10 @@ public :
 	bool UniqueColide = false;
 	float LifeTime = 0;
 	int Damage = 0;
-	std::vector<GameManager::Tag> lTagIgnore;
+	std::vector<int> lTagIgnore;
 
 	void OnUpdate() override;
-	void IgnoreTag(GameManager::Tag t) { lTagIgnore.push_back(t); }
+	void IgnoreTag(int t) { lTagIgnore.push_back(t); }
 	void OnCollision(Entity* pCollidedWith) override;
 };
 
