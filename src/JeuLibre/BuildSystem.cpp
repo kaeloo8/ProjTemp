@@ -3,7 +3,7 @@
 
 BuildSystem::BuildSystem()
 {
-    SelectedTileImg = CreateEntity<Entity>("3");
+    SelectedTileImg = CreateEntity<Entity>("CursorSelector");
     SelectedTileImg->Layout = 10;
     SelectedTileImg->SetSize(50,50);
 }
