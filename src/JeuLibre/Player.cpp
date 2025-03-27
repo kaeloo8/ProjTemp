@@ -35,53 +35,68 @@ Player::Player()
     //MINE
     mDigAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_dig_strip13"), 13, 0.1f);
     mAxeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_axe_strip10"), 10, 0.1f);
-    mMinningAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_mining_strip10"), 10, 0.1f);
-
-
+    mMiningAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_mining_strip10"), 10, 0.1f);
 
     mTag = GameManager::Tag::tPlayer;
 }
 
 Player::~Player()
 {
-    delete mWalkAnimator;
     delete mIdleAnimator;
+    delete mWalkAnimator;
     delete mSprintAnimator;
-    delete mDashAnimator;
     delete mAttackAnimator;
-}
+    delete mDashAnimator;
+    delete mHurtAnimator;
 
+    delete mCastingAnimator;
+    delete mWatteringAnimator;
+    delete mReelingAnimator;
+    delete mCaughtAnimator;
+
+    delete mDigAnimator;
+    delete mAxeAnimator;
+    delete mMiningAnimator;
+}
 
 void Player::SetState(PlayerState state)
 {
     if (mState != state)
     {
         mState = state;
-
-        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
-        if (mState == PlayerState::sIdle) {
+        switch (state)
+        {
+        case PlayerState::sIdle:
             SetImage("base_idle_strip9");
             if (mIdleAnimator) mIdleAnimator->Reset();
-        }
-        else if (mState == PlayerState::sWalking) {
+            break;
+        case PlayerState::sWalking:
             SetImage("base_walk_strip8");
             if (mWalkAnimator) mWalkAnimator->Reset();
+            break;
+        case PlayerState::sMining:
+            SetImage("base_mining_strip10"); // nom de la texture pour miner
+            if (mMiningAnimator) mMiningAnimator->Reset();
+            break;
+        case PlayerState::sAxe:
+            SetImage("base_axe_strip10"); // texture pour l'animation axe
+            if (mAxeAnimator) mAxeAnimator->Reset();
+            break;
+        case PlayerState::sDig:
+            SetImage("base_dig_strip13"); // texture pour creuser
+            if (mDigAnimator) mDigAnimator->Reset();
+            break;
+        case PlayerState::sHurt:
+            SetImage("base_hurt_strip8"); // texture pour l'état hurt
+            if (mHurtAnimator) mHurtAnimator->Reset();
+            break;
+            // Ajoute d'autres cas si nécessaire
+        default:
+            break;
         }
-        else if (mState == PlayerState::sSprinting) {
-            SetImage("base_run_strip8");
-            if (mSprintAnimator) mSprintAnimator->Reset();
-        }
-        else if (mState == PlayerState::sDashing) {
-            SetImage("base_roll_strip10");
-            if (mDashAnimator) mDashAnimator->Reset();
-        }
-        else if (mState == PlayerState::sAttacking) {
-            SetImage("base_attack_strip10"); 
-            if (mAttackAnimator) mAttackAnimator->Reset();
-        }
-
     }
 }
+
 
 void Player::FaceLeft()
 {
@@ -103,182 +118,146 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
-    if (AttackArea != NULL) {
-        if (isTurn) {
-            AttackArea->SetPosition(this->GetPosition().x - DamageDistance, this->GetPosition().y - DamageDistance / 2);
-        }
-        else {
-            AttackArea->SetPosition(this->GetPosition().x + DamageDistance, this->GetPosition().y - DamageDistance / 2);
-        }
-    }
-
-    //std::cout << mLife << std::endl;
-    if (tBeforSwitch > 0)
-        tBeforSwitch -= GameManager::Get()->GetDeltaTime();
-
-    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
-    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
-
+    float dt = GetDeltaTime();
     float velocityX = 0.f;
     float velocityY = 0.f;
+    bool movingInput = false;
 
-	OnAnimationUpdate();
-    // Gestion du dash
-    if (isDashing) {
-        velocityX = dashVelocityX;
-        velocityY = dashVelocityY;
-        dashTimer -= 1.f / 60.f;
-
-        if (dashTimer <= 0) {
-            isDashing = false;
-        }
-
-        GoToPosition(GetPosition().x + velocityX * mSpeed,
-                      GetPosition().y + velocityY * mSpeed,
-                      500);
-        return;
-    }
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
-        isAttacking = true;
-        attackTimer = attackDuration; // Durée de l'attaque
-        SetState(PlayerState::sAttacking); // Changer l'état du joueur
-        cAttack();
-    }
-
-    // Mettre à jour le timer de l'attaque
-    if (isAttacking) {
-        attackTimer -= GetDeltaTime(); 
-        if (attackTimer <= 0) {
-            isAttacking = false; 
-        }
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)&& tBeforSwitch <=0) {
-        ToogleMode();
-        tBeforSwitch = 2;
-    }
-
-    // Gestion des déplacements classiques
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    // Gestion des déplacements
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    {
         velocityY -= 5.f;
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
         velocityY += 5.f;
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    {
         velocityX -= 5.f;
         FaceLeft();
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
         velocityX += 5.f;
         FaceRight();
+        movingInput = true;
     }
 
-    // Normalisation du mouvement
-    float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
-    if (magnitude > 0) {
-        velocityX /= magnitude;
-        velocityY /= magnitude;
-    }
-
-    if (velocityX != 0 || velocityY != 0) {
-        lastVelocityX = velocityX;
-        lastVelocityY = velocityY;
-        if (isAttacking)
-        {
-            mSpeed = 15;
-        } 
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-            mSpeed = 300;
-            isSprinting = true;
-        }
-        else {
-            mSpeed = 150;
-            isSprinting = false;
-        }
-        
-        isMoving = true;
-    }
-    else {
-        isMoving = false;
-    }
-
-    // Cooldown du dash
-    if (dashCooldown > 0) {
-        dashCooldown -= 1.f / 60.f; // 60 FPS supposés
-    }
-
-    // Logique du dash
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isDashing && dashCooldown <= 0 && !isAttacking) {
-        isDashing = true;
-        dashTimer = 0.5f;  // Durée du dash
-        dashVelocityX = lastVelocityX * 30;
-        dashVelocityY = lastVelocityY * 30;
-        dashCooldown = maxDashCooldown;
-    }
-
-    if (!isDashing) {
-        GoToPosition(GetPosition().x + velocityX * mSpeed,
-                      GetPosition().y + velocityY * mSpeed,
-                      mSpeed);
-    }
-
-    // Gestion des états (Idle, Walking, Sprinting, Dashing)
-    if (isAttacking)
+    // Si le joueur est en train d'effectuer une action (mining, axe ou dig) et se déplace, annuler l'action pour passer à l'état walk.
+    if (movingInput && (mState == PlayerState::sMining || mState == PlayerState::sAxe || mState == PlayerState::sDig))
     {
-        PlayerHair->SetState(PlayerPartState::Attacking);
-        PlayerHand->SetState(PlayerPartState::Attacking);
-        SetState(PlayerState::sAttacking);
-        return;
+        SetState(PlayerState::sWalking);
     }
-    if (isDashing) {
-        PlayerHair->SetState(PlayerPartState::Dashing);
-        PlayerHand->SetState(PlayerPartState::Dashing);
-        SetState(PlayerState::sDashing);
+
+    // Gestion des actions prioritaires : Hurt est ininterruptible
+    if (mState == PlayerState::sHurt)
+    {
+        // On laisse l'animation hurt se jouer
+        if (mHurtAnimator && mHurtAnimator->IsFinished())
+            SetState(PlayerState::sIdle);
     }
-    else if (isMoving) {
-        if (isSprinting) {
-            PlayerHair->SetState(PlayerPartState::Sprinting);
-            PlayerHand->SetState(PlayerPartState::Sprinting);
-            SetState(PlayerState::sSprinting);
+    else
+    {
+        // Lancer l'action mining avec G
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+        {
+            if (mState != PlayerState::sMining)
+                SetState(PlayerState::sMining);
         }
-        else {
-            PlayerHair->SetState(PlayerPartState::Walking);
-            PlayerHand->SetState(PlayerPartState::Walking);
-            SetState(PlayerState::sWalking);
+        // Lancer l'action axe avec H
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
+        {
+            if (mState != PlayerState::sAxe)
+                SetState(PlayerState::sAxe);
+        }
+        // Lancer l'action creuser avec J
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+        {
+            if (mState != PlayerState::sDig)
+                SetState(PlayerState::sDig);
+        }
+        // Si aucune action spécifique n'est lancée, on bascule sur walk si le joueur se déplace
+        else if (movingInput)
+        {
+            if (mState != PlayerState::sWalking)
+                SetState(PlayerState::sWalking);
+        }
+        // Sinon, état idle
+        else
+        {
+            if (mState != PlayerState::sIdle)
+                SetState(PlayerState::sIdle);
         }
     }
-    else {
-        PlayerHair->SetState(PlayerPartState::Idle);
-        PlayerHand->SetState(PlayerPartState::Idle);
-        SetState(PlayerState::sIdle);
+
+    // Mise à jour de la position si pas d'action bloquante (ici on peut ajouter d'autres vérifications selon tes besoins)
+    if (mState == PlayerState::sWalking || mState == PlayerState::sIdle)
+    {
+        // Normalisation du vecteur de déplacement
+        float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
+        if (magnitude > 0)
+        {
+            velocityX /= magnitude;
+            velocityY /= magnitude;
+        }
+        GoToPosition(GetPosition().x + velocityX * mSpeed,
+            GetPosition().y + velocityY * mSpeed,
+            mSpeed);
     }
+
+    // Mise à jour de l'animation en fonction de l'état
+    OnAnimationUpdate();
+
+    // Màj de la position des parties du joueur (cheveux, main, etc.)
+    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
+    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
 }
+
 
 void Player::OnAnimationUpdate()
 {
     float dt = GetDeltaTime();
-
-    // Mise à jour des animations selon l'état
-    if (mState == PlayerState::sWalking && mWalkAnimator) {
-        mWalkAnimator->Update(dt);
+    switch (mState)
+    {
+    case PlayerState::sIdle:
+        if (mIdleAnimator) mIdleAnimator->Update(dt);
+        break;
+    case PlayerState::sWalking:
+        if (mWalkAnimator) mWalkAnimator->Update(dt);
+        break;
+    case PlayerState::sMining:
+        if (mMiningAnimator) {
+            mMiningAnimator->Update(dt);
+            if (mMiningAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sAxe:
+        if (mAxeAnimator) {
+            mAxeAnimator->Update(dt);
+            if (mAxeAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sDig:
+        if (mDigAnimator) {
+            mDigAnimator->Update(dt);
+            if (mDigAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sHurt:
+        if (mHurtAnimator) mHurtAnimator->Update(dt);
+        break;
+    default:
+        break;
     }
-    else if (mState == PlayerState::sIdle && mIdleAnimator) {
-        mIdleAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sSprinting && mSprintAnimator) {
-        mSprintAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sDashing && mDashAnimator) {
-        mDashAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sAttacking && mAttackAnimator) {
-        mAttackAnimator->Update(dt);
-    }
-
-
 }
+
 
 void Player::SetImage(const char* path)
 {
@@ -347,10 +326,6 @@ void Player::OnCollision(Entity* pCollidedWith)
         }
     }
 }
-
-
-
-
 
 void Player::cAttack() {
     AttackArea = CreateEntity<DamageZone>("0");

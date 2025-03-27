@@ -16,7 +16,7 @@ enum class PlayerState {
     sCaught,
     sDig,
     sAxe,
-    sMinning,
+    sMining,
 
     sCount
 };
@@ -42,7 +42,7 @@ private:
     //MINE
     Animator* mDigAnimator;
     Animator* mAxeAnimator;
-    Animator* mMinningAnimator;
+    Animator* mMiningAnimator;
     //ez
     PlayerState mState;
 

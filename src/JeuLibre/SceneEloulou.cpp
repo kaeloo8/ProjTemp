@@ -45,17 +45,6 @@ void SceneEloulou::OnInitialize() {
     Mur1->SetHitboxSize(Mur1->mSprite.getGlobalBounds().width, Mur1->mSprite.getGlobalBounds().height);
     Mur1->SolidHitbox();
 
-    //Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
-    //Skeleton->MonsterOption(true, true, true, true);
-    //Skeleton->InitMonster("skeleton");
-    //Skeleton->SetScale(3, 3);
-    //Skeleton->SetOrigin(0.5f, 0.5f);
-    //Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
-    //Skeleton->SetInitialPosition();
-    //Skeleton->SetSpeed(100);
-    //Skeleton->SetTarget(lPlayer);
-    //Skeleton->Layout = 2;
-
     Cam->SetTarget(lPlayer);
 
     float sizeX = 5;
@@ -85,9 +74,11 @@ void SceneEloulou::Load()
 }
 
 void SceneEloulou::OnUpdate() {
+
     if (IsInBuildingMode)
     {
         lBuild->ChooseTile();
     }
+
     Ocean->UpdateWater();
 }
