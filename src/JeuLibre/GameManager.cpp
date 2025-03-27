@@ -72,8 +72,13 @@ void GameManager::Update() {
 	}
 
 	for (auto it = mEntities.begin(); it != mEntities.end();) {
+
+
 		Entity* entity = *it;
-		entity->Update();
+
+		if (!entity->Hide)
+			entity->Update();
+
 
 		if (!entity->ToDestroy()) {
 			++it;
@@ -89,6 +94,13 @@ void GameManager::Update() {
 	{
 		auto it2 = it1;
 		++it2;
+		if (it2 != mEntities.end()) {
+			if ((*it1)->Hide || (*it2)->Hide) {
+				continue;
+			}
+		}
+		
+
 		for (; it2 != mEntities.end(); ++it2)
 		{
 			Entity* entity = *it1;
@@ -174,6 +186,10 @@ void GameManager::Draw() {
 
 	for (auto& layer : TrieEntity) {
 		for (Entity* entity : layer) {
+			if (entity->Hide)
+			{
+				continue;
+			}
 			if (entity) {
 				Window->draw(*entity->GetShape());
 				Window->draw(*entity->GetSprite());

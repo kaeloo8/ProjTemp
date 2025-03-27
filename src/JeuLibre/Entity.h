@@ -36,6 +36,7 @@ public:
     sf::Sprite mSprite;
     Collider* mHitbox;
 
+    bool Hide = false;
     float mX;
     float mY;
     float dirX;
@@ -57,6 +58,7 @@ public:
     void SetLife(int _Life);
     void HealLife(int _Heal);
     void DamageLife(int _Damage);
+    void ChangeHide() { Hide = !Hide; }
 
     bool GoToDirection(float x, float y, float speed);
     bool GoToPosition(int x, int y, float speed);

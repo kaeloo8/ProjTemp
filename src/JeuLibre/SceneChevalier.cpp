@@ -56,6 +56,7 @@ void SceneChevalier::OnInitialize()
     TileMap* map = new TileMap();
     map->SetPosition(0, 0);
     map->createD();
+    GameManager::Get()->AddTileMap(map);
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)
@@ -75,11 +76,12 @@ void SceneChevalier::OnEvent(const sf::Event& event)
         sf::Vector2f worldPos = Win->mapPixelToCoords(pixelPos); // Convertir en coordonnées monde
 
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        CamFocus->SetPosition(650, 340);
-    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-        CamFocus->SetPosition(1950, 340);
+        lEnnemie[0]->ChangeHide();
+        lEnnemie[1]->ChangeHide();
+        lEnnemie[2]->ChangeHide();
+        lEnnemie[3]->ChangeHide();
+        lEnnemie[4]->ChangeHide();
     }
 
 }
