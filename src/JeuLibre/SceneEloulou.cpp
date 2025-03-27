@@ -77,7 +77,7 @@ void SceneEloulou::OnUpdate() {
 
     if (IsInBuildingMode)
     {
-        lBuild->ChooseTile();
+        lBuild->ChooseTile()
     }
 
     Ocean->UpdateWater();

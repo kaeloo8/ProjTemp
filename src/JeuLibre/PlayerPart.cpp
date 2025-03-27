@@ -104,7 +104,7 @@ void PlayerPart::InitBodyPart(const char* partName)
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartWalk, 8, 0.1f);
     mSprintAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartSprint, 8, 0.08f);
     mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartAttack, 10, 0.07f);
-    mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartDash, 10, 0.1f);
+    mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartDash, 10, 0.07f);
     mHurtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartHurt, 8, 0.1f);
     mCastingAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartCasting, 15, 0.1f);
     mWatteringAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartWattering, 5, 0.1f);
