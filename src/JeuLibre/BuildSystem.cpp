@@ -42,7 +42,7 @@ void BuildSystem::ChooseTile()
     if (tileY >= 0 && tileY <= 39 && tileX >= 0 && tileX <= 63) {
         Tilex = tileX;
         Tiley = tileY;
-        std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
+        //std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
 
         if (GameManager::Get()->GetTileMap(1)) {
             auto& tile = GameManager::Get()->GetTileMap(0)->tiles[Tiley][Tilex];

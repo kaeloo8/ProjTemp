@@ -86,6 +86,7 @@ void SceneEloulou::OnUpdate() {
             H->Layout = 3;
 
             lHole.push_back(H);
+            std::cout << lHole.size() << std::endl;
         }
     }
 
