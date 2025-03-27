@@ -21,47 +21,23 @@ Player::Player()
     PlayerHand->SetOrigin(0.5, 0.5);
     PlayerHand->Layout = 11;
 
+    mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_idle_strip9"), 9, 0.2f);
+    mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_walk_strip8"), 8, 0.1f);
+    mSprintAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_run_strip8"), 8, 0.08f);
+    mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_attack_strip10"), 10, 0.07f);
+    mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_roll_strip10"), 10, 0.1f);
+    mHurtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_hurt_strip8"), 8, 0.1f);
+    //PECHE
+    mCastingAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_casting_strip15"), 15, 0.1f);
+    mWatteringAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_reeling_strip13"), 13, 0.1f);
+    mReelingAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_reeling_strip13"), 13, 0.1f);
+    mCaughtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_caught_strip10"), 10, 0.1f);
+    //MINE
+    mDigAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_dig_strip13"), 13, 0.1f);
+    mAxeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_axe_strip10"), 10, 0.1f);
+    mMinningAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_mining_strip10"), 10, 0.1f);
 
-    // Création des animations de base
-    mWalkAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_walk_strip8"),
-        8,    // nombre de frames walk
-        0.1f  // durée par frame walk
-    );
 
-    mIdleAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_idle_strip9"),
-        9,    // nombre de frames idle
-        0.2f  // durée par frame idle
-    );
-
-    mSprintAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_run_strip8"),
-        8,    // nombre de frames sprint
-        0.08f // durée par frame sprint
-    );
-
-    mDashAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_roll_strip10"),
-        10,    // nombre de frames roll
-        0.1f  // durée par frame roll
-    );
-
-    mAttackAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_attack_strip10"),
-        10,    // nombre de frames roll
-        0.07f  // durée par frame roll
-    );
 
     mTag = GameManager::Tag::tPlayer;
 }

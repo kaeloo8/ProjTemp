@@ -34,13 +34,16 @@ private:
     Animator* mAttackAnimator;
     Animator* mDashAnimator;
     Animator* mHurtAnimator;
+    //PECHE
     Animator* mCastingAnimator;
+    Animator* mWatteringAnimator;
     Animator* mReelingAnimator;
     Animator* mCaughtAnimator;
+    //MINE
     Animator* mDigAnimator;
     Animator* mAxeAnimator;
     Animator* mMinningAnimator;
-    Animator* mWatteringAnimator;
+    //ez
     PlayerState mState;
 
     DamageZone* AttackArea = nullptr;
