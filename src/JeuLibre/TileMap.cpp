@@ -1,3 +1,4 @@
+#pragma once
 #include "pch.h"
 #include "TileMap.h"
 #include "GameManager.h"
@@ -8,7 +9,7 @@
 
 void TileMap::create(const std::string& path)
 {
-     // Taille fixe des tiles
+    // Taille fixe des tiles
     float posX = 0;
     float posY = 0;
 
@@ -31,7 +32,7 @@ void TileMap::create(const std::string& path)
         std::string textureId;
 
         while (lineStream >> textureId) { // Extraction propre en ignorant les espaces
-            const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture("TileMap_"+textureId);
+            const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture("TileMap_" + textureId);
 
             std::cout << texture.getSize().x << " : " << texture.getSize().y << std::endl;
 
@@ -41,12 +42,20 @@ void TileMap::create(const std::string& path)
                 continue;
             }
 
-            // Ajout de la tile
-            lineTiles.emplace_back(textureId, texture, posX, posY);
+            // Création de la tile
+            Tile tile(textureId, texture, posX, posY);
+
+            // Vérification si la tile est solide
+            if (std::find(SolidTile.begin(), SolidTile.end(), textureId) != SolidTile.end()) {
+                tile.type = TileType::Solid;
+                tile.AddAABBHitbox();
+            }
+
+            lineTiles.push_back(std::move(tile));
             posX += tileSize;
         }
 
-        tiles.push_back(lineTiles);
+        tiles.push_back(std::move(lineTiles));
         posY += tileSize;
     }
     file.close();
@@ -59,7 +68,6 @@ void TileMap::createD() {
     const int roomHeight = 14;
     const int tileSize = 50; // Taille des tiles
 
-    // Nombre aléatoire de salles en X et Y (entre 3 et 5)
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(3, 5);
@@ -69,20 +77,18 @@ void TileMap::createD() {
 
     std::vector<std::vector<Room>> rooms(rows, std::vector<Room>(cols));
 
-    // Initialisation des salles sans connexions
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             Room& room = rooms[i][j];
             room.x = j * roomWidth * tileSize;
             room.y = i * roomHeight * tileSize;
-            room.doors[0] = room.doors[1] = room.doors[2] = room.doors[3] = false; // Pas de portes initialement
+            room.doors[0] = room.doors[1] = room.doors[2] = room.doors[3] = false;
         }
     }
 
-    // Connexité garantie avec un parcours DFS
     std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
     std::stack<std::pair<int, int>> stack;
-    stack.push({ 0, 0 }); // Commencer depuis la première salle
+    stack.push({ 0, 0 });
     visited[0][0] = true;
 
     while (!stack.empty()) {
@@ -90,12 +96,12 @@ void TileMap::createD() {
         stack.pop();
 
         std::vector<std::pair<int, int>> neighbors;
-        if (i > 0 && !visited[i - 1][j]) neighbors.push_back({ i - 1, j }); // Haut
-        if (i < rows - 1 && !visited[i + 1][j]) neighbors.push_back({ i + 1, j }); // Bas
-        if (j > 0 && !visited[i][j - 1]) neighbors.push_back({ i, j - 1 }); // Gauche
-        if (j < cols - 1 && !visited[i][j + 1]) neighbors.push_back({ i, j + 1 }); // Droite
+        if (i > 0 && !visited[i - 1][j]) neighbors.push_back({ i - 1, j });
+        if (i < rows - 1 && !visited[i + 1][j]) neighbors.push_back({ i + 1, j });
+        if (j > 0 && !visited[i][j - 1]) neighbors.push_back({ i, j - 1 });
+        if (j < cols - 1 && !visited[i][j + 1]) neighbors.push_back({ i, j + 1 });
 
-        std::shuffle(neighbors.begin(), neighbors.end(), gen); // Mélanger pour variété
+        std::shuffle(neighbors.begin(), neighbors.end(), gen);
 
         for (auto [ni, nj] : neighbors) {
             if (!visited[ni][nj]) {
@@ -106,31 +112,6 @@ void TileMap::createD() {
 
                 visited[ni][nj] = true;
                 stack.push({ ni, nj });
-            }
-        }
-    }
-
-    // Création des tiles en fonction des salles
-    for (const auto& row : rooms) {
-        for (const auto& room : row) {
-            for (int y = 0; y < roomHeight; ++y) {
-                std::vector<Tile> lineTiles;
-                for (int x = 0; x < roomWidth; ++x) {
-                    std::string textureId = "000" + std::to_string(std::rand() % 3 + 4);
-
-                    if (y == 0 || y == roomHeight - 1 || x == 0 || x == roomWidth - 1)
-                        textureId = "000" + std::to_string(std::rand() % 4);
-
-                    // Placement des portes sur 2 tiles
-                    if (room.doors[0] && y == 0 && (x == roomWidth / 2 || x == roomWidth / 2 - 1)) textureId = "0008";
-                    if (room.doors[1] && y == roomHeight - 1 && (x == roomWidth / 2 || x == roomWidth / 2 - 1)) textureId = "0008";
-                    if (room.doors[2] && x == 0 && (y == roomHeight / 2 || y == roomHeight / 2 - 1)) textureId = "0008";
-                    if (room.doors[3] && x == roomWidth - 1 && (y == roomHeight / 2 || y == roomHeight / 2 - 1)) textureId = "0008";
-
-                    const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture("DonjonTile_" + textureId);
-                    lineTiles.emplace_back(textureId, texture, room.x + x * tileSize, room.y + y * tileSize);
-                }
-                tiles.push_back(lineTiles);
             }
         }
     }
@@ -162,3 +143,21 @@ void TileMap::UpdateWater()
     }
 }
 
+void Tile::AddAABBHitbox()
+{
+    Tilecollider = new AABBCollider();
+    if (Tilecollider) {
+        auto* aabbCollider = dynamic_cast<AABBCollider*>(Tilecollider);
+        if (aabbCollider) {
+            sf::Vector2f position = sprite.getPosition();
+
+            int halfOffsetWidth = tileSize / 2;
+            int halfOffsetHeight = tileSize / 2;
+
+            aabbCollider->xMin = position.x - halfOffsetWidth;
+            aabbCollider->yMin = position.y - halfOffsetHeight;
+            aabbCollider->xMax = position.x + halfOffsetWidth;
+            aabbCollider->yMax = position.y + halfOffsetHeight;
+        }
+    }
+}
