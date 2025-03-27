@@ -71,43 +71,61 @@ void Player::SetState(PlayerState state)
         case PlayerState::sIdle:
             mSpeed = 0;
             SetImage("base_idle_strip9");
+            PlayerHair->SetState(PlayerPartState::sIdle);
+            PlayerHand->SetState(PlayerPartState::sIdle);
             if (mIdleAnimator) mIdleAnimator->Reset();
             break;
         case PlayerState::sWalking:
             mSpeed = 150;
             SetImage("base_walk_strip8");
+            PlayerHair->SetState(PlayerPartState::sWalking);
+            PlayerHand->SetState(PlayerPartState::sWalking);
             if (mWalkAnimator) mWalkAnimator->Reset();
             break;
         case PlayerState::sSprinting:
             mSpeed = 250;
             SetImage("base_run_strip8");
+            PlayerHair->SetState(PlayerPartState::sSprinting);
+            PlayerHand->SetState(PlayerPartState::sSprinting);
             if (mSprintAnimator) mSprintAnimator->Reset();
             break;
         case PlayerState::sDashing:
-            mSpeed = 300;
+            mSpeed = 400;
             SetImage("base_roll_strip10");
+            PlayerHair->SetState(PlayerPartState::sDashing);
+            PlayerHand->SetState(PlayerPartState::sDashing);
             if (mDashAnimator) mDashAnimator->Reset();
             break;
         case PlayerState::sAttacking:
             mSpeed = 15;
             SetImage("base_attack_strip10");
+            PlayerHair->SetState(PlayerPartState::sAttacking);
+            PlayerHand->SetState(PlayerPartState::sAttacking);
             if (mAttackAnimator) mAttackAnimator->Reset();
             break;
         case PlayerState::sHurt:
             mSpeed = 0;
             SetImage("base_hurt_strip8");
+            PlayerHair->SetState(PlayerPartState::sHurt);
+            PlayerHand->SetState(PlayerPartState::sHurt);
             if (mHurtAnimator) mHurtAnimator->Reset();
             break;
         case PlayerState::sMining:
             SetImage("base_mining_strip10");
+            PlayerHair->SetState(PlayerPartState::sMining);
+            PlayerHand->SetState(PlayerPartState::sMining);
             if (mMiningAnimator) mMiningAnimator->Reset();
             break;
         case PlayerState::sAxe:
             SetImage("base_axe_strip10");
+            PlayerHair->SetState(PlayerPartState::sAxe);
+            PlayerHand->SetState(PlayerPartState::sAxe);
             if (mAxeAnimator) mAxeAnimator->Reset();
             break;
         case PlayerState::sDig:
             SetImage("base_dig_strip13");
+            PlayerHair->SetState(PlayerPartState::sDig);
+            PlayerHand->SetState(PlayerPartState::sDig);
             if (mDigAnimator) mDigAnimator->Reset();
             break;
         default:
@@ -115,6 +133,7 @@ void Player::SetState(PlayerState state)
         }
     }
 }
+
 
 void Player::FaceLeft()
 {
@@ -187,9 +206,9 @@ void Player::OnUpdate()
         if (!isDashing && dashCooldown <= 0 && mState != PlayerState::sHurt && mState != PlayerState::sAttacking)
         {
             // Capture la direction actuelle (si aucune direction, lastVelocity devrait être déjà définie)
-            dashVelocityX = lastVelocityX * 100;
-            dashVelocityY = lastVelocityY * 100;
-            dashTimer = 1;  // Durée du dash
+            dashVelocityX = lastVelocityX * 10;
+            dashVelocityY = lastVelocityY * 10;
+            dashTimer = 0.7;  // Durée du dash
             dashCooldown = maxDashCooldown;
             isDashing = true;
             SetState(PlayerState::sDashing);
@@ -231,8 +250,8 @@ void Player::OnUpdate()
     if (isDashing)
     {
         dashTimer -= dt;
-        GoToPosition(GetPosition().x + dashVelocityX * dt,
-            GetPosition().y + dashVelocityY * dt,
+        GoToPosition(GetPosition().x + dashVelocityX * mSpeed,
+            GetPosition().y + dashVelocityY * mSpeed,
             mSpeed);
         if (dashTimer <= 0)
         {

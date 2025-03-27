@@ -4,29 +4,61 @@
 #include "Animator.h"
 
 enum class PlayerPartState {
-    Idle,
-    Walking,
-    Sprinting,
-    Dashing,
-    Attacking
+    sIdle,
+    sWalking,
+    sSprinting,
+    sAttacking,
+    sDashing,
+    sHurt,
+    //peche
+    sCasting,
+    sWattering,
+    sReeling,
+    sCaught,
+    //travail
+    sDig,
+    sAxe,
+    sMining,
+
+    sCount
 };
 
 class PlayerPart : public Entity
 {
 private:
-    Animator* mWalkAnimator;
     Animator* mIdleAnimator;
+    Animator* mWalkAnimator;
     Animator* mSprintAnimator;
-    Animator* mDashAnimator;
     Animator* mAttackAnimator;
+    Animator* mDashAnimator;
+    Animator* mHurtAnimator;
+    //PECHE
+    Animator* mCastingAnimator;
+    Animator* mWatteringAnimator;
+    Animator* mReelingAnimator;
+    Animator* mCaughtAnimator;
+    //MINE
+    Animator* mDigAnimator;
+    Animator* mAxeAnimator;
+    Animator* mMiningAnimator;
 
     PlayerPartState mState;
 
-    std::string HairWalk;
-    std::string HairRun;
-    std::string HairDash;
-    std::string HairIdle;
+    std::string PartIdle;
+    std::string PartWalk;
+    std::string PartSprint;
     std::string PartAttack;
+    std::string PartDash;
+    std::string PartHurt;
+    //PECHE
+    std::string PartCasting;
+    std::string PartWattering;
+    std::string PartReeling;
+    std::string PartCaught;
+    //MINE
+    std::string PartDig;
+    std::string PartAxe;
+    std::string PartMining;
 
 public:
     const char* BodyPartName;
