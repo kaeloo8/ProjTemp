@@ -64,8 +64,8 @@ void PlayerPart::SetState(PlayerPartState state)
             if (mDigAnimator) mDigAnimator->Reset();
         }
         else if (mState == PlayerPartState::sAxe) {
-            SetImage(PartDig);
-            if (mDigAnimator) mDigAnimator->Reset();
+            SetImage(PartAxe);
+            if (mAxeAnimator) mAxeAnimator->Reset();
         }
         else if (mState == PlayerPartState::sMining) {
             SetImage(PartMining);

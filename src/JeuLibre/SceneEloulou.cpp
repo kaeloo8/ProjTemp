@@ -31,7 +31,7 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetPosition((GetWindowWidth() *1.5), (GetWindowHeight() * 1.5));
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(25, 20);
-    lPlayer->Layout = 1;
+    lPlayer->Layout = 5;
 
     lBuild = CreateEntity<BuildSystem>("0");
     lBuild->SetPlayer(lPlayer);
@@ -74,10 +74,19 @@ void SceneEloulou::Load()
 }
 
 void SceneEloulou::OnUpdate() {
-
-    if (IsInBuildingMode)
+    if (lPlayer->mMode == PlayerMode::Dig)
     {
         lBuild->ChooseTile();
+        if (lPlayer->mState == PlayerState::sDig)
+        {
+            Hole* H;
+            H = CreateEntity<Hole>("soil_00");
+            H->SetPosition(lBuild->GetBuildPosition().x, lBuild->GetBuildPosition().y);
+            H->SetSize(50, 50);
+            H->Layout = 3;
+
+            lHole.push_back(H);
+        }
     }
 
     Ocean->UpdateWater();

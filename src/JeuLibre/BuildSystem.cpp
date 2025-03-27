@@ -12,6 +12,11 @@ BuildSystem::~BuildSystem()
 {
 }
 
+sf::Vector2f BuildSystem::GetBuildPosition()
+{
+    return SelectedTileImg->GetPosition();;
+}
+
 void BuildSystem::SetPlayer(Player* _player)
 {
 	PlayerReference = _player;

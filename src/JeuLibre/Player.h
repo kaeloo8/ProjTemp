@@ -11,14 +11,24 @@ enum class PlayerState {
     sAttacking,
     sDashing,
     sHurt,
+    //peche
     sCasting,
+    sWattering,
     sReeling,
     sCaught,
+    //travail
     sDig,
     sAxe,
     sMining,
 
     sCount
+};
+
+enum class PlayerMode {
+    Attack,
+    Dig,
+    Pickaxe,
+    Axe
 };
 
 
@@ -44,7 +54,6 @@ private:
     Animator* mAxeAnimator;
     Animator* mMiningAnimator;
     //ez
-    PlayerState mState;
 
     DamageZone* AttackArea = nullptr;
 
@@ -57,6 +66,9 @@ public:
 	bool isDashing;
 	bool isAttacking;
     bool isStunt;
+
+    PlayerState mState;
+    PlayerMode mMode = PlayerMode::Attack;
 
     bool isTurn;
 
@@ -86,6 +98,8 @@ public:
     void ChangeHaircut(const char* haircut);
 
     void ToogleMode();
+    void ChangeMod();
+    void ActionMod();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

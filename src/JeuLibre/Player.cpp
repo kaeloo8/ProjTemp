@@ -111,18 +111,21 @@ void Player::SetState(PlayerState state)
             if (mHurtAnimator) mHurtAnimator->Reset();
             break;
         case PlayerState::sMining:
+            mSpeed = 15;
             SetImage("base_mining_strip10");
             PlayerHair->SetState(PlayerPartState::sMining);
             PlayerHand->SetState(PlayerPartState::sMining);
             if (mMiningAnimator) mMiningAnimator->Reset();
             break;
         case PlayerState::sAxe:
+            mSpeed = 15;
             SetImage("base_axe_strip10");
             PlayerHair->SetState(PlayerPartState::sAxe);
             PlayerHand->SetState(PlayerPartState::sAxe);
             if (mAxeAnimator) mAxeAnimator->Reset();
             break;
         case PlayerState::sDig:
+            mSpeed = 15;
             SetImage("base_dig_strip13");
             PlayerHair->SetState(PlayerPartState::sDig);
             PlayerHand->SetState(PlayerPartState::sDig);
@@ -158,6 +161,9 @@ void Player::OnUpdate()
     float velocityY = 0.f;
     bool movingInput = false;
 
+    ChangeMod();
+    ActionMod();
+
     // Récupération des touches de déplacement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
@@ -189,19 +195,9 @@ void Player::OnUpdate()
     }
     
 
-    // --- Gestion des actions prioritaires ---
-    // Attaque avec clic droit (permet de se déplacer pendant l'attaque)
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-    {
-        if (mState != PlayerState::sAttacking &&
-            mState != PlayerState::sDashing &&
-            mState != PlayerState::sHurt)
-        {
-            SetState(PlayerState::sAttacking);
-        }
-    }
+    
     // Dash avec barre espace (le dash se joue sur toute la durée de l'animation)
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
         if (!isDashing && dashCooldown <= 0 && mState != PlayerState::sHurt && mState != PlayerState::sAttacking)
         {
@@ -219,6 +215,9 @@ void Player::OnUpdate()
     {
         if (movingInput &&
             mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
             mState != PlayerState::sDashing &&
             mState != PlayerState::sHurt)
         {
@@ -229,6 +228,9 @@ void Player::OnUpdate()
     else if (movingInput)
     {
         if (mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
             mState != PlayerState::sDashing &&
             mState != PlayerState::sHurt)
         {
@@ -239,6 +241,9 @@ void Player::OnUpdate()
     else
     {
         if (mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
             mState != PlayerState::sDashing &&
             mState != PlayerState::sHurt)
         {
@@ -354,6 +359,74 @@ void Player::ToogleMode()
 {
     GetScene()->IsInBuildingMode = !GetScene()->IsInBuildingMode;
     std::cout << GetScene()->IsInBuildingMode << std::endl;
+}
+
+void Player::ChangeMod()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
+        mMode = PlayerMode::Attack;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
+        mMode = PlayerMode::Dig;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
+        mMode = PlayerMode::Pickaxe;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
+        mMode = PlayerMode::Axe;
+    }
+}
+
+void Player::ActionMod()
+{
+    if (mMode == PlayerMode::Attack)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sAttacking);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Dig)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sDig);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Axe)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sAxe);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Pickaxe)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sMining);
+            }
+        }
+    }
 }
 
 void Player::OnCollision(Entity* pCollidedWith)
