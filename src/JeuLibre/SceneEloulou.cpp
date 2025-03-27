@@ -31,7 +31,7 @@ void SceneEloulou::OnInitialize() {
     lPlayer->SetPosition((GetWindowWidth() *1.5), (GetWindowHeight() * 1.5));
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(25, 20);
-    lPlayer->Layout = 1;
+    lPlayer->Layout = 5;
 
     lBuild = CreateEntity<BuildSystem>("0");
     lBuild->SetPlayer(lPlayer);
@@ -44,17 +44,6 @@ void SceneEloulou::OnInitialize() {
     Mur1->AddAABBHitbox();
     Mur1->SetHitboxSize(Mur1->mSprite.getGlobalBounds().width, Mur1->mSprite.getGlobalBounds().height);
     Mur1->SolidHitbox();
-
-    //Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
-    //Skeleton->MonsterOption(true, true, true, true);
-    //Skeleton->InitMonster("skeleton");
-    //Skeleton->SetScale(3, 3);
-    //Skeleton->SetOrigin(0.5f, 0.5f);
-    //Skeleton->SetPosition((GetWindowWidth() / 2 +500), (GetWindowHeight() / 2));
-    //Skeleton->SetInitialPosition();
-    //Skeleton->SetSpeed(100);
-    //Skeleton->SetTarget(lPlayer);
-    //Skeleton->Layout = 2;
 
     Cam->SetTarget(lPlayer);
 
@@ -85,9 +74,21 @@ void SceneEloulou::Load()
 }
 
 void SceneEloulou::OnUpdate() {
-    if (IsInBuildingMode)
+    if (lPlayer->mMode == PlayerMode::Dig)
     {
         lBuild->ChooseTile();
+        if (lPlayer->mState == PlayerState::sDig)
+        {
+            Hole* H;
+            H = CreateEntity<Hole>("soil_00");
+            H->SetPosition(lBuild->GetBuildPosition().x, lBuild->GetBuildPosition().y);
+            H->SetSize(50, 50);
+            H->Layout = 3;
+
+            lHole.push_back(H);
+            std::cout << lHole.size() << std::endl;
+        }
     }
+
     Ocean->UpdateWater();
 }

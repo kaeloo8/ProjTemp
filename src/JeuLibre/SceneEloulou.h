@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "Pointer.h"
+#include "Hole.h"
 #include "CameraSys.h"
 #include "BuildSystem.h"
 
@@ -21,6 +22,8 @@ class SceneEloulou : public Scene
 
 	Player* lPlayer;
 	BuildSystem* lBuild;
+
+	std::vector<Hole*> lHole;
 
 	Monster* Skeleton;
 

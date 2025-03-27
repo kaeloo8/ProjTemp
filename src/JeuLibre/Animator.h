@@ -28,6 +28,6 @@ public:
     void Update(float deltaTime);
 
     int GetFrameNumber();
-    // Remet l'animation à zéro (par ex. si le perso s'arrête)
+    bool IsFinished() const;
     void Reset();
 };

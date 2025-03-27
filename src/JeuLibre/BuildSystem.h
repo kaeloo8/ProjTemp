@@ -14,12 +14,15 @@ public:
     Player* PlayerReference;
     Tile* SelectedTile;
     Pointer* PointerReference;
-    std::vector<std::vector<Tile>> tiles; // Ajout du vecteur de tiles
+
+    std::vector<std::vector<Tile>> tiles; 
     int Tilex;
     int Tiley;
 
     BuildSystem();
     ~BuildSystem();
+
+    sf::Vector2f GetBuildPosition();
 
     void SetPlayer(Player* _player);
     void SetPointer(Pointer* _pointer);

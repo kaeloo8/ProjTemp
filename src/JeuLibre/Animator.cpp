@@ -53,6 +53,12 @@ int Animator::GetFrameNumber()
     return mCurrentFrame;
 }
 
+bool Animator::IsFinished() const
+{
+    // Si on est à la dernière frame, l'animation est terminée.
+    return mCurrentFrame == mFrameCount - 1;
+}
+
 void Animator::Reset()
 {
     mCurrentFrame = 0;

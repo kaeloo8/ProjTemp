@@ -3,7 +3,8 @@
 #include "GameManager.h"
 
 Player::Player()
-    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr), mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::sIdle)
+    : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr),
+    mDashAnimator(nullptr), mAttackAnimator(nullptr), mState(PlayerState::sIdle)
 {
     mLife = 100;
     mIsAlive = true;
@@ -21,96 +22,125 @@ Player::Player()
     PlayerHand->SetOrigin(0.5, 0.5);
     PlayerHand->Layout = 11;
 
-
-    // Création des animations de base
-    mWalkAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_walk_strip8"),
-        8,    // nombre de frames walk
-        0.1f  // durée par frame walk
-    );
-
-    mIdleAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_idle_strip9"),
-        9,    // nombre de frames idle
-        0.2f  // durée par frame idle
-    );
-
-    mSprintAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_run_strip8"),
-        8,    // nombre de frames sprint
-        0.08f // durée par frame sprint
-    );
-
-    mDashAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_roll_strip10"),
-        10,    // nombre de frames roll
-        0.1f  // durée par frame roll
-    );
-
-    mAttackAnimator = new Animator(
-        &mSprite,
-        *GameManager::Get()->GetAssetManager(),
-        std::string("base_attack_strip10"),
-        10,    // nombre de frames roll
-        0.07f  // durée par frame roll
-    );
+    mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_idle_strip9"), 9, 0.2f);
+    mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_walk_strip8"), 8, 0.1f);
+    mSprintAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_run_strip8"), 8, 0.08f);
+    mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_attack_strip10"), 10, 0.07f);
+    mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_roll_strip10"), 10, 0.07f);
+    mHurtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_hurt_strip8"), 8, 0.1f);
+    // PECHE
+    mCastingAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_casting_strip15"), 15, 0.1f);
+    mWatteringAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_reeling_strip13"), 13, 0.1f);
+    mReelingAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_reeling_strip13"), 13, 0.1f);
+    mCaughtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_caught_strip10"), 10, 0.1f);
+    // MINE
+    mDigAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_dig_strip13"), 13, 0.1f);
+    mAxeAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_axe_strip10"), 10, 0.1f);
+    mMiningAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_mining_strip10"), 10, 0.1f);
 
     mTag = GameManager::Tag::tPlayer;
+    mSpeed = 100;
 }
 
 Player::~Player()
 {
-    delete mWalkAnimator;
     delete mIdleAnimator;
+    delete mWalkAnimator;
     delete mSprintAnimator;
-    delete mDashAnimator;
     delete mAttackAnimator;
-}
+    delete mDashAnimator;
+    delete mHurtAnimator;
 
+    delete mCastingAnimator;
+    delete mWatteringAnimator;
+    delete mReelingAnimator;
+    delete mCaughtAnimator;
+
+    delete mDigAnimator;
+    delete mAxeAnimator;
+    delete mMiningAnimator;
+}
 
 void Player::SetState(PlayerState state)
 {
     if (mState != state)
     {
         mState = state;
-
-        // Modification de l'image et réinitialisation de l'animation en fonction de l'état
-        if (mState == PlayerState::sIdle) {
+        switch (state)
+        {
+        case PlayerState::sIdle:
+            mSpeed = 0;
             SetImage("base_idle_strip9");
+            PlayerHair->SetState(PlayerPartState::sIdle);
+            PlayerHand->SetState(PlayerPartState::sIdle);
             if (mIdleAnimator) mIdleAnimator->Reset();
-        }
-        else if (mState == PlayerState::sWalking) {
+            break;
+        case PlayerState::sWalking:
+            mSpeed = 150;
             SetImage("base_walk_strip8");
+            PlayerHair->SetState(PlayerPartState::sWalking);
+            PlayerHand->SetState(PlayerPartState::sWalking);
             if (mWalkAnimator) mWalkAnimator->Reset();
-        }
-        else if (mState == PlayerState::sSprinting) {
+            break;
+        case PlayerState::sSprinting:
+            mSpeed = 250;
             SetImage("base_run_strip8");
+            PlayerHair->SetState(PlayerPartState::sSprinting);
+            PlayerHand->SetState(PlayerPartState::sSprinting);
             if (mSprintAnimator) mSprintAnimator->Reset();
-        }
-        else if (mState == PlayerState::sDashing) {
+            break;
+        case PlayerState::sDashing:
+            mSpeed = 400;
             SetImage("base_roll_strip10");
+            PlayerHair->SetState(PlayerPartState::sDashing);
+            PlayerHand->SetState(PlayerPartState::sDashing);
             if (mDashAnimator) mDashAnimator->Reset();
-        }
-        else if (mState == PlayerState::sAttacking) {
-            SetImage("base_attack_strip10"); 
+            break;
+        case PlayerState::sAttacking:
+            mSpeed = 15;
+            SetImage("base_attack_strip10");
+            PlayerHair->SetState(PlayerPartState::sAttacking);
+            PlayerHand->SetState(PlayerPartState::sAttacking);
             if (mAttackAnimator) mAttackAnimator->Reset();
+            break;
+        case PlayerState::sHurt:
+            mSpeed = 0;
+            SetImage("base_hurt_strip8");
+            PlayerHair->SetState(PlayerPartState::sHurt);
+            PlayerHand->SetState(PlayerPartState::sHurt);
+            if (mHurtAnimator) mHurtAnimator->Reset();
+            break;
+        case PlayerState::sMining:
+            mSpeed = 15;
+            SetImage("base_mining_strip10");
+            PlayerHair->SetState(PlayerPartState::sMining);
+            PlayerHand->SetState(PlayerPartState::sMining);
+            if (mMiningAnimator) mMiningAnimator->Reset();
+            break;
+        case PlayerState::sAxe:
+            mSpeed = 15;
+            SetImage("base_axe_strip10");
+            PlayerHair->SetState(PlayerPartState::sAxe);
+            PlayerHand->SetState(PlayerPartState::sAxe);
+            if (mAxeAnimator) mAxeAnimator->Reset();
+            break;
+        case PlayerState::sDig:
+            mSpeed = 15;
+            SetImage("base_dig_strip13");
+            PlayerHair->SetState(PlayerPartState::sDig);
+            PlayerHand->SetState(PlayerPartState::sDig);
+            if (mDigAnimator) mDigAnimator->Reset();
+            break;
+        default:
+            break;
         }
-
     }
 }
+
 
 void Player::FaceLeft()
 {
     isTurn = true;
-    // Inverser l'orientation du sprite du joueur (gauche)
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
     PlayerHand->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -119,7 +149,6 @@ void Player::FaceLeft()
 void Player::FaceRight()
 {
     isTurn = false;
-    // Inverser l'orientation du sprite du joueur (droite)
     GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
     PlayerHand->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -127,181 +156,193 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
-    if (AttackArea != NULL) {
-        if (isTurn) {
-            AttackArea->SetPosition(this->GetPosition().x - DamageDistance, this->GetPosition().y - DamageDistance / 2);
-        }
-        else {
-            AttackArea->SetPosition(this->GetPosition().x + DamageDistance, this->GetPosition().y - DamageDistance / 2);
-        }
-    }
-
-    //std::cout << mLife << std::endl;
-    if (tBeforSwitch > 0)
-        tBeforSwitch -= GameManager::Get()->GetDeltaTime();
-
-    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
-    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
-
+    float dt = GetDeltaTime();
     float velocityX = 0.f;
     float velocityY = 0.f;
+    bool movingInput = false;
 
-	OnAnimationUpdate();
-    // Gestion du dash
-    if (isDashing) {
-        velocityX = dashVelocityX;
-        velocityY = dashVelocityY;
-        dashTimer -= 1.f / 60.f;
+    ChangeMod();
+    ActionMod();
 
-        if (dashTimer <= 0) {
-            isDashing = false;
-        }
-
-        GoToPosition(GetPosition().x + velocityX * mSpeed,
-                      GetPosition().y + velocityY * mSpeed,
-                      500);
-        return;
-    }
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !isAttacking) {
-        isAttacking = true;
-        attackTimer = attackDuration; // Durée de l'attaque
-        SetState(PlayerState::sAttacking); // Changer l'état du joueur
-        cAttack();
-    }
-
-    // Mettre à jour le timer de l'attaque
-    if (isAttacking) {
-        attackTimer -= GetDeltaTime(); 
-        if (attackTimer <= 0) {
-            isAttacking = false; 
-        }
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)&& tBeforSwitch <=0) {
-        ToogleMode();
-        tBeforSwitch = 2;
-    }
-
-    // Gestion des déplacements classiques
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    // Récupération des touches de déplacement
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    {
         velocityY -= 5.f;
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
         velocityY += 5.f;
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    {
         velocityX -= 5.f;
         FaceLeft();
+        movingInput = true;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
         velocityX += 5.f;
         FaceRight();
+        movingInput = true;
     }
 
-    // Normalisation du mouvement
-    float magnitude = std::sqrt(velocityX * velocityX + velocityY * velocityY);
-    if (magnitude > 0) {
-        velocityX /= magnitude;
-        velocityY /= magnitude;
-    }
-
-    if (velocityX != 0 || velocityY != 0) {
+    if (velocityX != 0 || velocityY != 0)
+    {
         lastVelocityX = velocityX;
         lastVelocityY = velocityY;
-        if (isAttacking)
-        {
-            mSpeed = 15;
-        } 
-        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-            mSpeed = 300;
-            isSprinting = true;
-        }
-        else {
-            mSpeed = 150;
-            isSprinting = false;
-        }
-        
-        isMoving = true;
     }
-    else {
-        isMoving = false;
-    }
+    
 
-    // Cooldown du dash
-    if (dashCooldown > 0) {
-        dashCooldown -= 1.f / 60.f; // 60 FPS supposés
-    }
-
-    // Logique du dash
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !isDashing && dashCooldown <= 0 && !isAttacking) {
-        isDashing = true;
-        dashTimer = 0.5f;  // Durée du dash
-        dashVelocityX = lastVelocityX * 30;
-        dashVelocityY = lastVelocityY * 30;
-        dashCooldown = maxDashCooldown;
-    }
-
-    if (!isDashing) {
-        GoToPosition(GetPosition().x + velocityX * mSpeed,
-                      GetPosition().y + velocityY * mSpeed,
-                      mSpeed);
-    }
-
-    // Gestion des états (Idle, Walking, Sprinting, Dashing)
-    if (isAttacking)
+    
+    // Dash avec barre espace (le dash se joue sur toute la durée de l'animation)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-        PlayerHair->SetState(PlayerPartState::Attacking);
-        PlayerHand->SetState(PlayerPartState::Attacking);
-        SetState(PlayerState::sAttacking);
-        return;
+        if (!isDashing && dashCooldown <= 0 && mState != PlayerState::sHurt && mState != PlayerState::sAttacking)
+        {
+            // Capture la direction actuelle (si aucune direction, lastVelocity devrait être déjà définie)
+            dashVelocityX = lastVelocityX * 10;
+            dashVelocityY = lastVelocityY * 10;
+            dashTimer = 0.7;  // Durée du dash
+            dashCooldown = maxDashCooldown;
+            isDashing = true;
+            SetState(PlayerState::sDashing);
+        }
     }
-    if (isDashing) {
-        PlayerHair->SetState(PlayerPartState::Dashing);
-        PlayerHand->SetState(PlayerPartState::Dashing);
-        SetState(PlayerState::sDashing);
-    }
-    else if (isMoving) {
-        if (isSprinting) {
-            PlayerHair->SetState(PlayerPartState::Sprinting);
-            PlayerHand->SetState(PlayerPartState::Sprinting);
+    // Sprint avec LShift (priorité si le joueur se déplace)
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        if (movingInput &&
+            mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
+            mState != PlayerState::sDashing &&
+            mState != PlayerState::sHurt)
+        {
             SetState(PlayerState::sSprinting);
         }
-        else {
-            PlayerHair->SetState(PlayerPartState::Walking);
-            PlayerHand->SetState(PlayerPartState::Walking);
+    }
+    // Sinon, si le joueur se déplace, on passe en marche
+    else if (movingInput)
+    {
+        if (mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
+            mState != PlayerState::sDashing &&
+            mState != PlayerState::sHurt)
+        {
             SetState(PlayerState::sWalking);
         }
     }
-    else {
-        PlayerHair->SetState(PlayerPartState::Idle);
-        PlayerHand->SetState(PlayerPartState::Idle);
-        SetState(PlayerState::sIdle);
+    // Sinon, si aucune touche n'est active, on passe en idle
+    else
+    {
+        if (mState != PlayerState::sAttacking &&
+            mState != PlayerState::sDig &&
+            mState != PlayerState::sAxe &&
+            mState != PlayerState::sMining &&
+            mState != PlayerState::sDashing &&
+            mState != PlayerState::sHurt)
+        {
+            SetState(PlayerState::sIdle);
+        }
     }
+
+    // Gestion du dash : pendant le dash, on ignore les nouvelles entrées
+    if (isDashing)
+    {
+        dashTimer -= dt;
+        GoToPosition(GetPosition().x + dashVelocityX * mSpeed,
+            GetPosition().y + dashVelocityY * mSpeed,
+            mSpeed);
+        if (dashTimer <= 0)
+        {
+            isDashing = false;
+            SetState(PlayerState::sIdle);
+        }
+    }
+    else
+    {
+        GoToPosition(GetPosition().x + velocityX * mSpeed,
+            GetPosition().y + velocityY * mSpeed,
+            mSpeed);
+    }
+
+    // Mise à jour de l'animation selon l'état
+    OnAnimationUpdate();
+
+    // Mise à jour des positions des parties du joueur
+    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
+    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
+
+    // Réduction du cooldown du dash
+    if (dashCooldown > 0 && !isDashing)
+        dashCooldown -= dt;
 }
 
 void Player::OnAnimationUpdate()
 {
     float dt = GetDeltaTime();
-
-    // Mise à jour des animations selon l'état
-    if (mState == PlayerState::sWalking && mWalkAnimator) {
-        mWalkAnimator->Update(dt);
+    switch (mState)
+    {
+    case PlayerState::sIdle:
+        if (mIdleAnimator) mIdleAnimator->Update(dt);
+        break;
+    case PlayerState::sWalking:
+        if (mWalkAnimator) mWalkAnimator->Update(dt);
+        break;
+    case PlayerState::sSprinting:
+        if (mSprintAnimator) mSprintAnimator->Update(dt);
+        break;
+    case PlayerState::sDashing:
+        if (mDashAnimator)
+        {
+            mDashAnimator->Update(dt);
+            if (mDashAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sAttacking:
+        if (mAttackAnimator)
+        {
+            mAttackAnimator->Update(dt);
+            if (mAttackAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sMining:
+        if (mMiningAnimator)
+        {
+            mMiningAnimator->Update(dt);
+            if (mMiningAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sAxe:
+        if (mAxeAnimator)
+        {
+            mAxeAnimator->Update(dt);
+            if (mAxeAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sDig:
+        if (mDigAnimator)
+        {
+            mDigAnimator->Update(dt);
+            if (mDigAnimator->IsFinished())
+                SetState(PlayerState::sIdle);
+        }
+        break;
+    case PlayerState::sHurt:
+        if (mHurtAnimator) mHurtAnimator->Update(dt);
+        break;
+    default:
+        break;
     }
-    else if (mState == PlayerState::sIdle && mIdleAnimator) {
-        mIdleAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sSprinting && mSprintAnimator) {
-        mSprintAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sDashing && mDashAnimator) {
-        mDashAnimator->Update(dt);
-    }
-    else if (mState == PlayerState::sAttacking && mAttackAnimator) {
-        mAttackAnimator->Update(dt);
-    }
-
-
 }
 
 void Player::SetImage(const char* path)
@@ -311,7 +352,7 @@ void Player::SetImage(const char* path)
 
 void Player::ChangeHaircut(const char* haircut)
 {
-	PlayerHair->InitBodyPart(haircut);
+    PlayerHair->InitBodyPart(haircut);
 }
 
 void Player::ToogleMode()
@@ -320,18 +361,83 @@ void Player::ToogleMode()
     std::cout << GetScene()->IsInBuildingMode << std::endl;
 }
 
+void Player::ChangeMod()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
+        mMode = PlayerMode::Attack;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
+        mMode = PlayerMode::Dig;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
+        mMode = PlayerMode::Pickaxe;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
+        mMode = PlayerMode::Axe;
+    }
+}
+
+void Player::ActionMod()
+{
+    if (mMode == PlayerMode::Attack)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sAttacking);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Dig)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sDig);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Axe)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sAxe);
+            }
+        }
+    }
+    if (mMode == PlayerMode::Pickaxe)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (mState != PlayerState::sAttacking &&
+                mState != PlayerState::sDashing &&
+                mState != PlayerState::sHurt)
+            {
+                SetState(PlayerState::sMining);
+            }
+        }
+    }
+}
+
 void Player::OnCollision(Entity* pCollidedWith)
 {
-    // On suppose que l'autre entité est solide
     if (pCollidedWith->mHitbox->Solid)
     {
-        // On tente de récupérer les AABBCollider pour le joueur et l'objet
         AABBCollider* playerCollider = dynamic_cast<AABBCollider*>(this->mHitbox);
         AABBCollider* otherCollider = dynamic_cast<AABBCollider*>(pCollidedWith->mHitbox);
         if (!playerCollider || !otherCollider)
-            return; // Assurez-vous que les cast sont valides
+            return;
 
-        // Calculer l'intersection sur l'axe horizontal et vertical
         float intersectWidth = std::max(0.f, std::min(playerCollider->xMax, otherCollider->xMax) -
             std::max(playerCollider->xMin, otherCollider->xMin));
         float intersectHeight = std::max(0.f, std::min(playerCollider->yMax, otherCollider->yMax) -
@@ -372,15 +478,11 @@ void Player::OnCollision(Entity* pCollidedWith)
     }
 }
 
-
-
-
-
 void Player::cAttack() {
     AttackArea = CreateEntity<DamageZone>("0");
     AttackArea->Layout = -1;
     AttackArea->AddAABBHitbox();
     AttackArea->SetHitboxSize(100, 100);
     AttackArea->LifeTime = 0.5;
-    AttackArea->IgnoreTag(GameManager::Tag::tPlayer);   
+    AttackArea->IgnoreTag(GameManager::Tag::tPlayer);
 }

@@ -3,13 +3,18 @@
 
 BuildSystem::BuildSystem()
 {
-    SelectedTileImg = CreateEntity<Entity>("3");
+    SelectedTileImg = CreateEntity<Entity>("CursorSelector");
     SelectedTileImg->Layout = 10;
     SelectedTileImg->SetSize(50,50);
 }
 
 BuildSystem::~BuildSystem()
 {
+}
+
+sf::Vector2f BuildSystem::GetBuildPosition()
+{
+    return SelectedTileImg->GetPosition();;
 }
 
 void BuildSystem::SetPlayer(Player* _player)
@@ -37,7 +42,7 @@ void BuildSystem::ChooseTile()
     if (tileY >= 0 && tileY <= 39 && tileX >= 0 && tileX <= 63) {
         Tilex = tileX;
         Tiley = tileY;
-        std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
+        //std::cout << "Tile sélectionnée : " << Tilex << "." << Tiley << std::endl;
 
         if (GameManager::Get()->GetTileMap(1)) {
             auto& tile = GameManager::Get()->GetTileMap(0)->tiles[Tiley][Tilex];
