@@ -26,11 +26,11 @@ protected:
     sf::Vector2f mDirection;
     sf::Texture mTexture;
     Target mTarget;
-    int mHitboxWidth;
-    int mHitboxHeight;
     bool haveHitbox;
 
 public:
+    int mHitboxWidth;
+    int mHitboxHeight;
 
     std::string SceneName;
     sf::Sprite mSprite;
@@ -78,6 +78,7 @@ public:
     float GetDistanceTo(Entity* _Entity);
     void AddCircleHitbox();
     void AddAABBHitbox();
+    void SolidHitbox();
     void SetHitboxSize(float x, float y);
     void SetHitboxSize(float _radius);
     void UpdateCollider();

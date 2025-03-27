@@ -9,7 +9,7 @@ void SceneEloulou::OnInitialize() {
 
     GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/");
     Ocean = new TileMap();
-    Ocean->create("Ocean"); // Charge la map
+    Ocean->create("Ocean");
     GameManager::Get()->AddTileMap(Ocean);
     map = new TileMap();
     map->create("Ile");
@@ -28,7 +28,7 @@ void SceneEloulou::OnInitialize() {
     lPlayer = CreateEntity<Player>("base_idle_strip9");
     lPlayer->SetScale(3, 3);
     lPlayer->SetOrigin(0.5f, 0.5f);
-    lPlayer->SetPosition((GetWindowWidth() / 2) - lPlayer->GetSprite()->getGlobalBounds().width, (GetWindowHeight() / 2));
+    lPlayer->SetPosition((GetWindowWidth() *1.5), (GetWindowHeight() * 1.5));
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(25, 20);
     lPlayer->Layout = 1;
@@ -36,6 +36,14 @@ void SceneEloulou::OnInitialize() {
     lBuild = CreateEntity<BuildSystem>("0");
     lBuild->SetPlayer(lPlayer);
     lBuild->SetPointer(lPointer);
+
+    Mur1 = CreateEntity<Entity>("3");
+    Mur1->SetOrigin(0.5, 0.5);
+    Mur1->SetScale(3, 3);
+    Mur1->SetPosition((GetWindowWidth() * 1.5) + 100, (GetWindowHeight() * 1.5));
+    Mur1->AddAABBHitbox();
+    Mur1->SetHitboxSize(Mur1->mSprite.getGlobalBounds().width, Mur1->mSprite.getGlobalBounds().height);
+    Mur1->SolidHitbox();
 
     //Skeleton = CreateEntity<Monster>("skeleton_idle_strip6");
     //Skeleton->MonsterOption(true, true, true, true);

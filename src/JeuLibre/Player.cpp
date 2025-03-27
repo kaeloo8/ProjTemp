@@ -322,8 +322,59 @@ void Player::ToogleMode()
 
 void Player::OnCollision(Entity* pCollidedWith)
 {
-    //
+    // On suppose que l'autre entité est solide
+    if (pCollidedWith->mHitbox->Solid)
+    {
+        // On tente de récupérer les AABBCollider pour le joueur et l'objet
+        AABBCollider* playerCollider = dynamic_cast<AABBCollider*>(this->mHitbox);
+        AABBCollider* otherCollider = dynamic_cast<AABBCollider*>(pCollidedWith->mHitbox);
+        if (!playerCollider || !otherCollider)
+            return; // Assurez-vous que les cast sont valides
+
+        // Calculer l'intersection sur l'axe horizontal et vertical
+        float intersectWidth = std::max(0.f, std::min(playerCollider->xMax, otherCollider->xMax) -
+            std::max(playerCollider->xMin, otherCollider->xMin));
+        float intersectHeight = std::max(0.f, std::min(playerCollider->yMax, otherCollider->yMax) -
+            std::max(playerCollider->yMin, otherCollider->yMin));
+
+        if (intersectWidth > 0.f && intersectHeight > 0.f)
+        {
+            sf::Vector2f pos = GetPosition();
+
+            if (intersectWidth < intersectHeight)
+            {
+                if (playerCollider->xMin < otherCollider->xMin)
+                {
+                    float offset = playerCollider->xMax - otherCollider->xMin;
+                    pos.x -= offset;
+                }
+                else
+                {
+                    float offset = otherCollider->xMax - playerCollider->xMin;
+                    pos.x += offset;
+                }
+            }
+            else
+            {
+                if (playerCollider->yMin < otherCollider->yMin)
+                {
+                    float offset = playerCollider->yMax - otherCollider->yMin;
+                    pos.y -= offset;
+                }
+                else
+                {
+                    float offset = otherCollider->yMax - playerCollider->yMin;
+                    pos.y += offset;
+                }
+            }
+            SetPosition(pos.x, pos.y);
+        }
+    }
 }
+
+
+
+
 
 void Player::cAttack() {
     AttackArea = CreateEntity<DamageZone>("0");

@@ -283,12 +283,9 @@ void Entity::AddAABBHitbox()
 	haveHitbox = true;
 }
 
-void AddTriangleHitbox() {
-
-}
-
-void AddModularHitbox() {
-
+void Entity::SolidHitbox()
+{
+	mHitbox->Solid = true;
 }
 
 void Entity::DrawHitbox() {

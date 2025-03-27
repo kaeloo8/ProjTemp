@@ -81,6 +81,7 @@ AssetManager::AssetManager(sf::RenderWindow* W) {
         "../../../img/Player/",
         "../../../img/Hair/",
         "../../../img/Hand/",
+        "../../../img/Farming/",
         "../../../img/Monster/",
         "../../../img/Ui/"
     };
