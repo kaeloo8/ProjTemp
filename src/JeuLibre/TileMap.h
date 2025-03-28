@@ -1,14 +1,24 @@
 #pragma once
 #include "Entity.h"
-#include "Collider.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 
 enum class TileType {
     Empty,
     Full,
-    Solid
+    Solid,
+    Nothing
 };
+
+inline std::ostream& operator<<(std::ostream& os, const TileType& type) {
+    switch (type) {
+    case TileType::Empty: os << "Empty"; break;
+    case TileType::Full: os << "Full"; break;
+    case TileType::Solid: os << "Solid"; break;
+    case TileType::Nothing: os << "Nothing"; break;
+    }
+    return os;
+}
 
 struct Tile {
 public:
@@ -16,7 +26,6 @@ public:
     sf::Sprite sprite;
     std::string id;
     TileType type;
-    Collider* Tilecollider;
 
     Tile(const std::string& tileId, const sf::Texture& texture, float x, float y)
         : id(tileId)
@@ -24,9 +33,7 @@ public:
         sprite.setTexture(texture);
         sprite.setScale(tileSize / texture.getSize().x, tileSize / texture.getSize().y);
         sprite.setPosition(x, y);
-        AddAABBHitbox();
     }
-    void AddAABBHitbox();
 };
 
 struct Room {

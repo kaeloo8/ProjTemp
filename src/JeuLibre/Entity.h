@@ -78,6 +78,7 @@ public:
     void SetRotation(float angle);
     void GetSize();
     float GetDistanceTo(Entity* _Entity);
+    float GetDistanceTo(float _x, float _y);
     void AddCircleHitbox();
     void AddAABBHitbox();
     void SolidHitbox();

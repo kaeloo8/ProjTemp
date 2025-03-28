@@ -5,6 +5,7 @@ BuildSystem::BuildSystem()
 {
     SelectedTileImg = CreateEntity<Entity>("CursorSelector");
     SelectedTileImg->Layout = 10;
+    SelectedTileImg->SetOrigin(0, 0);
     SelectedTileImg->SetSize(50,50);
 }
 
@@ -14,7 +15,7 @@ BuildSystem::~BuildSystem()
 
 sf::Vector2f BuildSystem::GetBuildPosition()
 {
-    return SelectedTileImg->GetPosition();;
+    return SelectedTileImg->GetPosition()
 }
 
 void BuildSystem::SetPlayer(Player* _player)

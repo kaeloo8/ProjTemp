@@ -45,11 +45,7 @@ void TileMap::create(const std::string& path)
             // Création de la tile
             Tile tile(textureId, texture, posX, posY);
 
-            // Vérification si la tile est solide
-            if (std::find(SolidTile.begin(), SolidTile.end(), textureId) != SolidTile.end()) {
-                tile.type = TileType::Solid;
-                tile.AddAABBHitbox();
-            }
+            tile.type = TileType::Empty;
 
             lineTiles.push_back(std::move(tile));
             posX += tileSize;
@@ -140,24 +136,5 @@ void TileMap::UpdateWater()
             }
         }
         animationTimer = 0.f;
-    }
-}
-
-void Tile::AddAABBHitbox()
-{
-    Tilecollider = new AABBCollider();
-    if (Tilecollider) {
-        auto* aabbCollider = dynamic_cast<AABBCollider*>(Tilecollider);
-        if (aabbCollider) {
-            sf::Vector2f position = sprite.getPosition();
-
-            int halfOffsetWidth = tileSize / 2;
-            int halfOffsetHeight = tileSize / 2;
-
-            aabbCollider->xMin = position.x - halfOffsetWidth;
-            aabbCollider->yMin = position.y - halfOffsetHeight;
-            aabbCollider->xMax = position.x + halfOffsetWidth;
-            aabbCollider->yMax = position.y + halfOffsetHeight;
-        }
     }
 }

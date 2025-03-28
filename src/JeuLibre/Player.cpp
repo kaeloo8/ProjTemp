@@ -96,6 +96,13 @@ void Player::SetState(PlayerState state)
             PlayerHand->SetState(PlayerPartState::sDashing);
             if (mDashAnimator) mDashAnimator->Reset();
             break;
+        case PlayerState::sGoToWork:
+            mSpeed = 150;
+            SetImage("base_walk_strip8");
+            PlayerHair->SetState(PlayerPartState::sWalking);
+            PlayerHand->SetState(PlayerPartState::sWalking);
+            if (mWalkAnimator) mWalkAnimator->Reset();
+            break;
         case PlayerState::sAttacking:
             mSpeed = 15;
             SetImage("base_attack_strip10");
@@ -146,6 +153,12 @@ void Player::FaceLeft()
     PlayerHand->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
 }
 
+void Player::SetActionPoint(float _x, float _y)
+{
+    ActionPoint.x = _x;
+    ActionPoint.y = _y;
+}
+
 void Player::FaceRight()
 {
     isTurn = false;
@@ -161,8 +174,10 @@ void Player::OnUpdate()
     float velocityY = 0.f;
     bool movingInput = false;
 
+    Debug::DrawText(GetPosition().x, GetPosition().y + 30, GetCurrentStateName(), sf::Color::Yellow);
     ChangeMod();
-    ActionMod();
+    ChangeActionMod(); 
+    StateActionMod();
 
     // Récupération des touches de déplacement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -245,6 +260,7 @@ void Player::OnUpdate()
             mState != PlayerState::sAxe &&
             mState != PlayerState::sMining &&
             mState != PlayerState::sDashing &&
+            mState != PlayerState::sGoToWork &&
             mState != PlayerState::sHurt)
         {
             SetState(PlayerState::sIdle);
@@ -304,6 +320,9 @@ void Player::OnAnimationUpdate()
             if (mDashAnimator->IsFinished())
                 SetState(PlayerState::sIdle);
         }
+        break;
+    case PlayerState::sGoToWork:
+        if (mWalkAnimator) mWalkAnimator->Update(dt);
         break;
     case PlayerState::sAttacking:
         if (mAttackAnimator)
@@ -377,7 +396,7 @@ void Player::ChangeMod()
     }
 }
 
-void Player::ActionMod()
+void Player::ChangeActionMod()
 {
     if (mMode == PlayerMode::Attack)
     {
@@ -399,7 +418,9 @@ void Player::ActionMod()
                 mState != PlayerState::sDashing &&
                 mState != PlayerState::sHurt)
             {
-                SetState(PlayerState::sDig);
+                SetState(PlayerState::sGoToWork);
+
+                
             }
         }
     }
@@ -411,7 +432,7 @@ void Player::ActionMod()
                 mState != PlayerState::sDashing &&
                 mState != PlayerState::sHurt)
             {
-                SetState(PlayerState::sAxe);
+                SetState(PlayerState::sGoToWork);
             }
         }
     }
@@ -423,8 +444,32 @@ void Player::ActionMod()
                 mState != PlayerState::sDashing &&
                 mState != PlayerState::sHurt)
             {
-                SetState(PlayerState::sMining);
+                SetState(PlayerState::sGoToWork);
             }
+        }
+    }
+}
+
+void Player::StateActionMod()
+{
+    if (mState == PlayerState::sGoToWork)
+    {
+        if (GetDistanceTo(ActionPoint.x, ActionPoint.y) > 30)
+        {
+            if (ActionPoint.x > GetPosition().x)
+            {
+                FaceRight();
+            }
+            else {
+                FaceLeft();
+            }
+            std::cout << mSpeed << std::endl;
+            GoToDirection(ActionPoint.x, ActionPoint.y, mSpeed);
+        
+        }
+        else
+        {
+            SetState(PlayerState::sDig);
         }
     }
 }
@@ -485,4 +530,24 @@ void Player::cAttack() {
     AttackArea->SetHitboxSize(100, 100);
     AttackArea->LifeTime = 0.5;
     AttackArea->IgnoreTag(GameManager::Tag::tPlayer);
+}
+
+std::string Player::GetCurrentStateName() {
+    switch (mState) { // Utilisation correcte de la variable de classe
+    case PlayerState::sIdle:      return "Idle";
+    case PlayerState::sWalking:   return "Walking";
+    case PlayerState::sSprinting: return "Sprinting";
+    case PlayerState::sAttacking: return "Attacking";
+    case PlayerState::sDashing:   return "Dashing";
+    case PlayerState::sHurt:      return "Hurt";
+    case PlayerState::sCasting:   return "Casting";
+    case PlayerState::sWattering: return "Wattering";
+    case PlayerState::sReeling:   return "Reeling";
+    case PlayerState::sCaught:    return "Caught";
+    case PlayerState::sGoToWork:  return "Going to Work";
+    case PlayerState::sDig:       return "Digging";
+    case PlayerState::sAxe:       return "Using Axe";
+    case PlayerState::sMining:    return "Mining";
+    default: return "Unknown";
+    }
 }
