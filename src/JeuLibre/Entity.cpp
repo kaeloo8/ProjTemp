@@ -249,6 +249,13 @@ float Entity::GetDistanceTo(Entity* _Entity)
 	return distanceSquared;
 }
 
+float Entity::GetDistanceTo(float _x, float _y)
+{
+	float dx = GetPosition().x - _x;
+	float dy = GetPosition().y - _y;
+	return std::sqrt(dx * dx + dy * dy);
+}
+
 void Entity::AddCircleHitbox()
 {
 	mHitbox = new CircleCollider();

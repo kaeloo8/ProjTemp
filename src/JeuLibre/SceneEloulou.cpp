@@ -61,6 +61,14 @@ void SceneEloulou::OnEvent(const sf::Event& event) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
         if (!KeyEscPressed) {
             map->tiles[lBuild->Tiley][lBuild->Tilex].sprite.setTexture(GameManager::Get()->GetTexture("TileMap_0004"));
+            std::cout << map->tiles[lBuild->Tiley][lBuild->Tilex].type << std::endl;
+        }
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        if (lPlayer->mMode != PlayerMode::Attack)
+        {
+            lPlayer->ActionPoint = { lBuild->GetBuildPosition().x, lBuild->GetBuildPosition().y };
         }
     }
 }
@@ -74,19 +82,28 @@ void SceneEloulou::Load()
 }
 
 void SceneEloulou::OnUpdate() {
-    if (lPlayer->mMode == PlayerMode::Dig)
+    static bool hasDug = false;
+    if (lPlayer->mMode != PlayerMode::Attack)
     {
-        lBuild->ChooseTile();
-        if (lPlayer->mState == PlayerState::sDig)
+        if (lPlayer->mState != PlayerState::sGoToWork)
         {
-            Hole* H;
-            H = CreateEntity<Hole>("soil_00");
-            H->SetPosition(lBuild->GetBuildPosition().x, lBuild->GetBuildPosition().y);
+            lBuild->ChooseTile();
+        }
+    }
+    if (lPlayer->mMode == PlayerMode::Dig) {
+        if (lPlayer->mState == PlayerState::sDig && !hasDug) {
+            Hole* H = CreateEntity<Hole>("soil_00");
+            H->SetPosition(lPlayer->ActionPoint.x, lPlayer->ActionPoint.y);
             H->SetSize(50, 50);
             H->Layout = 3;
 
             lHole.push_back(H);
             std::cout << lHole.size() << std::endl;
+
+            hasDug = true;
+        }
+        else if (lPlayer->mState != PlayerState::sDig) {
+            hasDug = false;
         }
     }
 

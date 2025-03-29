@@ -3,6 +3,7 @@
 #include "Animator.h"
 #include "PlayerPart.h"
 #include "DamageZone.h"
+#include "Debug.h"
 
 enum class PlayerState {
     sIdle,
@@ -17,6 +18,7 @@ enum class PlayerState {
     sReeling,
     sCaught,
     //travail
+    sGoToWork,
     sDig,
     sAxe,
     sMining,
@@ -60,7 +62,7 @@ private:
     void OnAnimationUpdate();
 
 public:
-
+    std::string GetCurrentStateName();
     bool isMoving;
     bool isSprinting;
 	bool isDashing;
@@ -69,6 +71,8 @@ public:
 
     PlayerState mState;
     PlayerMode mMode = PlayerMode::Attack;
+
+    sf::Vector2f ActionPoint;
 
     bool isTurn;
 
@@ -92,6 +96,8 @@ public:
     float dashCooldown = 0.f;  
     const float maxDashCooldown = 0.5f;  
 
+    void SetActionPoint(float _x, float _y);
+
     void FaceRight();
 	void FaceLeft();
 
@@ -99,7 +105,8 @@ public:
 
     void ToogleMode();
     void ChangeMod();
-    void ActionMod();
+    void ChangeActionMod();
+    void StateActionMod();
 
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;

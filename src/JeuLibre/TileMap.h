@@ -3,11 +3,29 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
+enum class TileType {
+    Empty,
+    Full,
+    Solid,
+    Nothing
+};
+
+inline std::ostream& operator<<(std::ostream& os, const TileType& type) {
+    switch (type) {
+    case TileType::Empty: os << "Empty"; break;
+    case TileType::Full: os << "Full"; break;
+    case TileType::Solid: os << "Solid"; break;
+    case TileType::Nothing: os << "Nothing"; break;
+    }
+    return os;
+}
+
 struct Tile {
 public:
     float tileSize = 50;
     sf::Sprite sprite;
     std::string id;
+    TileType type;
 
     Tile(const std::string& tileId, const sf::Texture& texture, float x, float y)
         : id(tileId)
@@ -36,6 +54,8 @@ public:
         { "0216", "0217", "0218", "0219" },
         { "0220", "0221", "0222", "0223" }
     };
+
+    std::vector<std::string> SolidTile = {"0174"};
 
     void create(const std::string& path);
     void createD();
