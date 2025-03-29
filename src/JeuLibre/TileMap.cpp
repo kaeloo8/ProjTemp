@@ -111,6 +111,38 @@ void TileMap::createD() {
             }
         }
     }
+
+    for (const auto& row : rooms) {
+        for (const auto& room : row) {
+            for (int y = 0; y < roomHeight; ++y) {
+                std::vector<Tile> lineTiles;
+                for (int x = 0; x < roomWidth; ++x) {
+                    std::string textureId = "000" + std::to_string(std::rand() % 3 + 7);
+
+                    if (y == 0)
+                        textureId = "0004";
+                    if (y == roomHeight - 1)
+                        textureId = "0005";
+                    if (x == 0 ) 
+                        textureId = "0000";
+                    if(x == roomWidth - 1)
+                        textureId = "0003";
+
+
+
+                    // Placement des portes sur 2 tiles
+                    if (room.doors[0] && y == 0 && (x == roomWidth / 2 || x == roomWidth / 2 - 1)) textureId = "0008";
+                    if (room.doors[1] && y == roomHeight - 1 && (x == roomWidth / 2 || x == roomWidth / 2 - 1)) textureId = "0008";
+                    if (room.doors[2] && x == 0 && (y == roomHeight / 2 || y == roomHeight / 2 - 1)) textureId = "0008";
+                    if (room.doors[3] && x == roomWidth - 1 && (y == roomHeight / 2 || y == roomHeight / 2 - 1)) textureId = "0008";
+
+                    const sf::Texture& texture = GameManager::Get()->AssetMana.GetTexture("DonjonTile_" + textureId);
+                    lineTiles.emplace_back(textureId, texture, room.x + x * tileSize, room.y + y * tileSize);
+                }
+                tiles.push_back(lineTiles);
+            }
+        }
+    }
 }
 
 void TileMap::UpdateWater()

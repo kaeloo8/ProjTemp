@@ -13,6 +13,8 @@ void S0Menu::OnInitialize() {
     Win = GameManager::Get()->Window;
     Win->setMouseCursorVisible(false);
 
+    GameManager::Get()->DrawHitBox = false;
+
     // Curseur personnalisé
     lPointer = CreateEntity<Pointer>("Pointer");
     lPointer->SetScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100);
@@ -25,7 +27,7 @@ void S0Menu::OnInitialize() {
     float sizeY = 5;
 
     // Boutons
-    ButtonCheval = CreateEntity<Entity>("bouttonBleu");
+    ButtonCheval = CreateEntity<Entity>("Bouton_0010");
     ButtonCheval->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2 - 200);
     ButtonCheval->SetOrigin(0.5, 0.5);
     ButtonCheval->AddCircleHitbox();
@@ -33,7 +35,7 @@ void S0Menu::OnInitialize() {
 	ButtonCheval->SetScale(sizeX, sizeY);
     ButtonCheval->Layout = 2;
 
-    ButtonElo = CreateEntity<Entity>("bouttonVert");
+    ButtonElo = CreateEntity<Entity>("Bouton_0008");
     ButtonElo->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2);
     ButtonElo->SetOrigin(0.5, 0.5);
     ButtonElo->AddCircleHitbox();
@@ -41,7 +43,7 @@ void S0Menu::OnInitialize() {
     ButtonElo->SetScale(sizeX, sizeY);
     ButtonElo->Layout = 2;
 
-    ButtonLeo = CreateEntity<Entity>("bouttonJaune");
+    ButtonLeo = CreateEntity<Entity>("Bouton_0011");
     ButtonLeo->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2 + 200);
     ButtonLeo->SetOrigin(0.5, 0.5);
     ButtonLeo->AddCircleHitbox();
