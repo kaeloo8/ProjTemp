@@ -15,7 +15,7 @@ class UI : public Entity
 
     sf::Font mFont;
 
-    Pointer* mPointer;
+    Pointer* lPointer;
 
     std::vector<element> lBouton;
 
@@ -27,8 +27,6 @@ public:
     void cBouton(sf::Vector2f pos, int sx, int sy, char* path);
     void cBouton(int x, int y, sf::Vector2f size, char* path);
     void cBouton(int x, int y, int sx, int sy, char* path);
-
-    void SetPointer(Pointer* _pointer);
 
     void Open();
     void Close();

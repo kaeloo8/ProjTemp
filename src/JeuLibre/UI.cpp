@@ -62,10 +62,6 @@ void UI::cBouton(int x, int y, int sx, int sy, char* path) {
 	e.NumberI = 0;
 }
 
-void UI::SetPointer(Pointer* _pointer) {
-
-}
-
 void UI::Open() {
 
 }

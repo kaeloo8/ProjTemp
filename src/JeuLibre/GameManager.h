@@ -61,6 +61,8 @@ public:
 		tMBoss,
 		tBoss,
 		tSolide,
+		tHoverable,
+		tPointer,
 
 		nOfTag
 	};

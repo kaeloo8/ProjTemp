@@ -34,6 +34,7 @@ void S0Menu::OnInitialize() {
     ButtonCheval->SetHitboxSize(30);
 	ButtonCheval->SetScale(sizeX, sizeY);
     ButtonCheval->Layout = 2;
+    ButtonCheval->mTag = GameManager::Tag::tHoverable;
 
     ButtonElo = CreateEntity<Entity>("Bouton_0008");
     ButtonElo->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2);
@@ -42,6 +43,7 @@ void S0Menu::OnInitialize() {
     ButtonElo->SetHitboxSize(30);
     ButtonElo->SetScale(sizeX, sizeY);
     ButtonElo->Layout = 2;
+    ButtonElo->mTag = GameManager::Tag::tHoverable;
 
     ButtonLeo = CreateEntity<Entity>("Bouton_0011");
     ButtonLeo->SetPosition(GetWindowWidth() - 200, GetWindowHeight() / 2 + 200);
@@ -50,6 +52,7 @@ void S0Menu::OnInitialize() {
     ButtonLeo->SetHitboxSize(30);
     ButtonLeo->SetScale(sizeX, sizeY);
     ButtonLeo->Layout = 2;
+    ButtonLeo->mTag = GameManager::Tag::tHoverable;
 
     Fond = CreateEntity<Entity>("FondEcran");
     Fond->SetOrigin(0, 0);
@@ -69,7 +72,7 @@ void S0Menu::OnEvent(const sf::Event& event) {
             GameManager::Get()->LaunchScene<SceneEloulou>();
         }
         if (ButtonLeo->mSprite.getGlobalBounds().contains(mousePos)) {
-            GameManager::Get()->LaunchScene<SceneGorille>();
+            //GameManager::Get()->LaunchScene<SceneGorille>();
         }
     }
 }

@@ -11,7 +11,7 @@ bool OptionMenu::HandleClick(float mouseX, float mouseY)
 	if (!MenuOpen) return 0;
 
 	for (auto& element : uiElements) {
-		element->HandleClick(mouseX, mouseY);
+		//element->HandleClick(mouseX, mouseY);
 	}
 	return false;
 }

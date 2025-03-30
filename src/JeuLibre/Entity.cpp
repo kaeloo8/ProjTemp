@@ -54,8 +54,11 @@ void Entity::Initialize(const char* path)
 bool Entity::IsColliding(Entity* other) const {
 	if (!mHitbox || !other->mHitbox)
 		return false;
-
-	return mHitbox->IsColliding(other->mHitbox);
+	if (mHitbox->IsColliding(other->mHitbox)) {
+		return mHitbox->IsColliding(other->mHitbox);
+	}
+		
+	return false;
 }
 
 bool Entity::IsInsideCIRCLE(float x, float y) const
@@ -398,7 +401,9 @@ void Entity::Update()
 	if (haveHitbox) {
 		DrawHitbox();
 	}
-
+	if (mHitbox){
+		UpdateCollider();
+	}
 
 	OnUpdate();
 
@@ -416,27 +421,24 @@ float Entity::GetDeltaTime() const
 
 void Entity::UpdateCollider()
 {
-	if (mHitbox) {
+	if (auto* circleCollider = dynamic_cast<CircleCollider*>(mHitbox)) {
 
-		if (auto* circleCollider = dynamic_cast<CircleCollider*>(mHitbox)) {
+		sf::Vector2f position = GetPosition();
 
-			sf::Vector2f position = GetPosition();
+		circleCollider->x = position.x;
+		circleCollider->y = position.y;
+	}
+	else if (auto* aabbCollider = dynamic_cast<AABBCollider*>(mHitbox)) {
+		// Ajuste les limites de l'AABB en tenant compte de l'origine
 
-			circleCollider->x = position.x;
-			circleCollider->y = position.y;
-		}
-		else if (auto* aabbCollider = dynamic_cast<AABBCollider*>(mHitbox)) {
-			// Ajuste les limites de l'AABB en tenant compte de l'origine
+		sf::Vector2f position = GetPosition();
 
-			sf::Vector2f position = GetPosition();
+		int halfOffsetWidth = mHitboxWidth / 2;
+		int halfOffsetHeight = mHitboxHeight / 2;
 
-			int halfOffsetWidth = mHitboxWidth / 2;
-			int halfOffsetHeight = mHitboxHeight / 2;
-
-			aabbCollider->xMin = position.x - halfOffsetWidth;
-			aabbCollider->yMin = position.y - halfOffsetHeight;
-			aabbCollider->xMax = position.x + halfOffsetWidth;
-			aabbCollider->yMax = position.y + halfOffsetHeight;
-		}
+		aabbCollider->xMin = position.x - halfOffsetWidth;
+		aabbCollider->yMin = position.y - halfOffsetHeight;
+		aabbCollider->xMax = position.x + halfOffsetWidth;
+		aabbCollider->yMax = position.y + halfOffsetHeight;
 	}
 }

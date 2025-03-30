@@ -35,7 +35,7 @@ void SceneChevalier::OnInitialize()
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
     
-    for (int i = 0;i < 10; i++) {
+    for (int i = 0;i < 3; i++) {
         Monster* M;
         M = CreateEntity<Monster>("skeleton_idle_strip6");
         M->AddCircleHitbox();

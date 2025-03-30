@@ -1,7 +1,7 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
 #include "AssetManager.h"
+
 
 class Animator {
 private:

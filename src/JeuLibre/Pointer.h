@@ -8,7 +8,9 @@ public:
 	sf::Vector2f worldPos;
 
 	Pointer();
+	void ChangeI(const char* path);
+
 	void OnUpdate() override;
-	//void OnCollision(Entity* pCollidedWith) override;
+	void OnCollision(Entity* pCollidedWith) override;
 };
 
