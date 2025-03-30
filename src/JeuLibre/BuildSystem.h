@@ -4,6 +4,7 @@
 #include "Pointer.h"
 #include <vector>
 
+
 class BuildSystem : public Entity
 {
 public:
