@@ -490,10 +490,19 @@ void Player::StateActionMod()
     {
         int atkframe = mAttackAnimator->GetFrameNumber();
 
-        if (atkframe == 6)
+        if (atkframe == 6 && AtckActive == false)
         {
             cAttack();
         }
+        if (AttackArea != nullptr && AttackArea->LifeTime <= 0)
+        {
+            AttackArea = nullptr; // <-- Ajouté pour éviter un pointeur dangling
+        }
+        if (AttackArea == nullptr)
+        {
+            AtckActive = false;
+        }
+
     }
 }
 
@@ -547,18 +556,19 @@ void Player::OnCollision(Entity* pCollidedWith)
 }
 
 void Player::cAttack() {
+    AtckActive = true;
     AttackArea = CreateEntity<DamageZone>("0");
     AttackArea->setDamage(PlayerDamage);
     if (Face_Left)
     {
-        AttackArea->SetPosition(GetPosition().x - 50, GetPosition().y);
+        AttackArea->SetPosition(GetPosition().x - 40, GetPosition().y - 20);
     }
     else {
-        AttackArea->SetPosition(GetPosition().x + 50, GetPosition().y);
+        AttackArea->SetPosition(GetPosition().x + 40, GetPosition().y - 20);
     }
     AttackArea->Layout = -1;
     AttackArea->AddCircleHitbox();
-    AttackArea->SetHitboxSize(60, 60);
+    AttackArea->SetHitboxSize(40);
     AttackArea->LifeTime = 0.1;
     AttackArea->IgnoreTag(GameManager::Tag::tPlayer);
 }
