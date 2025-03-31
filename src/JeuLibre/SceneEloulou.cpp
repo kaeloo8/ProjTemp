@@ -82,7 +82,6 @@ void SceneEloulou::Load()
 }
 
 void SceneEloulou::OnUpdate() {
-    static bool hasDug = false;
     if (lPlayer->mMode != PlayerMode::Attack)
     {
         if (lPlayer->mState != PlayerState::sGoToWork)
@@ -91,7 +90,7 @@ void SceneEloulou::OnUpdate() {
         }
     }
     if (lPlayer->mMode == PlayerMode::Dig) {
-        if (lPlayer->mState == PlayerState::sDig && !hasDug) {
+        if (lPlayer->mState == PlayerState::sDig && lPlayer->HasDug == true) {
             Hole* H = CreateEntity<Hole>("soil_00");
             H->SetPosition(lPlayer->ActionPoint.x, lPlayer->ActionPoint.y);
             H->SetSize(50, 50);
@@ -100,10 +99,10 @@ void SceneEloulou::OnUpdate() {
             lHole.push_back(H);
             std::cout << lHole.size() << std::endl;
 
-            hasDug = true;
+            lPlayer->HasDug = false;
         }
         else if (lPlayer->mState != PlayerState::sDig) {
-            hasDug = false;
+            lPlayer->HasDug = false;
         }
     }
 

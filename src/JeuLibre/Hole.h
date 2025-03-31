@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Animator.h"
 
 class Hole : public Entity
 {
@@ -7,6 +8,8 @@ public:
 
 	Hole();
 	~Hole();
+
+	Animator* mSpawnAnimation;
 
 	const char* PlantType;
 

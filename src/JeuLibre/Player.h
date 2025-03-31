@@ -69,14 +69,18 @@ public:
 	bool isAttacking;
     bool isStunt;
 
+    //bool d'action
+    bool HasDug;
+
     PlayerState mState;
     PlayerMode mMode = PlayerMode::Attack;
 
     sf::Vector2f ActionPoint;
 
-    bool isTurn;
+    bool Face_Left;
 
     int DamageDistance = 40;
+    int PlayerDamage = 10;
 
     float tBeforSwitch = 0;
 

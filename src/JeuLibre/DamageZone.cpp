@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "DamageZone.h"
 
+void DamageZone::setDamage(int _Dmg)
+{
+	Damage = _Dmg;
+}
+
 void DamageZone::OnUpdate() {
 
 	if (LifeTime >= 0) {
@@ -20,7 +25,7 @@ void DamageZone::OnCollision(Entity* pCollidedWith) {
 			return; 
 		}
 	}
-	pCollidedWith->Destroy();
+	pCollidedWith->DamageLife(Damage);
 	if (UniqueColide) {
 		Destroy();
 	}

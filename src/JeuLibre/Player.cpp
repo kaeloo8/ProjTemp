@@ -147,7 +147,7 @@ void Player::SetState(PlayerState state)
 
 void Player::FaceLeft()
 {
-    isTurn = true;
+    Face_Left = true;
     GetSprite()->setScale(-std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
     PlayerHand->GetSprite()->setScale(-std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -161,7 +161,7 @@ void Player::SetActionPoint(float _x, float _y)
 
 void Player::FaceRight()
 {
-    isTurn = false;
+    Face_Left = false;
     GetSprite()->setScale(std::abs(GetSprite()->getScale().x), GetSprite()->getScale().y);
     PlayerHair->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
     PlayerHand->GetSprite()->setScale(std::abs(PlayerHair->GetSprite()->getScale().x), PlayerHair->GetSprite()->getScale().y);
@@ -454,22 +454,45 @@ void Player::StateActionMod()
 {
     if (mState == PlayerState::sGoToWork)
     {
-        if (GetDistanceTo(ActionPoint.x, ActionPoint.y) > 30)
+        if (GetDistanceTo(ActionPoint.x, ActionPoint.y) > 50)
         {
             if (ActionPoint.x > GetPosition().x)
             {
                 FaceRight();
+                GoToDirection(ActionPoint.x - 50, ActionPoint.y, mSpeed);
             }
             else {
                 FaceLeft();
+                GoToDirection(ActionPoint.x + 50, ActionPoint.y, mSpeed);
             }
-            std::cout << mSpeed << std::endl;
-            GoToDirection(ActionPoint.x, ActionPoint.y, mSpeed);
         
         }
         else
         {
             SetState(PlayerState::sDig);
+        }
+    }
+
+    if (mState == PlayerState::sDig)
+    {
+        int digframe = mDigAnimator->GetFrameNumber();
+
+        if (digframe == 6)
+        {
+            HasDug = true;
+        }
+        else
+        {
+            HasDug = false;
+        }
+    }
+    if (mState == PlayerState::sAttacking)
+    {
+        int atkframe = mAttackAnimator->GetFrameNumber();
+
+        if (atkframe == 6)
+        {
+            cAttack();
         }
     }
 }
@@ -525,10 +548,18 @@ void Player::OnCollision(Entity* pCollidedWith)
 
 void Player::cAttack() {
     AttackArea = CreateEntity<DamageZone>("0");
+    AttackArea->setDamage(PlayerDamage);
+    if (Face_Left)
+    {
+        AttackArea->SetPosition(GetPosition().x - 50, GetPosition().y);
+    }
+    else {
+        AttackArea->SetPosition(GetPosition().x + 50, GetPosition().y);
+    }
     AttackArea->Layout = -1;
-    AttackArea->AddAABBHitbox();
-    AttackArea->SetHitboxSize(100, 100);
-    AttackArea->LifeTime = 0.5;
+    AttackArea->AddCircleHitbox();
+    AttackArea->SetHitboxSize(60, 60);
+    AttackArea->LifeTime = 0.1;
     AttackArea->IgnoreTag(GameManager::Tag::tPlayer);
 }
 

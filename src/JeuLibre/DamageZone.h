@@ -10,6 +10,7 @@ public :
 	int Damage = 0;
 	std::vector<int> lTagIgnore;
 
+	void setDamage(int _Dmg);
 	void OnUpdate() override;
 	void IgnoreTag(int t) { lTagIgnore.push_back(t); }
 	void OnCollision(Entity* pCollidedWith) override;
