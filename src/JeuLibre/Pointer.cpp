@@ -29,13 +29,11 @@ void Pointer::ChangeI(const char* path) {
 
 void Pointer::OnCollision(Entity* pOther) {
 
-    std::cout << "mTag: " << pOther->mTag << " vs tHoverable: " << GameManager::Tag::tHoverable << std::endl;
-
     if (pOther->mTag != GameManager::Tag::tHoverable) {
         ChangeI("Pointer");
         return;
     }
     ChangeI("Pointer_Click");
 
-
+    
 }
