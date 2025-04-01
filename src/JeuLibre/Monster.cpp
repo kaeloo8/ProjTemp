@@ -14,6 +14,8 @@
 
 Monster::Monster() : MonsterState(this, State::sCount), isAttacking(false), isMoving(false)
 {
+    mIsAlive = true;
+    mLife = 100;
     MonsterName = "skeleton";
     InitMonster(MonsterName);
 }
@@ -258,6 +260,7 @@ void Monster::OrientToTarget(bool Oposite)
 
 void Monster::OnUpdate()
 {
+    std::cout << mLife << std::endl;
     OnAnimationUpdate();
     MonsterState.Update();
 

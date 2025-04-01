@@ -81,6 +81,7 @@ public:
 
     int DamageDistance = 40;
     int PlayerDamage = 10;
+    bool AtckActive;
 
     float tBeforSwitch = 0;
 
