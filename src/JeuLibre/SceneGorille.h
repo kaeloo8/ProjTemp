@@ -5,6 +5,7 @@
 #include "CameraSys.h"
 #include "UI.h"
 #include "OptionMenu.h"
+#include "Drop.h"
 
 //class SceneGorille : public Scene
 //{
