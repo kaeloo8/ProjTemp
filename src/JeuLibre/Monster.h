@@ -28,6 +28,7 @@ private:
     std::string cDamaged;
     std::string cDied;
     std::string cVictory;
+	std::string cHit;
 
     void OnAnimationUpdate();
 
@@ -99,6 +100,9 @@ public:
     float AttackDistance = 50;
     float AttackSpeed = 0.08f;
     float AttackTimer = 3;
+
+    sf::Vector2f mKnockbackDirection;
+    float mKnockbackTimer = 0.f;
 
     Monster();
     ~Monster();

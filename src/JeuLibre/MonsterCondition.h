@@ -32,3 +32,9 @@ class IsTargettoClose : public Condition<Monster>
 public:
 	bool OnTest(Monster* pMonster) override;
 };
+
+class IsHitOver : public Condition<Monster>
+{
+public:
+	bool OnTest(Monster* pMonster) override;
+};

@@ -9,6 +9,7 @@ enum class PlayerState {
     sIdle,
     sWalking,
     sSprinting,
+	sSwim,
     sAttacking,
     sDashing,
     sHurt,
@@ -27,10 +28,13 @@ enum class PlayerState {
 };
 
 enum class PlayerMode {
+    Hand,
     Attack,
     Dig,
     Pickaxe,
-    Axe
+    Axe,
+    Plant,
+    Fish
 };
 
 
@@ -43,6 +47,7 @@ private:
     Animator* mIdleAnimator;
     Animator* mWalkAnimator;
     Animator* mSprintAnimator;
+    Animator* mSwimAnimator;
     Animator* mAttackAnimator;
     Animator* mDashAnimator;
     Animator* mHurtAnimator;
@@ -63,6 +68,8 @@ private:
 
 public:
     std::string GetCurrentStateName();
+
+    bool isInWater;
     bool isMoving;
     bool isSprinting;
 	bool isDashing;
@@ -71,16 +78,19 @@ public:
 
     //bool d'action
     bool HasDug;
+    bool HasAxe;
+    bool HasMine;
 
     PlayerState mState;
-    PlayerMode mMode = PlayerMode::Attack;
+    PlayerMode mMode = PlayerMode::Hand;
 
     sf::Vector2f ActionPoint;
+    sf::Vector2f ActionTile;
 
     bool Face_Left;
 
     int DamageDistance = 40;
-    int PlayerDamage = 10;
+    int PlayerDamage = 1;
     bool AtckActive;
 
     float tBeforSwitch = 0;

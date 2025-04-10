@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "GameManager.h"
+#include "SceneEloulou.h"
 
 Player::Player()
     : mWalkAnimator(nullptr), mIdleAnimator(nullptr), mSprintAnimator(nullptr),
@@ -14,17 +15,20 @@ Player::Player()
     PlayerHair->SetScale(3, 3);
     PlayerHair->SetOrigin(0.5, 0.5);
     PlayerHair->Layout = 10;
+    PlayerHair->SetOwner(this); 
 
-    // INITIALISATION MAIN
     PlayerHand = CreateEntity<PlayerPart>("0");
     PlayerHand->InitBodyPart("tools");
     PlayerHand->SetScale(3, 3);
     PlayerHand->SetOrigin(0.5, 0.5);
     PlayerHand->Layout = 11;
+    PlayerHand->SetOwner(this);
+
 
     mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_idle_strip9"), 9, 0.2f);
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_walk_strip8"), 8, 0.1f);
     mSprintAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_run_strip8"), 8, 0.08f);
+	mSwimAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_swimming_strip12"), 12, 0.1f);
     mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_attack_strip10"), 10, 0.07f);
     mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_roll_strip10"), 10, 0.07f);
     mHurtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), std::string("base_hurt_strip8"), 8, 0.1f);
@@ -47,6 +51,7 @@ Player::~Player()
     delete mIdleAnimator;
     delete mWalkAnimator;
     delete mSprintAnimator;
+	delete mSwimAnimator;
     delete mAttackAnimator;
     delete mDashAnimator;
     delete mHurtAnimator;
@@ -88,6 +93,13 @@ void Player::SetState(PlayerState state)
             PlayerHair->SetState(PlayerPartState::sSprinting);
             PlayerHand->SetState(PlayerPartState::sSprinting);
             if (mSprintAnimator) mSprintAnimator->Reset();
+            break;
+        case PlayerState::sSwim:
+            mSpeed = 100;
+            SetImage("base_swimming_strip12");
+            PlayerHair->SetState(PlayerPartState::sSwim);
+            PlayerHand->SetState(PlayerPartState::sSwim);
+            if (mSwimAnimator) mSwimAnimator->Reset();
             break;
         case PlayerState::sDashing:
             mSpeed = 400;
@@ -169,15 +181,21 @@ void Player::FaceRight()
 
 void Player::OnUpdate()
 {
+    PlayerHair->SetPosition(GetPosition().x, GetPosition().y);
+    PlayerHand->SetPosition(GetPosition().x, GetPosition().y);
+
     float dt = GetDeltaTime();
     float velocityX = 0.f;
     float velocityY = 0.f;
     bool movingInput = false;
 
     Debug::DrawText(GetPosition().x, GetPosition().y + 30, GetCurrentStateName(), sf::Color::Yellow);
-    ChangeMod();
-    ChangeActionMod(); 
-    StateActionMod();
+    //ChangeMod();
+    if (isInWater == false)
+    {
+        ChangeActionMod();
+        StateActionMod();
+    }
 
     // Récupération des touches de déplacement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -202,17 +220,72 @@ void Player::OnUpdate()
         FaceRight();
         movingInput = true;
     }
+    if (!GameManager::Get()->NoMap){
+        int CollideMap = 0;
+        if (GameManager::Get()->InDonjon) {
+            CollideMap = 2;
+        }
+        else {
+            CollideMap = 1;
+        }
+
+        if (GameManager::Get()->GetTileMap(CollideMap)) {
+            auto map = GameManager::Get()->GetTileMap(CollideMap);
+            int tilleline = mHitboxWidth / 2;
+            int xDir = 0;
+            int yDir = 0;
+            if (velocityX > 0) {
+                xDir = 1;
+            }
+            if (velocityX < 0) {
+                xDir = -1;
+            }
+            if (velocityY > 0) {
+                yDir = 1;
+            }
+            if (velocityY < 0) {
+                yDir = -1;
+            }
+            int x = (GetPosition().x + (tilleline * xDir)) / 50;
+            int y = (GetPosition().y + (tilleline * yDir)) / 50;
+            int posX = GetPosition().x / 50;
+            int posY = GetPosition().y / 50;
+
+            Debug::DrawCircle(GetPosition().x + (tilleline * xDir), GetPosition().y + (tilleline * yDir), 3, sf::Color::Red);
+
+            if (map->lTile[(posY * map->width) + x].type == TileType::Solid) {
+                isInWater = false;
+                velocityX = 0;
+                lastVelocityX = 0;
+            }
+
+            if (map->lTile[(y * map->width) + posX].type == TileType::Solid) {
+                isInWater = false;
+                velocityY = 0;
+                lastVelocityY = 0;
+            }
+
+            if (map->lTile[(posY * map->width) + posX].type == TileType::Swimmable) {
+                isInWater = true;
+            }
+            else
+            {
+                isInWater = false;
+            }
+        }
+
+    }
 
     if (velocityX != 0 || velocityY != 0)
     {
         lastVelocityX = velocityX;
         lastVelocityY = velocityY;
     }
-    
 
     
+    
     // Dash avec barre espace (le dash se joue sur toute la durée de l'animation)
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isInWater == false)
     {
         if (!isDashing && dashCooldown <= 0 && mState != PlayerState::sHurt && mState != PlayerState::sAttacking)
         {
@@ -236,7 +309,14 @@ void Player::OnUpdate()
             mState != PlayerState::sDashing &&
             mState != PlayerState::sHurt)
         {
-            SetState(PlayerState::sSprinting);
+            if (isInWater)
+            {
+                SetState(PlayerState::sSwim);
+                mSpeed = 150;
+            }
+            else {
+                SetState(PlayerState::sSprinting);
+            }
         }
     }
     // Sinon, si le joueur se déplace, on passe en marche
@@ -249,7 +329,14 @@ void Player::OnUpdate()
             mState != PlayerState::sDashing &&
             mState != PlayerState::sHurt)
         {
-            SetState(PlayerState::sWalking);
+            if (isInWater)
+            {
+                SetState(PlayerState::sSwim);
+				mSpeed = 100;
+            }
+            else {
+                SetState(PlayerState::sWalking);
+            }
         }
     }
     // Sinon, si aucune touche n'est active, on passe en idle
@@ -263,17 +350,31 @@ void Player::OnUpdate()
             mState != PlayerState::sGoToWork &&
             mState != PlayerState::sHurt)
         {
-            SetState(PlayerState::sIdle);
+            if (isInWater)
+            {
+                SetState(PlayerState::sSwim);
+                mSpeed = 0;
+            }
+            else {
+                SetState(PlayerState::sIdle);
+            }
         }
     }
-
     // Gestion du dash : pendant le dash, on ignore les nouvelles entrées
     if (isDashing)
     {
+        if (isInWater)
+        {
+            isDashing = false;
+            dashVelocityX = 0;
+            dashVelocityY = 0;
+            SetState(isInWater ? PlayerState::sSwim : PlayerState::sIdle);
+        }
         dashTimer -= dt;
         GoToPosition(GetPosition().x + dashVelocityX * mSpeed,
             GetPosition().y + dashVelocityY * mSpeed,
             mSpeed);
+
         if (dashTimer <= 0)
         {
             isDashing = false;
@@ -312,6 +413,9 @@ void Player::OnAnimationUpdate()
         break;
     case PlayerState::sSprinting:
         if (mSprintAnimator) mSprintAnimator->Update(dt);
+        break;
+    case PlayerState::sSwim:
+        if (mSwimAnimator) mSwimAnimator->Update(dt);
         break;
     case PlayerState::sDashing:
         if (mDashAnimator)
@@ -382,18 +486,6 @@ void Player::ToogleMode()
 
 void Player::ChangeMod()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
-        mMode = PlayerMode::Attack;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
-        mMode = PlayerMode::Dig;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
-        mMode = PlayerMode::Pickaxe;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
-        mMode = PlayerMode::Axe;
-    }
 }
 
 void Player::ChangeActionMod()
@@ -450,6 +542,7 @@ void Player::ChangeActionMod()
     }
 }
 
+
 void Player::StateActionMod()
 {
     if (mState == PlayerState::sGoToWork)
@@ -465,11 +558,63 @@ void Player::StateActionMod()
                 FaceLeft();
                 GoToDirection(ActionPoint.x + 50, ActionPoint.y, mSpeed);
             }
-        
-        }
-        else
+		}
+		else
+		{
+			if (mMode == PlayerMode::Attack)
+			{
+				SetState(PlayerState::sAttacking);
+			}
+			else if (mMode == PlayerMode::Axe)
+			{
+				SetState(PlayerState::sAxe);
+			}
+			else if (mMode == PlayerMode::Dig)
+			{
+				SetState(PlayerState::sDig);
+			}
+			else if (mMode == PlayerMode::Pickaxe)
+			{
+				SetState(PlayerState::sMining);
+			}
+		}
+    }
+
+    if (mState == PlayerState::sAxe)
+    {
+        int axeframe = mAxeAnimator->GetFrameNumber();
+
+        if (axeframe < 6)
+
+            HasAxe = false; // reset quand on revient au début de l'anim
+
+        if (axeframe == 6 && !HasAxe)
         {
-            SetState(PlayerState::sDig);
+            SceneEloulou* scene = dynamic_cast<SceneEloulou*>(GetScene());
+            if (scene)
+            {
+                scene->cutTree();
+                HasAxe = true;
+            }
+        }
+    }
+
+    if (mState == PlayerState::sMining)
+    {
+        int mineframe = mMiningAnimator->GetFrameNumber();
+
+        if (mineframe < 6)
+
+            HasMine = false; // reset quand on revient au début de l'anim
+
+        if (mineframe == 6 && !HasMine)
+        {
+            SceneEloulou* scene = dynamic_cast<SceneEloulou*>(GetScene());
+            if (scene)
+            {
+                scene->mineStone();
+                HasMine = true;
+            }
         }
     }
 
@@ -477,20 +622,27 @@ void Player::StateActionMod()
     {
         int digframe = mDigAnimator->GetFrameNumber();
 
-        if (digframe == 6)
-        {
-            HasDug = true;
-        }
-        else
-        {
+        // Reset si on est revenu au début de l'anim (par sécurité)
+        if (digframe < 6)
             HasDug = false;
+
+        if (digframe == 6 && !HasDug)
+        {
+            SceneEloulou* scene = dynamic_cast<SceneEloulou*>(GetScene());
+            if (scene)
+            {
+                scene->addHole();
+                HasDug = true;
+            }
         }
     }
+
+
     if (mState == PlayerState::sAttacking)
     {
         int atkframe = mAttackAnimator->GetFrameNumber();
 
-        if (atkframe == 6 && AtckActive == false)
+        if (atkframe == 4 && AtckActive == false)
         {
             cAttack();
         }
@@ -551,6 +703,8 @@ void Player::OnCollision(Entity* pCollidedWith)
                 }
             }
             SetPosition(pos.x, pos.y);
+            PlayerHair->SetPosition(pos.x, pos.y);
+            PlayerHand->SetPosition(pos.x, pos.y);
         }
     }
 }
@@ -578,6 +732,7 @@ std::string Player::GetCurrentStateName() {
     case PlayerState::sIdle:      return "Idle";
     case PlayerState::sWalking:   return "Walking";
     case PlayerState::sSprinting: return "Sprinting";
+    case PlayerState::sSwim:      return "Swim";
     case PlayerState::sAttacking: return "Attacking";
     case PlayerState::sDashing:   return "Dashing";
     case PlayerState::sHurt:      return "Hurt";

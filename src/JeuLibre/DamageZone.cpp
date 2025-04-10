@@ -14,18 +14,17 @@ void DamageZone::OnUpdate() {
 	else {
 		this->Destroy();
 	}
-
 }
 
 void DamageZone::OnCollision(Entity* pCollidedWith) {
 	
-	std::cout << pCollidedWith << std::endl;
 	for (int tag : lTagIgnore) {
 		if (pCollidedWith->mTag == tag) {
 			return; 
 		}
 	}
 	pCollidedWith->DamageLife(Damage);
+	pCollidedWith->mHasbeenHit = true;
 	if (UniqueColide) {
 		Destroy();
 	}

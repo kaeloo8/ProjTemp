@@ -165,11 +165,34 @@ void sStunt_Action::End(Monster* pMonster)
 //----------------------  DAMAGED  ---------------------------------------
 void sDamaged_Action::Start(Monster* pMonster)
 {
-	pMonster->DamageLife(pMonster->PlayerDamage);
+	pMonster->mDamagedAnimator->Reset();
+	pMonster->mHasbeenHit = true;
+	pMonster->SetImage(pMonster->cDamaged.c_str());
+
+	// Knockback
+	sf::Vector2f fromPlayer = pMonster->GetPosition() - pMonster->mTarget->GetPosition();
+	float length = std::sqrt(fromPlayer.x * fromPlayer.x + fromPlayer.y * fromPlayer.y);
+
+	if (length != 0) {
+		fromPlayer /= length; // Normaliser
+	}
+
+	pMonster->mKnockbackDirection = fromPlayer;
+	pMonster->mKnockbackTimer = 0.15f; // Recul pendant 0.15 sec
+
 }
 
 void sDamaged_Action::Update(Monster* pMonster)
 {
+	if (pMonster->mKnockbackTimer > 0) {
+		float dt = GameManager::Get()->GetDeltaTime();
+		const float knockbackSpeed = 150.f; // Ajustable
+		pMonster->SetPosition(
+			pMonster->GetPosition().x + pMonster->mKnockbackDirection.x * knockbackSpeed * dt,
+			pMonster->GetPosition().y + pMonster->mKnockbackDirection.y * knockbackSpeed * dt
+		);
+		pMonster->mKnockbackTimer -= dt;
+	}
 
 }
 
@@ -209,3 +232,5 @@ void sVictory_Action::End(Monster* pMonster)
 {
 
 }
+
+

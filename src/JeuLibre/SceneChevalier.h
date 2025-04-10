@@ -5,6 +5,7 @@
 #include "TileMap.h"
 #include "CameraSys.h"
 #include "Monster.h"
+#include "SpawnSys.h"
 #include "Entity.h"
 
 class SceneChevalier : public Scene
@@ -22,12 +23,15 @@ class SceneChevalier : public Scene
 
 	std::vector<Monster*> lEnnemie;
 
-	std::vector<Entity*> lColide;
+	std::vector<Entity*> lDoor;
+
+	SpawnSys* SpawnArea;
 
 	Entity* CamFocus;
 
 	int Decalx;
 	int Decaly;
+	bool verifspawn;
 
 
 public:

@@ -25,6 +25,14 @@ public:
 	bool KeyHPressed;
 	bool KeyEscPressed;
 	bool KeyMPressed;
+	bool KeyGPressed;
+	bool Key1Pressed;
+	bool Key2Pressed;
+	bool Key3Pressed;
+	bool Key4Pressed;
+	bool Key5Pressed;
+	bool KeyAPressed;
+	bool KeyEPressed;
 	std::string SceneName;
 
 

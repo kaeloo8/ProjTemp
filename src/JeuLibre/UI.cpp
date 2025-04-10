@@ -1,133 +1,71 @@
 #include "pch.h"
 #include "UI.h"
+#include "GameManager.h"
 
-UI::UI(){
-	mDefaultImage = mSprite;
-	//cDefaultImage =
-	cHoverImage = cDefaultImage + "_pressed";
-	IsClickable = true;
-
-	mFont = GameManager::Get()->GetFont();
+UI::UI() {
+    pos = { 0, 0 };
+    mFont = GameManager::Get()->GetFont();
 }
 
-void UI::cBouton(sf::Vector2f pos, sf::Vector2f size, char* path) {
-	Bouton* E;	
-	E = CreateEntity<Bouton>(path);
-	E->SetSize(size.x, size.y);
-	E->SetPosition(pos.x, pos.y);
-	E->Layout = 11;
-	E->AddAABBHitbox();
-	E->SetHitboxSize(size.x, size.y);
-	E->SetTag(GameManager::Tag::tHoverable);
-	element e;
-	e.bEn = E;
-	e.NameI = path;
-	e.NumberI = 0;
-
+void UI::CreateButton(const sf::Vector2f& pos, const sf::Vector2f& size, const std::string& name, const char* path, const char* pathHover) {
+    CreateButton(pos.x, pos.y, size.x, size.y, name, path, pathHover);
 }
 
-void UI::cBouton(int x, int y, int sx, int sy, char* path) {
-	Bouton* E;
-	E = CreateEntity<Bouton>(path);
-	E->SetSize(sx, sy);
-	E->SetPosition(x, y);
-	E->Layout = 11;
-	E->AddAABBHitbox();
-	E->SetHitboxSize(sx, sy);
-	element e;
-	e.bEn = E;
-	e.NameI = path;
-	e.NumberI = 0;
+void UI::CreateButton(float x, float y, int sx, int sy, const std::string& name, const char* path, const char* pathHover) {
+    Bouton* bouton = CreateEntity<Bouton>(path);
+    bouton->SetTextures(path, pathHover);
+    bouton->SetSize(sx, sy);
+    bouton->SetPosition(x, y);
+    bouton->SetOrigin(0.5f, 0.5f);
+    bouton->Layout = 12;
+    bouton->AddAABBHitbox();
+    bouton->SetHitboxSize(sx, sy);
+    bouton->SetTag(GameManager::Tag::tHoverable);
+    bouton->mLocalPos = { x, y };
+    lBoutons[name] = bouton;
 }
 
-void UI::GapX(float X)
-{
-	mGapX = X;
+void UI::SetGap(float gapX, float gapY) {
+    mGapX = gapX;
+    mGapY = gapY;
 }
 
-void UI::GapY(float Y)
-{
-	mGapY = Y;
+void UI::SetPointer(Pointer* pointer) {
+    lPointer = pointer;
 }
 
-void UI::SetGap(float X, float Y)
-{
-	mGapX = X;
-	mGapY = Y;
+bool UI::IsHovering(const std::string& name) const {
+    auto it = lBoutons.find(name);
+    return it != lBoutons.end() ? it->second->IsHovering() : false;
 }
 
-void UI::SetPointer(Pointer* _pointer) {
-	lPointer = _pointer;
+bool UI::IsClicked(const std::string& name) const {
+    auto it = lBoutons.find(name);
+    return it != lBoutons.end() ? it->second->IsClicked() : false;
 }
 
-bool UI::HandleClick(float mouseX, float mouseY)
-{
-	if (IsClickable == false) { return 0; }
-
-	if (mSprite.getGlobalBounds().contains(mouseX, mouseY))
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-
-}
-
-bool UI::HandleClick(sf::Vector2f MousePos)
-{
-	if (mSprite.getGlobalBounds().contains(MousePos))
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-	return false;
-}
-
-bool UI::HandleHover(sf::Vector2f MousePos)
-{
-	if (mSprite.getGlobalBounds().contains(MousePos))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-
-	}
-}
-
-void UI::Open() {
-
-}
-
-void UI::Close() {
-
+Bouton* UI::GetButton(const std::string& name) {
+    auto it = lBoutons.find(name);
+    return it != lBoutons.end() ? it->second : nullptr;
 }
 
 void UI::OnUpdate() {
+    sf::Vector2f viewCenter = GameManager::Get()->GetWindow()->getView().getCenter();
+    sf::Vector2f viewSize = GameManager::Get()->GetWindow()->getView().getSize();
 
-	if (IsClickable)
-	{
-		if (HandleHover(lPointer->worldPos))
-		{
-			SetImage(cHoverImage.c_str());
-		}
-		else
-		{
-			SetImage(cDefaultImage.c_str());
-		}
-	}
+    for (auto& [name, bouton] : lBoutons) {
+        bouton->SetPosition(viewCenter.x + bouton->mLocalPos.x - (viewSize.x / 2),
+            viewCenter.y + bouton->mLocalPos.y - (viewSize.y / 2));
+    }
+
+    SetPosition(viewCenter.x + pos.x - (viewSize.x / 2),
+        viewCenter.y + pos.y - (viewSize.y / 2));
 }
 
-void UI::OnCollision(Entity* pCollidedWith) {
-
+void UI::OnCollision(Entity* other) {
+    // À remplir selon besoin
 }
 
 void UI::SetImage(const char* path) {
-	mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
+    mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
 }

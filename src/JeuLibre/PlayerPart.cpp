@@ -31,6 +31,10 @@ void PlayerPart::SetState(PlayerPartState state)
             SetImage(PartSprint);
             if (mSprintAnimator) mSprintAnimator->Reset();
         }
+        else if (mState == PlayerPartState::sSwim) {
+            SetImage(PartSwim);
+            if (mSwimAnimator) mSwimAnimator->Reset();
+        }
         else if (mState == PlayerPartState::sAttacking) {
             SetImage(PartAttack);
             if (mAttackAnimator) mAttackAnimator->Reset();
@@ -88,6 +92,7 @@ void PlayerPart::InitBodyPart(const char* partName)
     PartIdle = std::string(BodyPartName) + "_idle_strip9";
     PartWalk = std::string(BodyPartName) + "_walk_strip8";
     PartSprint = std::string(BodyPartName) + "_run_strip8";
+	PartSwim = std::string(BodyPartName) + "_swimming_strip12";
     PartAttack = std::string(BodyPartName) + "_attack_strip10";
     PartDash = std::string(BodyPartName) + "_roll_strip10";
     PartHurt = std::string(BodyPartName) + "_hurt_strip8";
@@ -103,6 +108,7 @@ void PlayerPart::InitBodyPart(const char* partName)
     mIdleAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartIdle, 9, 0.2f);
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartWalk, 8, 0.1f);
     mSprintAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartSprint, 8, 0.08f);
+    mSwimAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartSwim, 12, 0.1f);
     mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartAttack, 10, 0.07f);
     mDashAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartDash, 10, 0.07f);
     mHurtAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), PartHurt, 8, 0.1f);
@@ -133,6 +139,11 @@ void PlayerPart::OnUpdate()
 {
     float dt = GetDeltaTime();
 
+    // Toujours au-dessus du joueur
+    if (this->GetOwner()) {
+        this->Layout = this->GetOwner()->Layout + 1;
+    }
+
     switch (mState)
     {
     case PlayerPartState::sIdle:
@@ -143,6 +154,9 @@ void PlayerPart::OnUpdate()
         break;
     case PlayerPartState::sSprinting:
         if (mSprintAnimator) mSprintAnimator->Update(dt);
+        break;
+    case PlayerPartState::sSwim:
+        if (mSwimAnimator) mSwimAnimator->Update(dt);
         break;
     case PlayerPartState::sAttacking:
         if (mAttackAnimator) mAttackAnimator->Update(dt);
@@ -181,6 +195,7 @@ void PlayerPart::OnUpdate()
 
 
 
+
 void PlayerPart::SetImage(const char* path)
 {
     mSprite.setTexture(GameManager::Get()->GetAssetManager()->GetTexture(path));
@@ -194,4 +209,14 @@ void PlayerPart::SetImage(std::string path)
 void PlayerPart::OnCollision(Entity* pCollidedWith)
 {
     // Gestion des collisions...
+}
+
+void PlayerPart::SetOwner(Entity* owner)
+{
+    mOwner = owner;
+}
+
+Entity* PlayerPart::GetOwner() const
+{
+    return mOwner;
 }

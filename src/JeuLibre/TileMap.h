@@ -1,20 +1,41 @@
 #pragma once
+#include <variant>
 #include "Entity.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include "Flore.h"
+#include "Hole.h"
+
+
+using Var = std::variant<Entity*, Flore*, Hole*>;
 
 enum class TileType {
+    //collide
     Empty,
-    Full,
     Solid,
+    Swimmable,
+    Repulsif,
+
+    //Elements
+    Wall,
+    Barrier,
+    Vegetal,
+    Hole,
+    HoleWithVegetables,
+    Tree,
+    Stone,
+	Water,
+    FishingSpot,
+    Spawnable,
+    Trap,
     Nothing
 };
 
 inline std::ostream& operator<<(std::ostream& os, const TileType& type) {
     switch (type) {
     case TileType::Empty: os << "Empty"; break;
-    case TileType::Full: os << "Full"; break;
     case TileType::Solid: os << "Solid"; break;
+    case TileType::Vegetal: os << "Vegetal"; break;
     case TileType::Nothing: os << "Nothing"; break;
     }
     return os;
@@ -25,15 +46,15 @@ public:
     float tileSize = 50;
     sf::Sprite sprite;
     std::string id;
+
+    std::vector<Entity*> EntityOnTile;
+
     TileType type;
 
-    Tile(const std::string& tileId, const sf::Texture& texture, float x, float y)
-        : id(tileId)
-    {
-        sprite.setTexture(texture);
-        sprite.setScale(tileSize / texture.getSize().x, tileSize / texture.getSize().y);
-        sprite.setPosition(x, y);
-    }
+    Tile();
+    Tile(const std::string& tileId, const sf::Texture& texture, float x, float y);
+    void AddEntityOnTile(Entity* e);
+    std::vector<Entity*> GetEntityOnTile();
 };
 
 struct Room {
@@ -43,10 +64,10 @@ struct Room {
 
 class TileMap : public Entity {
 public:
+    int width;
+    int height;
 
-    float WaterSpeed = 0.5f;
-    float tileSize = 50;
-    std::vector<std::vector<Tile>> tiles;
+    std::vector<Tile> lTile;
 
     std::vector<std::vector<std::string>> animCycles = {
         { "0208", "0209", "0210", "0211" },
@@ -55,10 +76,10 @@ public:
         { "0220", "0221", "0222", "0223" }
     };
 
-    std::vector<std::string> SolidTile = {"0174"};
-
     void create(const std::string& path);
     void createD();
     void UpdateWater();
+    void AddEntityOnTile(int pos, Entity* e);
 
+    std::vector<Var> GetEntityOnTile(int pos);
 };

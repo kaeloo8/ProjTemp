@@ -8,6 +8,9 @@
 #include "CameraSys.h"
 #include "AssetManager.h"
 #include "Debug.h"
+#include "Text.h"
+#include "SceneEloulou.h"
+#include "SceneChevalier.h"
 
 
 GameManager::GameManager() {
@@ -19,6 +22,8 @@ GameManager::GameManager() {
 	SceneLoaded.clear();
 	NumberScene = 0;
 	DrawHitBox = true;
+	InDonjon = false;
+	NoMap = false;
 }
 
 GameManager::~GameManager() {
@@ -36,13 +41,14 @@ GameManager::~GameManager() {
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::Run() {
-
 	sf::Clock clock;
-	while (Window->isOpen())
+	while (Window && Window->isOpen())
 	{
 		SetDeltaTime(clock.restart().asSeconds());
 
 		HandleInput();
+
+		if (!Window->isOpen()) break;
 
 		Update();
 
@@ -50,11 +56,14 @@ void GameManager::Run() {
 	}
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////
 								//	Update	//
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::Update() {
+	
+
 	if (mpScene) {
 		mpScene->OnUpdate();
 	}
@@ -71,12 +80,24 @@ void GameManager::Update() {
 		Window->setView(DefView);
 	}
 
+	for (Entity* entity : mEntities) {
+		if (entity->mIsAlive) {
+			entity->Layout = static_cast<int>(entity->GetPosition().y / TILESIZE);
+		}
+	}
+
+	mEntities.sort([](Entity* a, Entity* b) {
+		if (a->GetPosition().y == b->GetPosition().y)
+			return a->GetPosition().x < b->GetPosition().x;
+		return a->GetPosition().y < b->GetPosition().y;
+		});
+
 	for (auto it = mEntities.begin(); it != mEntities.end();) {
 
 
 		Entity* entity = *it;
 
-		if (!entity->Hide)
+		if (!entity->isHide)
 			entity->Update();
 
 
@@ -90,26 +111,16 @@ void GameManager::Update() {
 	}
 
 	// colide 
-	for (auto it1 = mEntities.begin(); it1 != mEntities.end(); ++it1)
-	{
-		auto it2 = it1;
-		++it2;
-		if (it2 != mEntities.end()) {
-			if ((*it1)->Hide || (*it2)->Hide) {
+	// Vérification des collisions : pour chaque paire d'entités
+	for (auto it1 = mEntities.begin(); it1 != mEntities.end(); ++it1) {
+		for (auto it2 = std::next(it1); it2 != mEntities.end(); ++it2) {
+			// Si l'une des deux entités est cachée, on passe à la suivante
+			if ((*it1)->isHide || (*it2)->isHide)
 				continue;
-			}
-		}
-		
 
-		for (; it2 != mEntities.end(); ++it2)
-		{
-			Entity* entity = *it1;
-			Entity* otherEntity = *it2;
-
-			if (entity->IsColliding(otherEntity))
-			{
-				entity->OnCollision(otherEntity);
-				otherEntity->OnCollision(entity);
+			if ((*it1)->IsColliding(*it2)) {
+				(*it1)->OnCollision(*it2);
+				(*it2)->OnCollision(*it1);
 			}
 		}
 	}
@@ -122,6 +133,7 @@ void GameManager::Update() {
 	for (Entity* entity : mEntitiesToAdd) {
 		mEntities.push_back(entity);
 	}
+
 	mEntitiesToAdd.clear();
 
 }
@@ -137,10 +149,13 @@ void GameManager::HandleInput() {
 		if (event.type == sf::Event::Closed)
 		{
 			Window->close();
+			return;
 		}
 
-		mpScene->OnEvent(event);
+		if (mpScene)
+			mpScene->OnEvent(event);
 	}
+
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
 		if (!KeyPressed) {
@@ -165,42 +180,77 @@ void GameManager::Draw() {
 		Window->setView(camera->getView());
 	}
 
+	// Dessin des tilemaps
 	for (auto* tm : GameManager::Get()->GetTileMaps()) {
-		for (const auto& line : tm->tiles) {
-			for (const auto& tile : line) {
+		if (!InDonjon) {
+			if (tm == tileMaps[0] || tm == tileMaps[1]) {
+				for (const auto& tile : tm->lTile) {
+					Window->draw(tile.sprite);
+				}
+			}
+		}
+		else {
+			for (const auto& tile : tm->lTile) {
 				Window->draw(tile.sprite);
 			}
 		}
 	}
 
+	// Trier les entités par leur position
+	mEntities.sort([](Entity* a, Entity* b) {
+		if (a->GetPosition().y == b->GetPosition().y)
+			return a->GetPosition().x < b->GetPosition().x;
+		return a->GetPosition().y < b->GetPosition().y;
+		});
+
 	TrieEntity.clear();
 
+	// Séparer les entités avec le tag tUI
+	std::vector<Entity*> uiEntities;
 	for (Entity* entity : mEntities) {
 		if (entity && entity->Layout >= 0 && entity->SceneName == mpScene->SceneName) {
-			if (entity->Layout >= TrieEntity.size()) {
-				TrieEntity.resize(entity->Layout + 1);
+			if (entity->mTag == GameManager::Tag::tUI || entity->mTag == GameManager::Tag::tPointer) {
+				uiEntities.push_back(entity);
 			}
-			TrieEntity[entity->Layout].push_back(entity);
+			else {
+				if (entity->Layout >= TrieEntity.size()) {
+					TrieEntity.resize(entity->Layout + 1);
+				}
+				TrieEntity[entity->Layout].push_back(entity);
+			}
 		}
 	}
 
+	// Dessiner les entités non-UI
 	for (auto& layer : TrieEntity) {
 		for (Entity* entity : layer) {
-			if (entity->Hide)
-			{
-				continue;
-			}
-			if (entity) {
+			if (entity && !entity->isHide) {
 				Window->draw(*entity->GetShape());
 				Window->draw(*entity->GetSprite());
 			}
 		}
 	}
+
+	// Dessiner les entités UI après toutes les autres
+	for (Entity* entity : uiEntities) {
+		if (entity && !entity->isHide) {
+			Window->draw(*entity->GetShape());
+			Window->draw(*entity->GetSprite());
+		}
+	}
+
+	// Si on doit dessiner les hitboxes, le faire ici
 	if (DrawHitBox) {
 		Debug::Get()->Draw(Window);
 	}
+
+	// Dessiner le texte
+	Text::Get()->Draw(Window);
+
+	// Affichage
 	Window->display();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 								//	Get	//
@@ -259,6 +309,15 @@ void GameManager::AddTileMap(TileMap* map) {
 	tileMaps.push_back(map);
 }
 
+void GameManager::ClearTileMap() {
+	std::vector<TileMap*> temps;
+	temps.push_back(tileMaps[0]);
+	temps.push_back(tileMaps[1]);
+	tileMaps.clear();
+	tileMaps = temps;
+
+}
+
 TileMap* GameManager::GetTileMap(size_t index) {
 	if (index < tileMaps.size())
 		return tileMaps[index];
@@ -268,10 +327,21 @@ TileMap* GameManager::GetTileMap(size_t index) {
 const std::vector<TileMap*>& GameManager::GetTileMaps() const {
 	return tileMaps;
 }
+
 ///////////////////////////////////////////////////////////////////////////////////
 								//	SetCamera	//
 ///////////////////////////////////////////////////////////////////////////////////
 
 void GameManager::SetCamera(CameraSys* cam) {
 	camera = cam;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+								//	GetPointer	//
+///////////////////////////////////////////////////////////////////////////////////
+
+
+sf::Vector2i GameManager::GetPointer()
+{ 
+	return sf::Mouse::getPosition();
 }

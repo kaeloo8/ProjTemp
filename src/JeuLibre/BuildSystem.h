@@ -14,9 +14,9 @@ public:
 
     Player* PlayerReference;
     Tile* SelectedTile;
-    Pointer* PointerReference;
+	TileMap* Map;
+    Pointer* PointerRef;
 
-    std::vector<std::vector<Tile>> tiles; 
     int Tilex;
     int Tiley;
 
@@ -25,7 +25,9 @@ public:
 
     sf::Vector2f GetBuildPosition();
 
+	void SetTileMap(TileMap* _tilemap);
     void SetPlayer(Player* _player);
-    void SetPointer(Pointer* _pointer);
+    void SetPoiter(Pointer* _Pointer);
+    Tile* GetTileHover();
     void ChooseTile();
 };

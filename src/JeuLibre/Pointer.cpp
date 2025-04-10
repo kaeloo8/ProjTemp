@@ -24,7 +24,7 @@ void Pointer::OnUpdate() {
 void Pointer::ChangeI(const char* path) {
     sf::Vector2f s1 = { mSprite.getGlobalBounds().width, mSprite.getGlobalBounds(). height};
     mSprite.setTexture(GameManager::Get()->AssetMana.GetTexture(path));
-    mSprite.setScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100); // pour etre sur que l'image ne soit ni trop grand ni trop petit (je sait pas si sa conserve la taille quand on switch de texture) 
+    //mSprite.setScale((Win->getSize().x * 0.12) / 100, (Win->getSize().x * 0.12) / 100); // pour etre sur que l'image ne soit ni trop grand ni trop petit (je sait pas si sa conserve la taille quand on switch de texture) 
 }
 
 void Pointer::OnCollision(Entity* pOther) {

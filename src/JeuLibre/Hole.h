@@ -1,27 +1,41 @@
 #pragma once
+#include <SFML/System/Clock.hpp>
 #include "Entity.h"
 #include "Animator.h"
+#include "Player.h"
+#include "Plant.h"
+
+enum class HoleState {
+	Empty,
+	Fill,
+	Arosed,
+	GrownOver
+};
 
 class Hole : public Entity
 {
 public:
+    Hole();
+    ~Hole();
 
-	Hole();
-	~Hole();
+	Entity* mVegetable;
 
-	Animator* mSpawnAnimation;
+	HoleState aState = HoleState::Empty;
+	sf::Vector2i Adresse;
 
-	const char* PlantType;
+    void Planting(std::string _plant);
+    Animator* mSpawnAnimation;
 
-	sf::Sprite Plant;
+	void SetPlayer(Player* player) { mPlayer = player; }
+	Player* mPlayer;
 
-	std::string cSeed;
-	std::string cLittlePlant;
-	std::string cMiddlePlant;
-	std::string cTallPlant;
-	std::string cFinalPlant;
+    std::string PlantType;
 
-	float ActualPousse = 0;
-	float TotalPousse = 100;
+    Plant* Vegetable;
+
+    void SetState(HoleState newState);
+
+    void OnUpdate() override;
+    void OnCollision(Entity* pCollidedWith) override;
+    void SetImage(const char* path) override;
 };
-

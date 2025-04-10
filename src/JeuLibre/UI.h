@@ -1,58 +1,41 @@
 #pragma once
-#include "S0Menu.h"
+
 #include "Pointer.h"
 #include "Entity.h"
 #include "Bouton.h"
+#include <map>
 
-class UI : public Entity
-{
-    // ???
-    sf::Sprite mDefaultImage;
-    std::string cDefaultImage;
-    // ???
-    sf::Sprite mHoverImage;
-    std::string cHoverImage;
-
-    struct element
-    {
-        Bouton* bEn;
-        std::string NameI;
-        int NumberI;
-    };
-
+class UI : public Entity {
+private:
     sf::Font mFont;
+    Pointer* lPointer = nullptr;
 
-    Pointer* lPointer;
+    std::map<std::string, Bouton*> lBoutons;
 
-    std::vector<element> lBouton;
-
-    float mGapX, mGapY = 0;
+    float mGapX = 0.0f;
+    float mGapY = 0.0f;
 
 public:
-    
+    sf::Vector2i pos;
+    bool IsClickable = true;
+
     UI();
 
-    bool IsClickable;
+    // Création de boutons
+    void CreateButton(const sf::Vector2f& pos, const sf::Vector2f& size, const std::string& name, const char* path, const char* pathHover);
+    void CreateButton(float x, float y, int sx, int sy, const std::string& name, const char* path, const char* pathHover);
 
-    bool HandleClick(float mouseX, float mouseY);
-    bool HandleClick(sf::Vector2f MousePos);
-    bool HandleHover(sf::Vector2f MousePos);
+    // Positionnement des éléments UI
+    void SetGap(float gapX, float gapY);
+    void SetPointer(Pointer* pointer);
 
-    void cBouton(sf::Vector2f pos, sf::Vector2f size, char* path);
-    void cBouton(int x, int y, int sx, int sy, char* path);
+    // État des boutons
+    bool IsHovering(const std::string& name) const;
+    bool IsClicked(const std::string& name) const;
+    Bouton* GetButton(const std::string& name);
 
-    void GapX(float X);
-    void GapY(float Y);
-    void SetGap(float X, float Y);
-
-    void SetPointer(Pointer* _pointer);
-    
-    void Open();
-    void Close();
-
+    // Override Entity
     void OnUpdate() override;
-    void OnCollision(Entity* pCollidedWith) override;
-
+    void OnCollision(Entity* other) override;
     void SetImage(const char* path) override;
-
 };

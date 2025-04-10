@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include "Debug.h"
+#include "TileMap.h"
 
 void Entity::Initialize(float radius, const sf::Color& color)
 {
@@ -330,8 +331,8 @@ void Entity::DrawHitbox() {
 void Entity::SetOrigin(float x, float y)
 {
 	float originX = x * mDefaultWidth;
-
 	float originY = y * mDefaultHeight;
+
 	mSprite.setOrigin(originX, originY);
 }
 
@@ -363,51 +364,51 @@ void Entity::SetHitboxSize(float _radius)
 	}
 }
 
-void Entity::Update()
-{
-	float dt = GetDeltaTime();
+void Entity::Update() {
+	// Si l'entité est masquée, ne rien faire
+	if (isHide)
+		return;
 
+	float dt = GetDeltaTime();
 	float distance = mSpeed * dt;
 
 	sf::Vector2f normalizedDirection = mDirection;
 	if (Utils::Normalize(normalizedDirection)) {
 		sf::Vector2f translation = normalizedDirection * distance;
-
 		mShape.move(translation);
 		mSprite.move(translation);
 	}
 
-	if (mTarget.isSet)
-	{
+	// Gestion du déplacement vers une cible
+	if (mTarget.isSet) {
 		mTarget.distance -= distance;
-
-		if (mTarget.distance <= 0.f)
-		{
+		if (mTarget.distance <= 0.f) {
 			SetPosition(mTarget.position.x, mTarget.position.y);
 			mDirection = sf::Vector2f(0.f, 0.f);
 			mTarget.isSet = false;
 		}
 	}
-	if (timerAnnim >= 0)
-	{
-		timerAnnim -= GetDeltaTime();
-	}
 
-	if (mLife <= 0 && mIsAlive == true)
-	{
+	// Mise à jour de l'animation
+	if (timerAnnim >= 0)
+		timerAnnim -= GetDeltaTime();
+
+	// Destruction si la vie est épuisée
+	if (mLife <= 0 && mIsAlive == true) {
 		Destroy();
 	}
 
 	if (haveHitbox) {
 		DrawHitbox();
 	}
-	if (mHitbox){
+	if (mHitbox) {
 		UpdateCollider();
 	}
 
+	
 	OnUpdate();
-
 }
+
 
 Scene* Entity::GetScene() const
 {

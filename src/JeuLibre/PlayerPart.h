@@ -7,6 +7,7 @@ enum class PlayerPartState {
     sIdle,
     sWalking,
     sSprinting,
+	sSwim,
     sAttacking,
     sDashing,
     sHurt,
@@ -29,6 +30,7 @@ private:
     Animator* mIdleAnimator;
     Animator* mWalkAnimator;
     Animator* mSprintAnimator;
+	Animator* mSwimAnimator;
     Animator* mAttackAnimator;
     Animator* mDashAnimator;
     Animator* mHurtAnimator;
@@ -47,6 +49,7 @@ private:
     std::string PartIdle;
     std::string PartWalk;
     std::string PartSprint;
+	std::string PartSwim;
     std::string PartAttack;
     std::string PartDash;
     std::string PartHurt;
@@ -59,6 +62,8 @@ private:
     std::string PartDig;
     std::string PartAxe;
     std::string PartMining;
+
+    Entity* mOwner = nullptr; 
 
 public:
     const char* BodyPartName;
@@ -82,6 +87,8 @@ public:
     void OnUpdate() override;
     void OnCollision(Entity* pCollidedWith) override;
     void SetState(PlayerPartState state);
+    void SetOwner(Entity* owner);
+    Entity* GetOwner() const;
 
     void SetImage(const char* path) override;
     void SetImage(std::string path);

@@ -61,14 +61,19 @@ void Monster::OnAnimationUpdate()
     case State::sStunt:
         mStuntAnimator->Update(dt);
         break;
-    case State::sDamaged:
-        mDamagedAnimator->Update(dt);
-        break;
     case State::sDied:
         mDiedAnimator->Update(dt);
         break;
     case State::sVictory:
         mVictoryAnimator->Update(dt);
+        break;
+    case State::sDamaged:
+        if (mDamagedAnimator)
+        {
+            mDamagedAnimator->Update(dt);
+            if (mDamagedAnimator->IsFinished())
+				mHasbeenHit = false;
+        }
         break;
     }
 }
@@ -120,7 +125,7 @@ void Monster::InitMonster(const char* _MonsterName)
     cAttack = std::string(MonsterName) + "_attack_strip7";
     cShot = std::string(MonsterName) + "_jump_strip10";
     cStunt = std::string(MonsterName) + "_death_strip10";
-    cDamaged = std::string(MonsterName) + "_death_strip10";
+    cDamaged = std::string(MonsterName) + "_hurt_strip7";
     cDied = std::string(MonsterName) + "_death_strip10";
     cVictory = std::string(MonsterName) + "_jump_strip10";
 
@@ -128,8 +133,8 @@ void Monster::InitMonster(const char* _MonsterName)
     mWalkAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cWalk, 8, 0.2f);
     mAttackAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cAttack, 7, 0.07f);
     mStuntAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cStunt, 10, 0.07f);
-    mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cRunAway, 8, 0.1f);
-    mDiedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 10, 0.07f);
+    mDamagedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 7, 0.07f);
+    //mDiedAnimator = new Animator(&mSprite, *GameManager::Get()->GetAssetManager(), cDamaged, 10, 0.07f);
 
     if (CanCharge)
     {
@@ -186,6 +191,11 @@ void Monster::InitMonster(const char* _MonsterName)
             auto condition = transition->AddCondition<IsAtAttackDistance>();
             condition->expected = true;
         }
+        {
+            auto transition = bWalk->CreateTransition(State::sDamaged);
+            auto condition = transition->AddCondition<IsHitOver>();
+            condition->expected = true;
+        }
     }
 
     // --- ÉTAT GO BACK ---
@@ -206,6 +216,11 @@ void Monster::InitMonster(const char* _MonsterName)
             auto condition = transition->AddCondition<CanSeeThePlayer>();
             condition->expected = true;
         }
+        {
+            auto transition = bGoBack->CreateTransition(State::sDamaged);
+            auto condition = transition->AddCondition<IsHitOver>();
+            condition->expected = true;
+        }
     }
 
     // --- ÉTAT ATTACK ---
@@ -213,15 +228,29 @@ void Monster::InitMonster(const char* _MonsterName)
         Behaviour<Monster>* bAttack = MonsterState.CreateBehaviour(State::sAttack);
         bAttack->AddAction(new sAttack_Action());
 
-        // -> Walk
         {
             auto transition = bAttack->CreateTransition(State::sIdle);
             auto condition = transition->AddCondition<IsAtAttackDistance>();
             condition->expected = false;
         }
+        {
+            auto transition = bAttack->CreateTransition(State::sDamaged);
+            auto condition = transition->AddCondition<IsHitOver>();
+            condition->expected = true;
+        }
     }
 
-    
+	// --- ÉTAT DAMAGED ---
+	{
+		Behaviour<Monster>* bStunt = MonsterState.CreateBehaviour(State::sDamaged);
+		bStunt->AddAction(new sDamaged_Action());
+		// -> Idle
+		{
+			auto transition = bStunt->CreateTransition(State::sIdle);
+			auto condition = transition->AddCondition<IsHitOver>();
+			condition->expected = false;
+		}
+	}
 
     MonsterState.SetState(State::sIdle);
 }
@@ -260,7 +289,6 @@ void Monster::OrientToTarget(bool Oposite)
 
 void Monster::OnUpdate()
 {
-    std::cout << mLife << std::endl;
     OnAnimationUpdate();
     MonsterState.Update();
 

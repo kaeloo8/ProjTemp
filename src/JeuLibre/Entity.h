@@ -28,6 +28,7 @@ protected:
     Target mTarget;
     bool haveHitbox;
 
+
 public:
     int mHitboxWidth;
     int mHitboxHeight;
@@ -36,7 +37,7 @@ public:
     sf::Sprite mSprite;
     Collider* mHitbox;
 
-    bool Hide = false;
+    bool isHide = false;
     float mX;
     float mY;
     float dirX;
@@ -54,11 +55,16 @@ public:
 
     int mLife;
     bool mIsAlive;
+    bool mHasbeenHit = false;
+
+	bool hasFixedLayout = false;
 
     void SetLife(int _Life);
     void HealLife(int _Heal);
     void DamageLife(int _Damage);
-    void ChangeHide() { Hide = !Hide; }
+
+    void ChangeHide() { isHide = !isHide; }
+    void SetHide(bool isVisible) { isHide = isVisible; }
 
     bool GoToDirection(float x, float y, float speed);
     bool GoToPosition(int x, int y, float speed);

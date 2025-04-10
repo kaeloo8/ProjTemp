@@ -11,8 +11,8 @@ class Drop : public Entity
 	sf::Vector2f Velocity;
 
 	float mLifeTime;
+	float angle;
 
-	bool KeyGPressed;
 	bool mIsDropped;
 
 public:
@@ -21,9 +21,11 @@ public:
 	bool mIsCollected = false;
 
 	bool IsCollected();
-
-	void ItemDroped();
+	
+	void SetVelocity(float speed);
+	void IsDroped();
 	void OnCollision(Entity* pOther) override;
+	void SetImage(const char* path) override;
 	void OnUpdate() override;
 };
 

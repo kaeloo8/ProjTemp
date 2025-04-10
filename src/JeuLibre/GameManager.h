@@ -5,6 +5,18 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#define TILESIZE 50
+#define PLAYER_LAYOUT 2
+#define PLAYERPART_LAYOUT 3
+#define ENNEMIE_LAYOUT 3
+#define HOLE_LAYOUT 2
+#define PLANT_LAYOUT 3
+#define TILEMAP_LAYOUT 1
+#define UIBACKGROUND_LAYOUT 5
+#define UI_LAYOUT 5
+#define UITOP_LAYOUT 5
+
+
 class Entity;
 class Scene;
 class TileMap;
@@ -63,15 +75,19 @@ public:
 		tSolide,
 		tHoverable,
 		tPointer,
+		tUI,
 
 		nOfTag
 	};
 
 	bool DrawHitBox;
 	bool KeyPressed;
+	bool InDonjon;
+	bool NoMap;
 
 	std::vector<TileMap*> tileMaps;
 	void AddTileMap(TileMap* map);
+	void ClearTileMap();
 	TileMap* GetTileMap(size_t index);
 	const std::vector<TileMap*>& GetTileMaps() const;
 
@@ -87,7 +103,7 @@ public:
 	void LaunchScene();
 
 	float GetDeltaTime() const { return DeltaTime; }
-	sf::Vector2i GetPointer() { return sf::Mouse::getPosition(); }
+	sf::Vector2i GetPointer();
 	AssetManager* GetAssetManager() { return &AssetMana; }
 	Scene* GetScene() const { return mpScene; }
 	sf::Font& GetFont() { return mFont; };

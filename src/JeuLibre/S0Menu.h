@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Player.h"
 #include "Pointer.h"
+#include "UI.h"
 
 class S0Menu : public Scene
 {
@@ -10,9 +11,7 @@ class S0Menu : public Scene
 	sf::RenderWindow* Win;
 	Pointer* lPointer;
 	
-	Entity* ButtonLeo;
-	Entity* ButtonCheval;
-	Entity* ButtonElo;
+	UI* lUI;
 
 	Entity* Fond;
 public:

@@ -4,18 +4,18 @@
 #include "TileMap.h"
 #include "CameraSys.h"
 #include <random>
+#include "SpawnSys.h"
 
 void SceneChevalier::OnInitialize()
 {
-    GameManager::Get()->AssetMana.LoadFromFile("../../../img/MapTile/Donjon");
 
-    cam = CreateEntity<CameraSys>("0");
+    cam = CreateEntity<CameraSys>("DropM_0000");
     cam->Layout = -1;
 
     Decalx = 1300;
     Decaly = 700;
 
-    CamFocus = CreateEntity<Entity>("0");
+    CamFocus = CreateEntity<Entity>("DropM_0000");
     CamFocus->SetPosition(Decalx / 2, Decaly / 2);
     CamFocus->Layout = -1;
 
@@ -34,6 +34,7 @@ void SceneChevalier::OnInitialize()
     lPlayer->AddAABBHitbox();
     lPlayer->SetHitboxSize(lPlayer->mSprite.getGlobalBounds().width/6, lPlayer->mSprite.getGlobalBounds().height/4);
     lPlayer->Layout = 2;
+    lPlayer->mMode = PlayerMode::Attack;
     
     for (int i = 0;i < 3; i++) {
         Monster* M;
@@ -48,15 +49,31 @@ void SceneChevalier::OnInitialize()
         M->SetSpeed(100);
         M->SetTarget(lPlayer);
         M->Layout = 2;
+        M->SetTag(GameManager::Tag::tEnnemie);
         lEnnemie.push_back(M);
     }
 
-    // DÉFINIR LE JOUEUR COMME CIBLE DE LA CAMÉRA
+    int sx = GameManager::Get()->Window->getSize().x - 100;
+    int sy = GameManager::Get()->Window->getSize().y - 100;
+
+    SpawnArea = CreateEntity<SpawnSys>("TileMap_0174");
+    SpawnArea->SetSize(sx, sy);
+    SpawnArea->SetOrigin(0.5, 0.5);
+    SpawnArea->Layout = -1;
+    SpawnArea->SetCam(CamFocus);
+    SpawnArea->SetTarget(lPlayer);
+    SpawnArea->AddAABBHitbox();
+    SpawnArea->nSpawn = 10;
 
     TileMap* map = new TileMap();
     map->SetPosition(0, 0);
     map->createD();
     GameManager::Get()->AddTileMap(map);
+
+
+    GameManager::Get()->InDonjon = true;
+
+    verifspawn = false;
 }
 
 void SceneChevalier::OnEvent(const sf::Event& event)
@@ -88,18 +105,33 @@ void SceneChevalier::OnEvent(const sf::Event& event)
 
 void SceneChevalier::OnUpdate()
 {
-    if (lPlayer->GetPosition().x < CamFocus->GetPosition().x - (Decalx / 2))
+    if (lPlayer->GetPosition().x < CamFocus->GetPosition().x - (Decalx / 2)) {
         CamFocus->SetPosition(CamFocus->GetPosition().x - Decalx, CamFocus->GetPosition().y);
+        verifspawn = false;
+    }
 
-    if (lPlayer->GetPosition().x > CamFocus->GetPosition().x + (Decalx / 2))
+    if (lPlayer->GetPosition().x > CamFocus->GetPosition().x + (Decalx / 2)) {
         CamFocus->SetPosition(CamFocus->GetPosition().x + Decalx, CamFocus->GetPosition().y);
+        verifspawn = false;
+    }
 
-    if (lPlayer->GetPosition().y < CamFocus->GetPosition().y - (Decaly / 2))
+    if (lPlayer->GetPosition().y < CamFocus->GetPosition().y - (Decaly / 2)) {
         CamFocus->SetPosition(CamFocus->GetPosition().x, CamFocus->GetPosition().y - Decaly);
+        verifspawn = false;
+    }
 
-    if (lPlayer->GetPosition().y > CamFocus->GetPosition().y + (Decaly / 2))
+    if (lPlayer->GetPosition().y > CamFocus->GetPosition().y + (Decaly / 2)) {
         CamFocus->SetPosition(CamFocus->GetPosition().x, CamFocus->GetPosition().y + Decaly);
+        verifspawn = false;
+    }
     
+    float lptc = (CamFocus->GetPosition().x - lPlayer->GetPosition().x) + (CamFocus->GetPosition().y - lPlayer->GetPosition().y);
+    if (lptc < 0) {
+        lptc *= -1;
+    }
+    if (verifspawn == false && lptc < 300) {
+        SpawnArea->move(CamFocus->GetPosition());
+    }
 }
 
 void SceneChevalier::SetName()

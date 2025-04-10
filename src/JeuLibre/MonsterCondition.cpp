@@ -61,3 +61,8 @@ bool IsTargettoClose::OnTest(Monster* pMonster)
 
     return distanceSquared < RunAwayDistanceSquared;
 }
+
+bool IsHitOver::OnTest(Monster* pMonster)
+{
+    return pMonster->mHasbeenHit;
+}
